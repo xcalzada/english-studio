@@ -59,10 +59,24 @@ const App = () => {
             <button onClick={() => setView('topic-selector')} className="flex items-center space-x-2 text-slate-400 hover:text-blue-600 font-black text-xs uppercase tracking-widest italic"><ArrowLeft size={16} /> <span>Volver a unidades</span></button>
             <div className="text-center mb-4"><h2 className="text-5xl font-black text-slate-800 uppercase italic tracking-tighter">{currentUnit.title}</h2></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-              <UnitModuleButton icon={<BookOpen/>} title="1. Teoría" color="bg-blue-600" onClick={() => setView('theory')} />
-              <UnitModuleButton icon={<Sofa/>} title="2. Vocabulario" color="bg-pink-600" onClick={() => setView('vocab')} />
-              <UnitModuleButton icon={<Headphones/>} title="3. Listening" color="bg-purple-600" onClick={() => setView('listening')} />
-              <UnitModuleButton icon={<FileText/>} title="4. Reading" color="bg-emerald-600" onClick={() => setView('reading')} />
+              {/* MODIFICACIÓN: RENDERIZADO CONDICIONAL DE BOTONES */}
+              {/* Si la unidad tiene el bloque de teoría, mostramos el botón */}
+              {currentUnit.theoryBlock && (
+                <UnitModuleButton icon={<BookOpen/>} title="1. Teoría" color="bg-blue-600" onClick={() => setView('theory')} />
+              )}
+              {/* Si la unidad tiene vocabulario (array con longitud > 0), mostramos el botón */}
+              {currentUnit.vocabulary && currentUnit.vocabulary.length > 0 && (
+                <UnitModuleButton icon={<Sofa/>} title="2. Vocabulario" color="bg-pink-600" onClick={() => setView('vocab')} />
+              )}
+              {/* Si la unidad tiene bloque de listening, mostramos el botón */}
+              {currentUnit.listening && (
+                <UnitModuleButton icon={<Headphones/>} title="3. Listening" color="bg-purple-600" onClick={() => setView('listening')} />
+              )}
+              {/* Si la unidad tiene bloque de reading, mostramos el botón */}
+              {currentUnit.reading && (
+                <UnitModuleButton icon={<FileText/>} title="4. Reading" color="bg-emerald-600" onClick={() => setView('reading')} />
+              )}
+              {/* El Writing siempre lo dejamos opcional o fijo, aquí asumimos que siempre va, pero puedes envolverlo igual */}
               <UnitModuleButton icon={<PenTool/>} title="5. Writing" color="bg-orange-600" onClick={() => setView('writing')} />
             </div>
           </div>
