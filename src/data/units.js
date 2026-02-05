@@ -6,6 +6,7 @@
 
 // 1. Importamos las lecciones existentes
 import { houseVerbHave } from './units/house-verb-have';
+import { superlativesworldrecords } from './units/superlatives-world-records';
 
 /**
  * 2. Exportamos el objeto UNITS_DATA que consume App.jsx.
@@ -16,7 +17,7 @@ import { houseVerbHave } from './units/house-verb-have';
  */
 export const UNITS_DATA = {
   'house-verb-have': houseVerbHave,
-  
+  'superlatives-world-records': superlativesworldrecords,
   // Ejemplo de cómo añadir la siguiente:
   // 'family-to-be': familyToBe,
 };

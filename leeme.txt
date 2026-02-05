@@ -1,0 +1,24 @@
+Nota Compilar: npm run dev
+
+Hola Gemini. Quiero añadir una nueva lección a mi archivo "src/data/units.js".
+
+Tema: [EJ: El más conveniente con el topico de Gramática]
+Gramática: [EJ: Adjetivos/ Most / est / least...]
+
+Por favor, genera SOLO el código del objeto JSON para esta nueva unidad siguiendo la estructura de mi proyecto.
+
+Reglas de formato:
+
+Usa un ID único para la clave (ej: 'animals-Adjetivos-lesson').
+
+Incluye "theoryBlock" con las 4 secciones (affirmative, negative, question, shortAnswer) usando etiquetas <span> y clases de Tailwind para resaltar (ej: text-emerald-100, text-orange-200).
+
+El "vocabulary" debe tener exactamente 25 palabras con sus traducciones al español.
+
+El "theoryQuiz" debe tener 10 preguntas (las 4 últimas deben ser de tipo 'Short Answer').
+
+El "listening" debe tener un texto descriptivo, una lista de 'correctItems' y 8 'options' en total.
+
+El "reading" debe tener un texto de 5-6 líneas y 6 preguntas de comprensión.
+
+Dame solo el bloque de código para copiar y añadir a mi objeto UNITS_DATA.
