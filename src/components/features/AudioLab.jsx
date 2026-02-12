@@ -203,7 +203,7 @@ const AudioLab = ({ data }) => {
       </div>
 
       {/* 2. QUIZ INTERACTIVO (Fondo Blanco para contraste) */}
-      <Card color="border-slate-300">
+      <Card>
          <div className="flex items-center gap-3 mb-8 border-b-4 border-slate-100 pb-4">
              <div className="bg-slate-900 text-white p-2 rounded-lg -rotate-3"><Headphones size={24}/></div>
              <h4 className="font-black text-slate-900 uppercase text-lg tracking-tight">Select what you hear</h4>

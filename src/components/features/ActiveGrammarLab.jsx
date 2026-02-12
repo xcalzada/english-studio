@@ -97,20 +97,27 @@ const ActiveGrammarLab = ({ data }) => {
   return (
     <div className="space-y-12 animate-in fade-in duration-500 pb-20">
       
-      {/* --- FASE 1: BLUEPRINT (REGLAS) --- */}
-      <section className="bg-slate-900 text-white rounded-[2.5rem] p-6 md:p-8 border-4 border-slate-900 shadow-[12px_12px_0px_0px_#1e293b] relative overflow-hidden">
+      {/* --- FASE 1: BLUEPRINT (REGLAS) - Estilo Reading --- */}
+      <section className="bg-[#fffdf5] text-slate-900 rounded-[2.5rem] p-6 md:p-8 border-4 border-slate-900 shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden">
         
-        {/* Fondo Decorativo */}
-        <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none" 
-             style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
+        {/* Badge Flotante (Estilo Reading) */}
+        <div className="absolute -top-1 left-10 bg-blue-600 text-white px-6 py-3 rounded-b-xl border-x-4 border-b-4 border-slate-900 font-black uppercase text-xs tracking-widest z-10">
+          Theory Workshop
         </div>
 
-        <div className="relative z-10">
-          <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8 border-b-2 border-slate-700 pb-6">
-             <div className="bg-blue-600 p-3 rounded-xl rotate-3 shadow-lg border-2 border-blue-400"><Hammer className="text-white" size={28}/></div>
+        {/* Icono de fondo decorativo */}
+        <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none text-slate-900">
+          <Hammer size={180} />
+        </div>
+
+        <div className="relative z-10 mt-8">
+          <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8 border-b-4 border-slate-200 pb-6">
+             <div className="bg-blue-600 p-3 rounded-xl rotate-3 border-4 border-slate-900 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
+               <Hammer className="text-white" size={28}/>
+             </div>
              <div>
-               <h3 className="text-3xl font-black uppercase italic tracking-tighter">Theory Workshop</h3>
-               <p className="text-slate-400 font-bold text-xs uppercase tracking-widest">Build the rules to unlock practice</p>
+               <h3 className="text-3xl font-black uppercase italic tracking-tighter text-slate-900">Build the Rules</h3>
+               <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Complete to unlock practice</p>
              </div>
           </div>
 
@@ -129,14 +136,14 @@ const ActiveGrammarLab = ({ data }) => {
                 `}>
                    
                    <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-                       {/* Número */}
-                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-sm border shrink-0 
-                           ${isDone ? 'bg-slate-700 border-slate-500 text-slate-300' : 'bg-blue-600 text-white border-blue-400'}`}>
+                       {/* Número (Estilo Reading) */}
+                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm border-2 shrink-0 
+                           ${isDone ? 'bg-slate-100 border-slate-900 text-slate-500' : 'bg-blue-600 text-white border-blue-700'}`}>
                          {idx + 1}
                        </div>
                        
-                       {/* Texto e Input */}
-                       <div className="font-bold text-lg leading-relaxed flex-grow text-slate-200">
+                       {/* Texto e Input (Estilo Reading) */}
+                       <div className="font-bold text-lg leading-relaxed flex-grow text-slate-800">
                           {parts.map((part, pIdx) => (
                             <React.Fragment key={pIdx}>
                               <span dangerouslySetInnerHTML={{__html: part}} />
@@ -149,11 +156,11 @@ const ActiveGrammarLab = ({ data }) => {
                                       setRuleStatus({...ruleStatus, [step.id]: 'idle'}); // Reset si escribe de nuevo
                                   }}
                                   className={`
-                                    mx-2 border-b-4 text-center font-black uppercase w-32 outline-none transition-all bg-transparent
-                                    ${status === 'correct' ? 'border-emerald-500 text-emerald-400' : ''}
-                                    ${status === 'revealed' ? 'border-amber-500 text-amber-400' : ''}
-                                    ${status === 'incorrect' ? 'border-rose-500 text-rose-400' : ''}
-                                    ${status === 'idle' ? 'border-slate-500 focus:border-blue-400 text-white' : ''}
+                                    mx-2 border-4 px-3 py-2 text-center font-black uppercase w-32 rounded-xl outline-none transition-all bg-white
+                                    ${status === 'correct' ? 'border-emerald-500 text-emerald-900 shadow-[4px_4px_0px_0px_#10b981]' : ''}
+                                    ${status === 'revealed' ? 'border-amber-500 text-amber-900 shadow-[4px_4px_0px_0px_#f59e0b]' : ''}
+                                    ${status === 'incorrect' ? 'border-rose-500 text-rose-900 shadow-[4px_4px_0px_0px_#f43f5e]' : ''}
+                                    ${status === 'idle' ? 'border-slate-300 focus:border-blue-600 focus:shadow-[4px_4px_0px_0px_#2563eb] text-slate-900' : ''}
                                   `}
                                   placeholder="?"
                                   autoComplete="off"
@@ -163,27 +170,27 @@ const ActiveGrammarLab = ({ data }) => {
                           ))}
                        </div>
 
-                        {/* Botones de Acción (Check / Reveal) */}
+                        {/* Botones de Acción (Estilo Reading) */}
                         <div className="flex items-center gap-2 shrink-0">
                             {!isDone ? (
                                 <>
                                     <button 
                                         onClick={() => handleCheckRule(step)}
-                                        className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-black uppercase text-xs tracking-wide shadow-md active:scale-95 transition-all"
+                                        className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl font-black uppercase text-xs tracking-wide border-4 border-blue-700 shadow-[4px_4px_0px_0px_rgba(37,99,235,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(37,99,235,1)] active:translate-y-1 active:shadow-[0_0_0_0_rgba(37,99,235,1)] transition-all"
                                     >
                                         Check
                                     </button>
                                     <button 
                                         onClick={() => handleRevealRule(step)}
-                                        className="bg-slate-700 hover:bg-slate-600 text-slate-300 p-2 rounded-lg transition-all"
+                                        className="bg-white border-4 border-slate-900 text-slate-700 p-2 rounded-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-[0_0_0_0_rgba(15,23,42,1)] transition-all"
                                         title="Reveal Answer"
                                     >
                                         <Eye size={18}/>
                                     </button>
                                 </>
                             ) : (
-                                <div className={`flex items-center gap-2 font-black uppercase text-xs px-3 py-1 rounded-lg border 
-                                    ${status === 'correct' ? 'bg-emerald-900/50 text-emerald-400 border-emerald-500/50' : 'bg-amber-900/50 text-amber-400 border-amber-500/50'}`}>
+                                <div className={`flex items-center gap-2 font-black uppercase text-xs px-4 py-2 rounded-xl border-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] 
+                                    ${status === 'correct' ? 'bg-emerald-100 text-emerald-800 border-emerald-500' : 'bg-amber-100 text-amber-800 border-amber-500'}`}>
                                     {status === 'correct' ? <CheckCircle size={16}/> : <Eye size={16}/>}
                                     {status === 'correct' ? 'Correct' : 'Revealed'}
                                 </div>
@@ -191,9 +198,9 @@ const ActiveGrammarLab = ({ data }) => {
                         </div>
                    </div>
 
-                   {/* Hint en caso de error */}
+                   {/* Hint en caso de error (Estilo Reading) */}
                    {status === 'incorrect' && (
-                       <div className="text-xs font-bold text-rose-400 bg-rose-900/20 p-2 rounded-lg border border-rose-900/50 flex items-center gap-2 animate-in slide-in-from-top-1">
+                       <div className="text-xs font-bold text-rose-700 bg-rose-100/80 p-3 rounded-xl border-l-4 border-rose-500 flex items-center gap-2 animate-in slide-in-from-top-1">
                            <XCircle size={14}/> Hint: {step.hint}
                        </div>
                    )}
@@ -202,9 +209,9 @@ const ActiveGrammarLab = ({ data }) => {
             })}
           </div>
           
-          {/* Mensaje de desbloqueo */}
+          {/* Mensaje de desbloqueo (Estilo Reading) */}
           {isPracticeUnlocked && (
-             <div className="mt-8 bg-emerald-600 text-white p-4 rounded-xl font-black uppercase text-center flex items-center justify-center gap-3 animate-in zoom-in border-4 border-emerald-800 shadow-lg">
+             <div className="mt-8 bg-emerald-600 text-white p-4 rounded-xl font-black uppercase text-center flex items-center justify-center gap-3 animate-in zoom-in border-4 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]">
                 <Unlock size={24}/> 
                 <span>Practice Unlocked!</span>
                 <ArrowRight size={24} className="animate-pulse"/>
@@ -213,25 +220,37 @@ const ActiveGrammarLab = ({ data }) => {
         </div>
       </section>
 
-      {/* --- FASE 2: PRÁCTICA --- */}
+      {/* --- FASE 2: PRÁCTICA (Estilo Reading) --- */}
       <section 
         id="practice-section"
         className={`transition-all duration-700 ${isPracticeUnlocked ? 'opacity-100 translate-y-0' : 'opacity-50 blur-sm pointer-events-none grayscale'}`}
       >
-        <div className="bg-white p-6 md:p-10 rounded-[2.5rem] border-4 border-slate-200 shadow-xl relative">
+        <div className="relative bg-[#fffdf5] p-6 md:p-10 rounded-[2.5rem] border-4 border-slate-900 shadow-[12px_12px_0px_0px_rgba(15,23,42,1)]">
+            
+            {/* Badge Flotante (Estilo Reading) */}
+            <div className="absolute -top-1 left-10 bg-slate-900 text-white px-6 py-3 rounded-b-xl border-x-4 border-b-4 border-slate-900 font-black uppercase text-xs tracking-widest z-10">
+              Active Practice
+            </div>
+
+            {/* Icono de fondo decorativo */}
+            <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none text-slate-900">
+              <PenTool size={180} />
+            </div>
             
             {!isPracticeUnlocked && (
                <div className="absolute inset-0 z-20 flex items-center justify-center">
-                  <div className="bg-slate-900 text-white p-6 rounded-3xl shadow-2xl flex flex-col items-center gap-4 border-4 border-slate-700 animate-in zoom-in">
+                  <div className="bg-slate-900 text-white p-6 rounded-3xl shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] flex flex-col items-center gap-4 border-4 border-slate-900 animate-in zoom-in">
                      <Lock size={48} />
                      <span className="font-black uppercase tracking-widest text-sm">Finish Theory First</span>
                   </div>
                </div>
             )}
 
-            <div className="mb-10 flex items-center gap-4 border-b-4 border-slate-100 pb-6">
-                <div className="bg-slate-900 text-white p-3 rounded-xl"><PenTool size={24}/></div>
-                <h3 className="text-2xl font-black text-slate-900 uppercase italic">Active Practice</h3>
+            <div className="relative z-10 mb-10 flex items-center gap-4 border-b-4 border-slate-200 pb-6 mt-8">
+                <div className="bg-slate-900 text-white p-3 rounded-xl border-4 border-slate-900 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] rotate-3">
+                  <PenTool size={24}/>
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 uppercase italic">Complete the Sentences</h3>
             </div>
 
             <div className="space-y-4">
@@ -244,10 +263,22 @@ const ActiveGrammarLab = ({ data }) => {
                 const sentenceParts = item.q.split('______');
 
                 return (
-                  <div key={item.id} className={`p-6 rounded-2xl border-2 transition-colors ${isChecked ? (isCorrect ? 'bg-emerald-50 border-emerald-200' : (isRevealed ? 'bg-amber-50 border-amber-200' : 'bg-rose-50 border-rose-200')) : 'bg-slate-50 border-slate-200'}`}>
+                  <div key={item.id} className={`
+                      p-6 rounded-[2.5rem] border-4 transition-all
+                      ${isChecked 
+                        ? (isCorrect 
+                          ? 'bg-emerald-50 border-emerald-500 shadow-[6px_6px_0px_0px_#10b981]' 
+                          : (isRevealed 
+                            ? 'bg-amber-50 border-amber-500 shadow-[6px_6px_0px_0px_#f59e0b]' 
+                            : 'bg-rose-50 border-rose-500 shadow-[6px_6px_0px_0px_#f43f5e]')) 
+                        : 'bg-white border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]'}
+                  `}>
                       <div className="flex flex-col lg:flex-row lg:items-center gap-6">
                         
-                        <div className="text-slate-400 font-black text-lg select-none">{idx + 1}.</div>
+                        {/* Número (Estilo Reading) */}
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm border-2 border-slate-900 bg-white text-slate-500 shrink-0 select-none">
+                          {idx + 1}
+                        </div>
                         
                         <div className="flex-grow font-bold text-slate-800 text-lg leading-loose">
                             {sentenceParts.map((part, pIdx) => (
@@ -258,10 +289,14 @@ const ActiveGrammarLab = ({ data }) => {
                                     disabled={isChecked}
                                     value={practiceAnswers[item.id]?.[pIdx] || ''} 
                                     className={`
-                                        mx-2 border-b-4 bg-transparent text-center focus:outline-none font-black uppercase w-32 transition-colors
+                                        mx-2 border-4 px-3 py-2 bg-white text-center focus:outline-none font-black uppercase w-32 rounded-xl transition-all
                                         ${isChecked 
-                                            ? (isCorrect ? 'border-emerald-500 text-emerald-900' : (isRevealed ? 'border-amber-500 text-amber-900' : 'border-rose-500 text-rose-900'))
-                                            : 'border-slate-300 focus:border-blue-600 text-blue-900'
+                                            ? (isCorrect 
+                                              ? 'border-emerald-500 text-emerald-900 shadow-[4px_4px_0px_0px_#10b981]' 
+                                              : (isRevealed 
+                                                ? 'border-amber-500 text-amber-900 shadow-[4px_4px_0px_0px_#f59e0b]' 
+                                                : 'border-rose-500 text-rose-900 shadow-[4px_4px_0px_0px_#f43f5e]'))
+                                            : 'border-slate-300 focus:border-blue-600 focus:shadow-[4px_4px_0px_0px_#2563eb] text-blue-900'
                                         }
                                     `} 
                                     placeholder="?"
@@ -278,26 +313,24 @@ const ActiveGrammarLab = ({ data }) => {
                                 <>
                                     <button 
                                         onClick={() => setCheckedPracticeIds([...checkedPracticeIds, item.id])} 
-                                        className="bg-white border-2 border-slate-300 text-slate-900 px-6 py-2 rounded-lg font-black uppercase text-xs hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-sm"
+                                        className="bg-slate-900 text-white border-4 border-slate-900 px-6 py-2 rounded-xl font-black uppercase text-xs shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-[0_0_0_0_rgba(15,23,42,1)] transition-all"
                                     >
                                         CHECK
                                     </button>
-                                    {/* Opción para revelar si se rinden en práctica */}
-                                    {/* <button onClick={() => revealPracticeItem(item)} className="text-slate-400 hover:text-amber-500"><Eye size={20}/></button> */}
                                 </>
                             ) : (
                                 <div className="flex flex-col items-end gap-2">
-                                    <div className={`flex items-center gap-2 font-bold uppercase text-xs px-4 py-2 rounded-lg border 
-                                        ${isCorrect ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : (isRevealed ? 'bg-amber-100 text-amber-800 border-amber-200' : 'bg-rose-100 text-rose-800 border-rose-200')}`}>
+                                    <div className={`flex items-center gap-2 font-black uppercase text-xs px-4 py-2 rounded-xl border-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] 
+                                        ${isCorrect ? 'bg-emerald-100 text-emerald-800 border-emerald-500' : (isRevealed ? 'bg-amber-100 text-amber-800 border-amber-500' : 'bg-rose-100 text-rose-800 border-rose-500')}`}>
                                         {isCorrect ? <CheckCircle size={16}/> : (isRevealed ? <Eye size={16}/> : <XCircle size={16}/>)} 
                                         {isCorrect ? 'Correct' : (isRevealed ? 'Revealed' : 'Error')}
                                     </div>
                                     
-                                    {/* Botón de ayuda si fallaron */}
+                                    {/* Botón de ayuda si fallaron (Estilo Reading) */}
                                     {!isCorrect && !isRevealed && (
                                         <button 
                                             onClick={() => revealPracticeItem(item)}
-                                            className="text-[10px] font-black uppercase text-slate-400 hover:text-amber-600 flex items-center gap-1 underline"
+                                            className="text-[10px] font-black uppercase text-slate-500 hover:text-amber-600 flex items-center gap-1 bg-white px-2 py-1 rounded-lg border-2 border-slate-300 hover:border-amber-500 transition-all"
                                         >
                                             <Eye size={12}/> Show Answer
                                         </button>

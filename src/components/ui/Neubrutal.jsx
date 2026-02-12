@@ -6,19 +6,39 @@ import { ArrowLeft } from 'lucide-react';
    PROMPT IA: "Crea un componente UI en este archivo que siga el estilo de bordes gruesos y sombras duras de Tailwind."
    ========================================================================== */
 
-export const Card = ({ children, className = "", color = "border-slate-200" }) => (
-  <div className={`bg-white border-4 ${color} rounded-[2rem] shadow-xl p-6 md:p-8 ${className}`}>
+export const Card = ({ 
+  children, 
+  className = "", 
+  color = "border-slate-900",       // Borde por defecto neubrutalista
+  background = "bg-white"           // Permite cambiar el fondo si hace falta
+}) => (
+  <div className={`
+    ${background} border-4 ${color} rounded-[2.5rem]
+    shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]
+    p-6 md:p-8
+    ${className}
+  `}>
     {children}
   </div>
 );
 
-export const Button3D = ({ children, onClick, active = false, className = "", color = "bg-slate-900 text-white" }) => (
+export const Button3D = ({ 
+  children, 
+  onClick, 
+  active = false, 
+  className = "", 
+  color = "bg-slate-900 text-white" 
+}) => (
   <button 
     onClick={onClick}
     className={`
-      px-6 py-4 rounded-xl border-b-8 border-black/20 font-black uppercase tracking-widest transition-all
-      active:border-b-0 active:translate-y-2 shadow-xl hover:brightness-110 flex items-center justify-center gap-2
-      ${active ? 'translate-y-2 border-b-0' : ''}
+      inline-flex items-center justify-center gap-2
+      px-6 py-4 rounded-2xl font-black uppercase tracking-widest transition-all
+      border-4 border-slate-900 border-b-[8px]
+      shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]
+      hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]
+      active:translate-y-1 active:border-b-4 active:shadow-[0_0_0_0_rgba(15,23,42,1)]
+      ${active ? 'translate-y-1 border-b-4' : ''}
       ${color} ${className}
     `}
   >
@@ -44,7 +64,16 @@ export const InputField = ({ value, onChange, placeholder, correct, error, disab
 
 export const SectionHeader = ({ title, color = "border-slate-800", onBack }) => (
   <div className="flex items-center gap-5 mb-10 animate-in slide-in-from-left duration-500">
-      <button onClick={onBack} className="p-3 bg-white border-4 border-slate-200 rounded-2xl shadow-lg hover:border-slate-400 transition-all active:scale-90">
+      <button 
+        onClick={onBack} 
+        className="
+          p-3 bg-white border-4 border-slate-900 rounded-2xl 
+          shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]
+          hover:-translate-y-1 hover:shadow-[9px_9px_0px_0px_rgba(15,23,42,1)]
+          active:translate-y-1 active:shadow-[0_0_0_0_rgba(15,23,42,1)]
+          transition-all
+        "
+      >
         <ArrowLeft size={24} />
       </button>
       <h2 className={`text-2xl md:text-4xl font-black text-slate-900 uppercase italic tracking-tighter border-l-[12px] ${color} pl-6 leading-none`}>

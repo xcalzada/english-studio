@@ -43,15 +43,23 @@ export const UnitMenu = ({ unit, onSelectTab, onBack }) => {
             onClick={() => onSelectTab(item.id)}
             className={`
                 relative group overflow-hidden
-                bg-white border-4 rounded-[2.5rem] p-8 
-                shadow-xl hover:-translate-y-2 hover:shadow-2xl active:scale-95 active:border-slate-400
-                transition-all duration-300 text-left flex flex-col items-center justify-center gap-4 h-64
-                ${item.special ? 'border-amber-400 ring-4 ring-amber-100' : 'border-slate-200'}
+                bg-white border-4 border-slate-900 rounded-[2.5rem] p-8 
+                shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]
+                hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] 
+                active:translate-y-1 active:shadow-[0_0_0_0_rgba(15,23,42,1)]
+                transition-all duration-200 text-left flex flex-col items-center justify-center gap-4 h-64
+                ${item.special ? 'ring-4 ring-amber-300' : ''}
             `}
           >
             {item.special && <div className="absolute top-4 right-4 bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-200">Bonus</div>}
             <div className={`absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-slate-200 to-transparent opacity-0 group-hover:opacity-100 transition-opacity`} />
-            <div className={`${item.color} text-white p-6 rounded-2xl shadow-lg border-b-8 ${item.border} group-hover:scale-110 transition-transform`}>
+            <div className={`
+                ${item.color} text-white p-6 rounded-2xl 
+                border-4 border-slate-900
+                shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]
+                group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]
+                transition-all
+            `}>
                 {item.icon}
             </div>
             <span className="font-black text-2xl uppercase italic tracking-tighter text-slate-800 group-hover:text-slate-900">

@@ -83,11 +83,15 @@ const App = () => {
   /* --- VISTA: HOME --- */
   if (!activeUnitId) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] p-6 font-sans">
+      <div className="min-h-screen bg-[#fffdf5] p-6 font-sans">
         <nav className="flex justify-center mb-16 mt-8">
             <div className="flex items-center gap-2 group cursor-default">
-                <div className="bg-blue-700 p-3 rounded-2xl rotate-3 shadow-lg"><Layers className="text-white" size={32} /></div>
-                <h1 className="text-4xl md:text-5xl font-black uppercase italic tracking-tighter text-slate-900">English<span className="text-blue-700">Studio</span></h1>
+                <div className="bg-indigo-600 p-3 rounded-3xl rotate-3 border-4 border-slate-900 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
+                  <Layers className="text-white" size={32} />
+                </div>
+                <h1 className="text-4xl md:text-5xl font-black uppercase italic tracking-tighter text-slate-900">
+                  English<span className="text-indigo-600">Studio</span>
+                </h1>
             </div>
         </nav>
         
@@ -97,7 +101,13 @@ const App = () => {
             <button 
                 key={unit.id} 
                 onClick={() => { setActiveUnitId(unit.id); setActiveTab(null); }} 
-                className="bg-white border-4 border-slate-200 p-8 rounded-[2.5rem] text-left hover:border-blue-700 hover:-translate-y-2 active:scale-95 transition-all shadow-xl group relative overflow-hidden"
+                className="
+                  bg-white border-4 border-slate-900 p-8 rounded-[2.5rem] text-left 
+                  shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]
+                  hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] hover:border-indigo-900
+                  active:translate-y-1 active:shadow-[0_0_0_0_rgba(15,23,42,1)]
+                  transition-all group relative overflow-hidden
+                "
             >
                 <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity"><Home size={80}/></div>
                 <div className="flex items-start justify-between mb-4">

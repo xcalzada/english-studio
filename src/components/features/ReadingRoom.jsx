@@ -52,7 +52,7 @@ const ReadingRoom = ({ data }) => {
 
         <div className="space-y-6">
             <div className="flex items-center gap-4 mb-8">
-                <div className="bg-slate-900 text-white p-3 rounded-xl rotate-3 shadow-lg border-2 border-white">
+                <div className="bg-slate-900 text-white p-3 rounded-xl rotate-3 border-4 border-slate-900 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
                     <PenTool size={24}/>
                 </div>
                 <h3 className="text-2xl font-black text-slate-900 uppercase italic">Comprehension Check</h3>
@@ -62,10 +62,19 @@ const ReadingRoom = ({ data }) => {
             const isCorrect = showResults && checkAnswer(q.id, q.ans);
             
             return (
-                <div key={q.id} className="bg-white p-6 md:p-8 rounded-[2rem] border-4 border-slate-200 shadow-xl transition-all hover:border-slate-300 group">
+            <div 
+              key={q.id} 
+              className="
+                bg-white p-6 md:p-8 rounded-[2.5rem] 
+                border-4 border-slate-900 
+                shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]
+                transition-all group
+                hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]
+              "
+            >
                     {/* Pregunta */}
                     <div className="flex flex-col md:flex-row md:items-start gap-4 mb-6">
-                        <span className="bg-slate-100 text-slate-400 w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 border-2 border-slate-200">
+                        <span className="bg-slate-100 text-slate-500 w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 border-2 border-slate-900">
                             {idx + 1}
                         </span>
                         <p className="font-bold text-lg text-slate-800 leading-snug pt-1">
