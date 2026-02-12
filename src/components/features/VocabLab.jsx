@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Volume2, CheckCircle, XCircle, RotateCcw, Keyboard } from 'lucide-react';
+import { 
+  Volume2, RotateCcw, Keyboard, Sparkles, ArrowRight, Languages
+} from 'lucide-react';
 
 const VocabLab = ({ data }) => {
   const [mode, setMode] = useState('study'); // 'study' | 'test'
   
-  // Reseteamos estados al cambiar de unidad
   useEffect(() => {
     setMode('study');
   }, [data.id]);
@@ -13,32 +14,43 @@ const VocabLab = ({ data }) => {
     window.speechSynthesis.cancel();
     const utt = new SpeechSynthesisUtterance(text);
     utt.lang = 'en-GB';
+    utt.rate = 0.9;
     window.speechSynthesis.speak(utt);
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-20">
+    <div className="space-y-12 animate-in fade-in duration-500 pb-20">
       
-      {/* 1. Selector de Modo */}
-      <div className="flex justify-center mb-8">
-          <div className="bg-slate-100 p-1.5 rounded-xl flex gap-1 border-2 border-slate-200">
+      {/* 1. SELECTOR DE MODO */}
+      <div className="flex justify-center">
+          <div className="bg-white p-2 rounded-full flex gap-2 border-4 border-indigo-100 shadow-xl">
               <button 
                 onClick={() => setMode('study')} 
-                className={`px-6 py-2 rounded-lg font-black uppercase text-xs tracking-widest transition-all ${mode === 'study' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-400 hover:text-slate-600'}`}
+                className={`
+                    px-8 py-3 rounded-full font-black uppercase text-xs tracking-widest transition-all flex items-center gap-2
+                    ${mode === 'study' 
+                        ? 'bg-indigo-600 text-white shadow-lg scale-105' 
+                        : 'text-slate-400 hover:text-indigo-500 hover:bg-indigo-50'}
+                `}
               >
-                Study Mode
+                <Languages size={18}/> Study
               </button>
               <button 
                 onClick={() => setMode('test')} 
-                className={`px-6 py-2 rounded-lg font-black uppercase text-xs tracking-widest transition-all ${mode === 'test' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
+                className={`
+                    px-8 py-3 rounded-full font-black uppercase text-xs tracking-widest transition-all flex items-center gap-2
+                    ${mode === 'test' 
+                        ? 'bg-fuchsia-600 text-white shadow-lg scale-105' 
+                        : 'text-slate-400 hover:text-fuchsia-500 hover:bg-fuchsia-50'}
+                `}
               >
-                Test Mode
+                <Keyboard size={18}/> Test
               </button>
           </div>
       </div>
 
-      {/* 2. Rejilla de Tarjetas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* 2. GRID DE TARJETAS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {data.vocabulary.map(item => (
           <VocabCard 
             key={item.id} 
@@ -57,7 +69,6 @@ const VocabCard = ({ item, mode, onSpeak }) => {
     const [input, setInput] = useState('');
     const [status, setStatus] = useState('idle'); // 'idle' | 'correct' | 'incorrect'
 
-    // Reseteamos la tarjeta si cambia el modo
     useEffect(() => {
         setInput('');
         setStatus('idle');
@@ -67,7 +78,7 @@ const VocabCard = ({ item, mode, onSpeak }) => {
         const normalize = (txt) => txt.toLowerCase().trim();
         if (normalize(input) === normalize(item.word)) {
             setStatus('correct');
-            onSpeak(); // Pronuncia si acierta
+            onSpeak(); 
         } else {
             setStatus('incorrect');
         }
@@ -77,94 +88,114 @@ const VocabCard = ({ item, mode, onSpeak }) => {
         if (e.key === 'Enter') handleCheck();
     };
 
-    // --- RENDERIZADO MODO ESTUDIO (Solo lectura) ---
+    // --- MODO ESTUDIO ---
     if (mode === 'study') {
         return (
-            <div className="bg-white border-4 border-slate-200 rounded-[2rem] p-6 shadow-lg hover:border-pink-300 transition-all group relative overflow-hidden">
-                <div className="flex justify-between items-start mb-4">
-                    <span className="bg-pink-50 text-pink-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border border-pink-100">
-                        Esp: {item.span}
-                    </span>
-                    <button onClick={onSpeak} className="p-3 bg-slate-50 rounded-full text-slate-400 hover:bg-pink-500 hover:text-white transition-all active:scale-90">
-                        <Volume2 size={20}/>
-                    </button>
+            <div 
+                onClick={onSpeak}
+                className="group relative bg-white border-4 border-indigo-600 rounded-[2.5rem] shadow-[8px_8px_0px_0px_#4f46e5] hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#4f46e5] transition-all cursor-pointer overflow-hidden h-72 flex flex-col items-center justify-center"
+            >
+                {/* Badge Español (Flotante) */}
+                <div className="absolute top-6 right-6 bg-yellow-400 text-yellow-900 px-4 py-1.5 rounded-full font-black uppercase text-[10px] tracking-widest border-2 border-yellow-500 shadow-sm rotate-3 group-hover:rotate-6 transition-transform z-10">
+                    {item.span}
                 </div>
-                <div className="text-center py-6">
-                    <p className="font-black text-3xl text-slate-800 capitalize tracking-tight">{item.word}</p>
+
+                {/* Badge Decorativo (Icono) */}
+                <div className="absolute top-6 left-6 text-indigo-100 group-hover:text-indigo-200 transition-colors">
+                    <Sparkles size={28} />
                 </div>
+
+                {/* Palabra Principal */}
+                <div className="text-center px-4 relative z-10 mb-8">
+                    <p className="font-black text-4xl text-indigo-950 tracking-tight group-hover:scale-110 transition-transform duration-300">
+                        {item.word}
+                    </p>
+                </div>
+
+                {/* --- NUEVO BOTÓN DE PLAY (ANIMADO) --- */}
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
+                    <div className="bg-indigo-50 text-indigo-600 p-4 rounded-full group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 shadow-sm group-hover:shadow-lg group-hover:scale-110">
+                        <Volume2 size={24} strokeWidth={3} className="group-hover:animate-pulse" />
+                    </div>
+                </div>
+
+                {/* Fondo Decorativo Sutil */}
+                <div className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
         );
     }
 
-    // --- RENDERIZADO MODO TEST (Input de escritura) ---
+    // --- MODO TEST (Sin cambios, ya estaba bien) ---
     return (
         <div className={`
-            border-4 rounded-[2rem] p-6 shadow-lg transition-all relative overflow-hidden
-            ${status === 'correct' ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-slate-200'}
-            ${status === 'incorrect' ? 'border-rose-300' : ''}
+            relative rounded-[2.5rem] shadow-[8px_8px_0px_0px_rgba(0,0,0,0.15)] transition-all overflow-hidden flex flex-col h-72 border-4
+            ${status === 'correct' ? 'bg-emerald-50 border-emerald-500 shadow-[8px_8px_0px_0px_#10b981]' : ''}
+            ${status === 'incorrect' ? 'bg-rose-50 border-rose-500 shadow-[8px_8px_0px_0px_#f43f5e]' : ''}
+            ${status === 'idle' ? 'bg-white border-fuchsia-600 shadow-[8px_8px_0px_0px_#c026d3]' : ''}
         `}>
-            {/* Header: Palabra en Español */}
-            <div className="flex justify-between items-center mb-6 border-b-2 border-slate-100 pb-4">
-                <div className="flex items-center gap-2 text-slate-400">
-                    <Keyboard size={16} />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Translate this</span>
-                </div>
+            
+            {/* Header del Test */}
+            <div className="absolute top-0 left-0 w-full p-5 flex justify-between items-center z-10">
+                <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg ${status === 'idle' ? 'bg-fuchsia-100 text-fuchsia-800' : 'bg-white/50'}`}>
+                    Translate
+                </span>
                 {status !== 'idle' && (
-                    <button onClick={() => { setStatus('idle'); setInput(''); }} className="text-slate-300 hover:text-slate-600">
-                        <RotateCcw size={16}/>
+                    <button onClick={() => { setStatus('idle'); setInput(''); }} className="text-slate-400 hover:text-slate-800 hover:rotate-180 transition-all p-1">
+                        <RotateCcw size={18}/>
                     </button>
                 )}
             </div>
 
-            {/* Palabra Objetivo (Español) */}
-            <p className="text-center font-black text-2xl text-slate-800 mb-6 capitalize italic">
-                "{item.span}"
-            </p>
+            {/* Cuerpo del Test */}
+            <div className="flex-grow flex flex-col items-center justify-center p-6 mt-4">
+                
+                {/* Pregunta */}
+                <p className="text-2xl font-black text-slate-700 mb-6 bg-slate-100 px-4 py-1 rounded-xl border-2 border-slate-200">
+                    "{item.span}"
+                </p>
 
-            {/* Zona de Input */}
-            <div className="relative">
-                {status === 'correct' ? (
-                    // Estado Correcto
-                    <div className="text-center animate-in zoom-in duration-300">
-                         <div className="inline-flex items-center gap-2 bg-emerald-200 text-emerald-900 px-4 py-2 rounded-xl font-black uppercase text-sm mb-2">
-                             <CheckCircle size={18}/> Correct
-                         </div>
-                         <p className="text-emerald-700 font-bold text-lg capitalize">{item.word}</p>
-                    </div>
-                ) : (
-                    // Input de Texto
-                    <>
-                        <input 
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            className={`
-                                w-full bg-slate-50 border-b-4 text-center py-3 font-bold text-lg outline-none uppercase placeholder:normal-case transition-colors
-                                ${status === 'incorrect' 
-                                    ? 'border-rose-400 text-rose-700 bg-rose-50' 
-                                    : 'border-slate-300 focus:border-indigo-600 text-slate-800 focus:bg-white'}
-                            `}
-                            placeholder="Type in English..."
-                            autoComplete="off"
-                        />
-                        
-                        {/* Botón Flotante Check */}
-                        <button 
-                            onClick={handleCheck}
-                            className="absolute right-2 top-2 p-2 text-slate-300 hover:text-indigo-600 transition-colors"
-                        >
-                            <CheckCircle size={20} />
-                        </button>
-
-                        {/* Mensaje de error */}
-                        {status === 'incorrect' && (
-                            <div className="mt-4 text-center animate-in slide-in-from-top-2">
-                                <p className="text-xs font-black text-rose-500 uppercase mb-1">Incorrect. Answer:</p>
-                                <p className="text-slate-800 font-bold">{item.word}</p>
+                {/* Zona de Respuesta */}
+                <div className="w-full relative">
+                    {status === 'correct' ? (
+                        <div className="text-center animate-in zoom-in duration-300">
+                             <p className="text-emerald-600 font-black text-3xl capitalize drop-shadow-sm">{item.word}</p>
+                             <div className="text-emerald-400 text-xs font-bold uppercase tracking-widest mt-1">Correct!</div>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="relative group">
+                                <input 
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    className={`
+                                        w-full bg-transparent border-b-4 text-center py-2 font-black text-xl outline-none uppercase placeholder:normal-case transition-all
+                                        ${status === 'incorrect' 
+                                            ? 'border-rose-400 text-rose-800 placeholder:text-rose-300' 
+                                            : 'border-slate-200 focus:border-fuchsia-500 text-slate-800 placeholder:text-slate-300'}
+                                    `}
+                                    placeholder="..."
+                                    autoComplete="off"
+                                />
+                                <button 
+                                    onClick={handleCheck}
+                                    className="absolute right-2 top-2 text-slate-300 hover:text-fuchsia-600 transition-colors"
+                                >
+                                    <ArrowRight size={24} />
+                                </button>
                             </div>
-                        )}
-                    </>
-                )}
+
+                            {/* Mensaje de Error */}
+                            {status === 'incorrect' && (
+                                <div className="absolute -bottom-10 left-0 w-full text-center animate-in fade-in slide-in-from-top-1">
+                                    <p className="text-xs font-bold text-rose-500 bg-white/80 inline-block px-2 rounded">
+                                        Ans: {item.word}
+                                    </p>
+                                </div>
+                            )}
+                        </>
+                    )}
+                </div>
             </div>
         </div>
     );

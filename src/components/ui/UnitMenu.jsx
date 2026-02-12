@@ -3,7 +3,6 @@ import { BookOpen, Sofa, Headphones, FileText, PenTool, ArrowLeft, Lightbulb } f
 
 export const UnitMenu = ({ unit, onSelectTab, onBack }) => {
   
-  // Botones estándar
   const menuItems = [
     { id: 'grammar',   label: 'Grammar Lab',   icon: <BookOpen size={32}/>,   color: 'bg-blue-600',   border: 'border-blue-800' },
     { id: 'vocab',     label: 'Vocabulary',    icon: <Sofa size={32}/>,       color: 'bg-pink-600',   border: 'border-pink-800' },
@@ -12,20 +11,20 @@ export const UnitMenu = ({ unit, onSelectTab, onBack }) => {
     { id: 'writing',   label: 'Project',       icon: <PenTool size={32}/>,    color: 'bg-orange-600', border: 'border-orange-800' },
   ];
 
-  // Si la unidad tiene 'activeRules', añadimos el botón BONUS
   if (unit.activeRules) {
     menuItems.push({
-        id: 'discovery', // Nuevo ID
+        id: 'discovery', 
         label: 'Discovery', 
         icon: <Lightbulb size={32}/>, 
         color: 'bg-amber-500', 
         border: 'border-amber-700',
-        special: true // Marca para estilo diferente
+        special: true 
     });
   }
 
   return (
-    <div className="max-w-5xl mx-auto pt-10 px-6 animate-in zoom-in-95 duration-500 pb-20">
+    // CAMBIO AQUI: max-w-7xl
+    <div className="max-w-7xl mx-auto pt-10 px-6 animate-in zoom-in-95 duration-500 pb-20">
       
       <div className="flex flex-col items-center mb-12 text-center">
         <button onClick={onBack} className="self-start mb-6 flex items-center gap-2 font-black text-slate-400 uppercase tracking-widest text-xs hover:text-slate-900 transition-colors">
@@ -50,15 +49,11 @@ export const UnitMenu = ({ unit, onSelectTab, onBack }) => {
                 ${item.special ? 'border-amber-400 ring-4 ring-amber-100' : 'border-slate-200'}
             `}
           >
-            {/* Efecto especial para el Bonus */}
             {item.special && <div className="absolute top-4 right-4 bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-200">Bonus</div>}
-
             <div className={`absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-slate-200 to-transparent opacity-0 group-hover:opacity-100 transition-opacity`} />
-            
             <div className={`${item.color} text-white p-6 rounded-2xl shadow-lg border-b-8 ${item.border} group-hover:scale-110 transition-transform`}>
                 {item.icon}
             </div>
-            
             <span className="font-black text-2xl uppercase italic tracking-tighter text-slate-800 group-hover:text-slate-900">
                 {item.label}
             </span>

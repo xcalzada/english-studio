@@ -1,5 +1,11 @@
 Nota Compilar: npm run dev
 
+Commit
+>> git add .
+>> git commit -m "Cambio estructurado"
+>> git push origin main
+
+
 Hola Gemini. Quiero añadir una nueva lección a mi archivo "src/data/units.js".
 
 Tema: [EJ: El más conveniente con el topico de Gramática]
@@ -22,3 +28,169 @@ El "listening" debe tener un texto descriptivo, una lista de 'correctItems' y 8 
 El "reading" debe tener un texto de 5-6 líneas y 6 preguntas de comprensión.
 
 Dame solo el bloque de código para copiar y añadir a mi objeto UNITS_DATA.
+
+
+
+
+
+
+
+
+
+Para que la integración sea **perfecta (Copy-Paste)** y el estilo visual **idéntico**, el prompt debe ser extremadamente técnico y restrictivo. Si le das libertad a una IA, inventará sus propias sombras o grosores de borde y romperá tu diseño.
+
+He preparado **3 Bloques de Prompts Maestros**.
+
+---
+
+### BLOQUE 1: INGENIERÍA DE CONTEXTO (El "Cerebro")
+
+*Copia y pega esto **SIEMPRE** al inicio de cualquier chat con ChatGPT/Claude/Gemini para que entienda tu App.*
+
+```markdown
+ACTÚA COMO: Senior React Frontend Developer experto en Tailwind CSS y Diseño UI "Neubrutalismo Pro".
+
+ESTOY CONSTRUYENDO: Una App educativa de inglés (EnglishStudio) sin dependencias de UI externas.
+STACK: React + Vite + Tailwind CSS + Lucide React.
+
+REGLAS DE DISEÑO (ESTRICTO - NO MODIFICAR):
+1.  **Contenedores:** Siempre `bg-white` (o colores pastel muy suaves), `border-4` (4px), `border-slate-900` (o color oscuro saturado), `rounded-[2.5rem]` (muy redondeado).
+2.  **Sombras:** SIEMPRE Duras y Sólidas. Formato exacto: `shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]` o similar con color hex. NUNCA usar sombras difuminadas (`shadow-lg` estándar de Tailwind NO).
+3.  **Tipografía:**
+    - Títulos: `font-black uppercase italic tracking-tighter` (Inter/Sans).
+    - Cuerpo: `font-bold` o `font-medium`.
+    - Lectura: `font-serif` (solo para textos largos).
+4.  **Botones:** Deben parecer físicos.
+    - Normal: `border-b-4 active:border-b-0 active:translate-y-1 transition-all`.
+    - Hover: `hover:-translate-y-1 hover:shadow-[...]`.
+5.  **Colores:**
+    - Estructura: Slate-900 (Negro azulado).
+    - Acentos: Indigo-600, Fuchsia-600, Amber-400 (Amarillo eléctrico), Emerald-500.
+    - Fondos: Slate-50, Indigo-50, Rose-50 (Pasteles).
+
+REGLAS DE CÓDIGO:
+1.  Usa `lucide-react` para iconos.
+2.  No uses librerías externas (Framer Motion, Styled Components). Usa clases nativas de Tailwind (`transition-all duration-300`, `animate-in zoom-in`, etc.).
+3.  El componente recibe props: `({ data })`.
+
+Si entiendes este Sistema de Diseño, responde solo: "SISTEMA CARGADO: LISTO PARA PROGRAMAR".
+
+```
+
+---
+
+### BLOQUE 2: GENERADOR DE DATOS (JSON de Lecciones)
+
+*Usa esto para pedir nuevas lecciones. Garantiza que la estructura funcione con tus componentes `ActiveGrammarLab` y `VocabLab`.*
+
+```markdown
+Genera un objeto JSON exportable para una nueva unidad de aprendizaje.
+Sigue ESTRICTAMENTE este esquema para que no rompa mi código:
+
+TEMA: [AQUÍ TU TEMA, EJ: PRESENTE CONTINUO]
+CONTEXTO: [AQUÍ EL CONTEXTO, EJ: ACCIONES EN EL GIMNASIO]
+
+Estructura requerida (`src/data/units/nombreArchivo.js`):
+
+export const [camelCaseName]Unit = {
+  id: 'tema-contexto',
+  title: 'Título Épico',
+  grammarTitle: 'Título Gramatical Corto',
+  description: 'Descripción breve.',
+
+  // SECCIÓN 1: DESCUBRIMIENTO (Para ActiveGrammarLab)
+  // El usuario rellena huecos para deducir la regla.
+  activeRules: {
+    title: "Discovery Workshop",
+    description: "Deduce la regla.",
+    steps: [
+      { 
+        id: 'rule1', 
+        text: "Frase con un hueco: ______ (hint).", 
+        ans: "respuesta exacta (lowercase)", 
+        hint: "Pista útil" 
+      }
+      // ... 3 o 4 reglas máximo
+    ]
+  },
+
+  // SECCIÓN 2: PRÁCTICA ACTIVA (Para ActiveGrammarLab)
+  // Preguntas de rellenar huecos.
+  activeQuiz: [
+    { 
+      id: 'aq1', 
+      q: "Frase con hueco/s ______ .", 
+      ans: "respuesta", // Si hay varios huecos, separar por comas: "is, running"
+      explanation: "Breve explicación del por qué." 
+    }
+    // ... 10 preguntas variadas
+  ],
+
+  // SECCIÓN 3: VOCABULARIO (Para VocabLab)
+  vocabulary: [
+    { id: 'v1', word: 'word', span: 'traducción' }
+    // ... 8-12 palabras
+  ],
+
+  // SECCIÓN 4: READING (Para ReadingRoom)
+  reading: {
+    title: "Título del Texto",
+    text: "Texto de 2-3 párrafos interesantes usando la gramática.",
+    questions: [
+      { id: 'r1', q: "Pregunta de comprensión?", ans: "Respuesta esperada" }
+    ]
+  },
+
+  // SECCIÓN 5: LISTENING (Para AudioLab)
+  listening: {
+    text: "Texto completo que será leído por la API.",
+    correctItems: ['Item1', 'Item2', 'Item3'], // Palabras clave que aparecen
+    options: ['Item1', 'Item2', 'Item3', 'Distractor1', 'Distractor2'] // Mezcla
+  }
+};
+
+```
+
+---
+
+### BLOQUE 3: GENERADOR DE NUEVOS COMPONENTES (React)
+
+*Usa esto si quieres un juego nuevo (ej: Ordenar Frases, Parejas, Video).*
+
+```markdown
+Crea un NUEVO componente React llamado `[NOMBRE COMPONENTE]`.
+
+OBJETIVO FUNCIONAL:
+[DESCRIBE LA MECÁNICA. EJ: Aparecen palabras desordenadas y el usuario debe hacer clic en orden para formar la frase correcta.]
+
+REQUISITOS TÉCNICOS ESTRICTOS:
+1.  **Layout:** Usa un contenedor principal `div` con `border-4 border-slate-900 rounded-[2.5rem] shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]`.
+2.  **Interactividad:** Usa `useState` para controlar el estado del juego (`idle`, `correct`, `incorrect`).
+3.  **Feedback Visual:**
+    - Si acierta: Fondo `bg-emerald-50`, Borde `border-emerald-600`, Texto `text-emerald-900`.
+    - Si falla: Fondo `bg-rose-50`, Borde `border-rose-600`, Animación de vibración si es posible.
+4.  **Botones:** Usa botones grandes, redondeados, con iconos de `lucide-react`.
+5.  **Sin dependencias:** Todo CSS debe ser Tailwind estándar.
+
+MUESTRA SOLO EL CÓDIGO JSX DEL COMPONENTE.
+
+```
+
+---
+
+### ✅ Checklist para validar lo que te entregue la IA
+
+Antes de copiar y pegar el código que te genere la IA, revisa estos 3 puntos. Si falla uno, dile "Corrige esto":
+
+1. **¿Las sombras son `shadow-lg` o `shadow-[...]`?**
+* ❌ Mal: `shadow-lg` (se verá borroso).
+* ✅ Bien: `shadow-[8px_8px_0px_0px_#000]`.
+
+
+2. **¿Los bordes son `border` o `border-4`?**
+* ❌ Mal: `border` (muy fino).
+* ✅ Bien: `border-4 border-slate-900`.
+
+
+3. **¿Usa `data.activeRules` o inventó nombres nuevos?**
+* El JSON debe coincidir exactamente con las props que esperan tus componentes (`activeQuiz`, `vocabulary`, etc).
