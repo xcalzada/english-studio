@@ -36,51 +36,39 @@ export const recordsUnit = {
     ]
   },
 
-  // --- QUIZ ACTIVO (AHORA INCLUYE 'THE' EN LA RESPUESTA) ---
+// --- QUIZ ACTIVO (MEZCLADO + IRREGULARES COMPLETOS) ---
   activeQuiz: [
-    // SHORT ADJECTIVES
-    { id: 'aq1', q: "The Nile is ______ (long) river in the world.", ans: "the longest", explanation: "Don't forget 'the' + -est." },
-    { id: 'aq2', q: "Everest is ______ (high) mountain on Earth.", ans: "the highest", explanation: "Superlative requires 'the'." },
-    { id: 'aq3', q: "The cheetah is ______ (fast) land animal.", ans: "the fastest", explanation: "Article 'the' + fast + est." },
-    { id: 'aq4', q: "Winter is usually ______ (cold) season.", ans: "the coldest", explanation: "Don't forget the article." },
-    { id: 'aq5', q: "My grandfather is ______ (old) person in the family.", ans: "the oldest", explanation: "The + old + est." },
-    
-    // CVC RULES (Double Consonant)
-    { id: 'aq6', q: "Russia is ______ (big) country by area.", ans: "the biggest", explanation: "Double G + the." },
-    { id: 'aq7', q: "Summer is ______ (hot) time of the year.", ans: "the hottest", explanation: "Double T + the." },
-    { id: 'aq8', q: "This is ______ (sad) movie I have ever seen.", ans: "the saddest", explanation: "Double D + the." },
-    { id: 'aq9', q: "Yesterday was ______ (wet) day of the month.", ans: "the wettest", explanation: "Double T + the." },
-    { id: 'aq10', q: "The blue whale is ______ (fat) animal.", ans: "the fattest", explanation: "Double T + the." },
-
-    // ADJECTIVES ENDING IN 'Y' (y -> iest)
-    { id: 'aq11', q: "The Atacama Desert is ______ (dry) place.", ans: "the driest", explanation: "The + y becomes iest." },
-    { id: 'aq12', q: "This is ______ (heavy) box in the room.", ans: "the heaviest", explanation: "The + y becomes iest." },
-    { id: 'aq13', q: "He is ______ (happy) baby in the world.", ans: "the happiest", explanation: "The + y becomes iest." },
-    { id: 'aq14', q: "That was ______ (easy) exam ever.", ans: "the easiest", explanation: "The + y becomes iest." },
-    { id: 'aq15', q: "Who is ______ (funny) actor?", ans: "the funniest", explanation: "The + y becomes iest." },
-
-    // LONG ADJECTIVES (The most)
-    { id: 'aq16', q: "Diamonds are ______ (expensive) gems.", ans: "the most expensive", explanation: "Long adjective: use 'the most'." },
-    { id: 'aq17', q: "This puzzle is ______ (difficult) one.", ans: "the most difficult", explanation: "Long adjective." },
-    { id: 'aq18', q: "She is ______ (intelligent) student.", ans: "the most intelligent", explanation: "Long adjective." },
-    { id: 'aq19', q: "Football is ______ (popular) sport.", ans: "the most popular", explanation: "Long adjective." },
-    { id: 'aq20', q: "Paris is ______ (beautiful) city.", ans: "the most beautiful", explanation: "Long adjective." },
-    { id: 'aq21', q: "This is ______ (dangerous) road.", ans: "the most dangerous", explanation: "Long adjective." },
-    { id: 'aq22', q: "It is ______ (interesting) book.", ans: "the most interesting", explanation: "Long adjective." },
-    { id: 'aq23', q: "Technology is ______ (important) tool.", ans: "the most important", explanation: "Long adjective." },
-
-    // IRREGULARS (Good/Bad/Far)
-    { id: 'aq24', q: "This pizza is ______ (good) in town!", ans: "the best", explanation: "Irregular: Good -> The best." },
-    { id: 'aq25', q: "That was ______ (bad) mistake of my life.", ans: "the worst", explanation: "Irregular: Bad -> The worst." },
-    { id: 'aq26', q: "Neptune is ______ (far) planet from the Sun.", ans: "the farthest", explanation: "Irregular: Far -> The farthest." },
-    { id: 'aq27', q: "Messi is ______ (good) player in history.", ans: "the best", explanation: "Irregular." },
-    { id: 'aq28', q: "Monday is ______ (bad) day for me.", ans: "the worst", explanation: "Irregular." },
-
-    // MIXED BAG
-    { id: 'aq29', q: "The giraffe has ______ (long) neck.", ans: "the longest", explanation: "Short adjective." },
-    { id: 'aq30', q: "This is ______ (exciting) game!", ans: "the most exciting", explanation: "Long adjective." }
+    { id: 'aq1', q: "The cheetah is ______ (fast) animal on land.", ans: "the fastest", explanation: "Short adjective: add -est." },
+    { id: 'aq2', q: "This is ______ (good) pizza I have ever tasted!", ans: "the best", explanation: "Irregular: Good → The best." },
+    { id: 'aq3', q: "Physics is ______ (difficult) subject for me.", ans: "the most difficult", explanation: "Long adjective: use 'the most'." },
+    { id: 'aq4', q: "Don't worry, this is ______ (little) of our problems.", ans: "the least", explanation: "Irregular: Little → The least." },
+    { id: 'aq5', q: "Russia is ______ (big) country by area.", ans: "the biggest", explanation: "CVC Rule: double the 'g'." },
+    { id: 'aq6', q: "That was ______ (bad) movie in history.", ans: "the worst", explanation: "Irregular: Bad → The worst." },
+    { id: 'aq7', q: "She has ______ (many) followers on Instagram.", ans: "the most", explanation: "Irregular: Many/Much → The most." },
+    { id: 'aq8', q: "Today is ______ (happy) day of my life.", ans: "the happiest", explanation: "Ends in Y: change to -iest." },
+    { id: 'aq9', q: "Neptune is ______ (far) planet from the Sun.", ans: "the farthest", explanation: "Irregular: Far → The farthest." },
+    { id: 'aq10', q: "Mount Everest is ______ (high) mountain.", ans: "the highest", explanation: "Short adjective: add -est." },
+    { id: 'aq11', q: "Who is ______ (popular) singer right now?", ans: "the most popular", explanation: "Long adjective: use 'the most'." },
+    { id: 'aq12', q: "This soup has ______ (much) salt of all.", ans: "the most", explanation: "Irregular: Much → The most." },
+    { id: 'aq13', q: "Summer is ______ (hot) season.", ans: "the hottest", explanation: "CVC Rule: double the 't'." },
+    { id: 'aq14', q: "My result was ______ (bad) than yours? No, it was ______ (bad) in the class.", ans: "the worst", explanation: "Irregular: Bad → The worst." },
+    { id: 'aq15', q: "This is ______ (interesting) book in the library.", ans: "the most interesting", explanation: "Long adjective: use 'the most'." },
+    { id: 'aq16', q: "Which house is ______ (far) from the school?", ans: "the farthest", explanation: "Irregular: Far → The farthest (or furthest)." },
+    { id: 'aq17', q: "The Atacama is ______ (dry) place on Earth.", ans: "the driest", explanation: "Ends in Y: change to -iest." },
+    { id: 'aq18', q: "Messi is ______ (good) player in the world.", ans: "the best", explanation: "Irregular: Good → The best." },
+    { id: 'aq19', q: "This option costs ______ (little) money.", ans: "the least", explanation: "Irregular: Little → The least." },
+    { id: 'aq20', q: "The blue whale is ______ (heavy) animal.", ans: "the heaviest", explanation: "Ends in Y: change to -iest." },
+    { id: 'aq21', q: "Yesterday was ______ (sad) day for the team.", ans: "the saddest", explanation: "CVC Rule: double the 'd'." },
+    { id: 'aq22', q: "Diamonds are ______ (expensive) gems.", ans: "the most expensive", explanation: "Long adjective: use 'the most'." },
+    { id: 'aq23', q: "Who drinks ______ (little) water here?", ans: "the least", explanation: "Irregular: Little → The least." },
+    { id: 'aq24', q: "It is ______ (safe) way to travel.", ans: "the safest", explanation: "Ends in E: just add -st." },
+    { id: 'aq25', q: "Which country has ______ (many) people?", ans: "the most", explanation: "Irregular: Many → The most." },
+    { id: 'aq26', q: "This is ______ (far) I have ever traveled.", ans: "the farthest", explanation: "Irregular: Far → The farthest." },
+    { id: 'aq27', q: "He is ______ (funny) comedian.", ans: "the funniest", explanation: "Ends in Y: change to -iest." },
+    { id: 'aq28', q: "That is ______ (ugly) building in the city.", ans: "the ugliest", explanation: "Ends in Y: change to -iest." },
+    { id: 'aq29', q: "Winter is ______ (cold) time of year.", ans: "the coldest", explanation: "Short adjective: add -est." },
+    { id: 'aq30', q: "This is ______ (dangerous) road in the country.", ans: "the most dangerous", explanation: "Long adjective: use 'the most'." }
   ],
-
   // --- SECCIONES CLÁSICAS (NO TOCAR) ---
   theoryBlock: {
     sectionA: { title: "A) Short Adjectives", content: ["1 Syllable: Adj + <span class='font-black underline text-emerald-700'>-est</span>", "Example: Tall → The <span class='font-black'>tallest</span>"] },
