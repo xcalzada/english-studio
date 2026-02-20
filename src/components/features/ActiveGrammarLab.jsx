@@ -1,359 +1,231 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  CheckCircle, XCircle, PenTool, Hammer, Unlock, Lock,
-  Eye, ArrowRight, PlayCircle 
-} from 'lucide-react';
+import React, { useState } from 'react';
+import { Hammer, PenTool, CheckCircle, XCircle, Unlock, Lock, ArrowRight, Star, RotateCcw, BookOpen, Trophy, ChevronRight, Bookmark, AlertTriangle, Flame } from 'lucide-react';
 
-const ActiveGrammarLab = ({ data }) => {
-  // --- ESTADOS FASE 1 (REGLAS) ---
-  const [ruleAnswers, setRuleAnswers] = useState({});
-  const [ruleStatus, setRuleStatus] = useState({}); // { id: 'correct' | 'incorrect' | 'revealed' }
-  const [isPracticeUnlocked, setIsPracticeUnlocked] = useState(false);
+const normalize = v => v?.toString().trim().toLowerCase() || '';
 
-  // --- ESTADOS FASE 2 (PRÁCTICA) ---
-  const [practiceAnswers, setPracticeAnswers] = useState({});
-  const [checkedPracticeIds, setCheckedPracticeIds] = useState([]);
-  const [revealedPracticeIds, setRevealedPracticeIds] = useState([]); // Para revelar en la práctica también
-
-  // --- LÓGICA DE VALIDACIÓN ---
-  const normalize = (txt) => txt?.toString().trim().toLowerCase() || "";
-
-  // 1. CHEQUEAR UNA REGLA INDIVIDUAL
-  const handleCheckRule = (step) => {
-    const userAns = normalize(ruleAnswers[step.id]);
-    const correctAns = normalize(step.ans);
-
-    if (userAns === correctAns) {
-      setRuleStatus(prev => ({ ...prev, [step.id]: 'correct' }));
-    } else {
-      setRuleStatus(prev => ({ ...prev, [step.id]: 'incorrect' }));
-    }
-  };
-
-  // 2. REVELAR UNA REGLA (SOLUCIÓN)
-  const handleRevealRule = (step) => {
-    setRuleAnswers(prev => ({ ...prev, [step.id]: step.ans })); // Rellena el input
-    setRuleStatus(prev => ({ ...prev, [step.id]: 'revealed' })); // Marca como revelado
-  };
-
-  // 3. EFECTO: DESBLOQUEAR PRÁCTICA SI TODO ESTÁ HECHO
-  useEffect(() => {
-    const totalRules = data.activeRules?.steps.length || 0;
-    // Contamos cuántas reglas están en estado 'correct' o 'revealed'
-    const completedRules = data.activeRules?.steps.filter(step => 
-      ruleStatus[step.id] === 'correct' || ruleStatus[step.id] === 'revealed'
-    ).length;
-
-    if (completedRules === totalRules && totalRules > 0) {
-      setIsPracticeUnlocked(true);
-    }
-  }, [ruleStatus, data.activeRules]);
-
-
-  // --- LÓGICA PRÁCTICA (Fase 2) ---
-  const handlePracticeInput = (itemId, boxIndex, val) => {
-    setPracticeAnswers(prev => ({
-      ...prev,
-      [itemId]: { ...(prev[itemId] || {}), [boxIndex]: val }
-    }));
-  };
-
-  const checkPracticeItem = (item) => {
-    const itemState = practiceAnswers[item.id] || {};
-    const gapCount = item.q.split('______').length - 1;
-    const correctAnswers = item.ans.includes(',') 
-        ? item.ans.split(',').map(s => s.trim().toLowerCase()) 
-        : [item.ans.trim().toLowerCase()];
-
-    for (let i = 0; i < gapCount; i++) {
-        const userVal = normalize(itemState[i]);
-        if (userVal === "") return false;
-        if (correctAnswers.length === gapCount) {
-            if (userVal !== correctAnswers[i]) return false;
-        } else {
-            if (!correctAnswers.includes(userVal)) return false;
-        }
-    }
-    return true;
-  };
-
-  // Función para revelar respuesta en la práctica si se atascan
-  const revealPracticeItem = (item) => {
-    const correctParts = item.ans.includes(',') ? item.ans.split(',') : [item.ans];
-    // Rellenamos todos los huecos
-    const newAnswers = {};
-    correctParts.forEach((part, idx) => {
-        newAnswers[idx] = part.trim();
-    });
-    
-    setPracticeAnswers(prev => ({ ...prev, [item.id]: newAnswers }));
-    setCheckedPracticeIds(prev => [...prev, item.id]); // Lo marcamos como chequeado
-    setRevealedPracticeIds(prev => [...prev, item.id]); // Lo marcamos como revelado (trampa)
-  };
-
-
-  const quizData = data.activeQuiz || data.theoryQuiz;
+/* ── Fase 1: Tarjetas de reglas ──────────────────────────────────────── */
+const RuleCards = ({theory, onComplete}) => {
+  const [understood, setUnderstood] = useState({});
+  const blocks  = Object.entries(theory||{});
+  const done    = Object.values(understood).filter(Boolean).length;
+  const allDone = blocks.length>0 && done===blocks.length;
 
   return (
-    <div className="space-y-12 animate-in fade-in duration-500 pb-20">
-      
-      {/* --- FASE 1: BLUEPRINT (REGLAS) - Estilo Reading --- */}
-      <section className="bg-[#fffdf5] text-slate-900 rounded-[2.5rem] p-6 md:p-8 border-4 border-slate-900 shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden">
-        
-        {/* Badge Flotante (Estilo Reading) */}
-        <div className="absolute -top-1 left-10 bg-blue-600 text-white px-6 py-3 rounded-b-xl border-x-4 border-b-4 border-slate-900 font-black uppercase text-xs tracking-widest z-10">
-          Theory Workshop
-        </div>
-
-        {/* Icono de fondo decorativo */}
-        <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none text-slate-900">
-          <Hammer size={180} />
-        </div>
-
-        <div className="relative z-10 mt-8">
-          <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8 border-b-4 border-slate-200 pb-6">
-             <div className="bg-blue-600 p-3 rounded-xl rotate-3 border-4 border-slate-900 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
-               <Hammer className="text-white" size={28}/>
-             </div>
-             <div>
-               <h3 className="text-3xl font-black uppercase italic tracking-tighter text-slate-900">Build the Rules</h3>
-               <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Complete to unlock practice</p>
-             </div>
+    <div className="card-tool p-6 md:p-10 overflow-hidden">
+      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8 pb-6"
+        style={{borderBottom:'2px solid rgba(255,255,255,0.35)'}}>
+        <span className="card-title">Study the Rules</span>
+        <div className="md:ml-auto flex items-center gap-3">
+          <span className="text-xs font-black uppercase tracking-widest text-[var(--c-text)]">{done}/{blocks.length}</span>
+          <div className="flex gap-1">
+            {blocks.map(([key])=>(
+              <div key={key} className={`w-6 h-2 rounded-full transition-all ${understood[key]?'':'dot-pending'}`}
+                style={understood[key]?{background:'var(--c-main)'}:{}}/>
+            ))}
           </div>
-
-          <div className="space-y-6">
-            {data.activeRules?.steps.map((step, idx) => {
-              const status = ruleStatus[step.id] || 'idle'; // idle, correct, incorrect, revealed
-              const parts = step.text.split('______');
-              const isDone = status === 'correct' || status === 'revealed';
-
-              return (
-                <div key={step.id} className={`p-5 rounded-2xl border-2 transition-all flex flex-col gap-4
-                    ${status === 'correct' ? 'bg-emerald-900/30 border-emerald-500/50' : ''}
-                    ${status === 'revealed' ? 'bg-amber-900/30 border-amber-500/50' : ''}
-                    ${status === 'incorrect' ? 'bg-rose-900/20 border-rose-500/50' : ''}
-                    ${status === 'idle' ? 'bg-slate-800/50 border-slate-700' : ''}
-                `}>
-                   
-                   <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-                       {/* Número (Estilo Reading) */}
-                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm border-2 shrink-0 
-                           ${isDone ? 'bg-slate-100 border-slate-900 text-slate-500' : 'bg-blue-600 text-white border-blue-700'}`}>
-                         {idx + 1}
-                       </div>
-                       
-                       {/* Texto e Input (Estilo Reading) */}
-                       <div className="font-bold text-lg leading-relaxed flex-grow text-slate-800">
-                          {parts.map((part, pIdx) => (
-                            <React.Fragment key={pIdx}>
-                              <span dangerouslySetInnerHTML={{__html: part}} />
-                              {pIdx < parts.length - 1 && (
-                                <input 
-                                  disabled={isDone}
-                                  value={ruleAnswers[step.id] || ''}
-                                  onChange={(e) => {
-                                      setRuleAnswers({...ruleAnswers, [step.id]: e.target.value});
-                                      setRuleStatus({...ruleStatus, [step.id]: 'idle'}); // Reset si escribe de nuevo
-                                  }}
-                                  className={`
-                                    mx-2 border-4 px-3 py-2 text-center font-black uppercase w-32 rounded-xl outline-none transition-all bg-white
-                                    ${status === 'correct' ? 'border-emerald-500 text-emerald-900 shadow-[4px_4px_0px_0px_#10b981]' : ''}
-                                    ${status === 'revealed' ? 'border-amber-500 text-amber-900 shadow-[4px_4px_0px_0px_#f59e0b]' : ''}
-                                    ${status === 'incorrect' ? 'border-rose-500 text-rose-900 shadow-[4px_4px_0px_0px_#f43f5e]' : ''}
-                                    ${status === 'idle' ? 'border-slate-300 focus:border-blue-600 focus:shadow-[4px_4px_0px_0px_#2563eb] text-slate-900' : ''}
-                                  `}
-                                  placeholder="?"
-                                  autoComplete="off"
-                                />
-                              )}
-                            </React.Fragment>
-                          ))}
-                       </div>
-
-                        {/* Botones de Acción (Estilo Reading) */}
-                        <div className="flex items-center gap-2 shrink-0">
-                            {!isDone ? (
-                                <>
-                                    <button 
-                                        onClick={() => handleCheckRule(step)}
-                                        className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl font-black uppercase text-xs tracking-wide border-4 border-blue-700 shadow-[4px_4px_0px_0px_rgba(37,99,235,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(37,99,235,1)] active:translate-y-1 active:shadow-[0_0_0_0_rgba(37,99,235,1)] transition-all"
-                                    >
-                                        Check
-                                    </button>
-                                    <button 
-                                        onClick={() => handleRevealRule(step)}
-                                        className="bg-white border-4 border-slate-900 text-slate-700 p-2 rounded-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-[0_0_0_0_rgba(15,23,42,1)] transition-all"
-                                        title="Reveal Answer"
-                                    >
-                                        <Eye size={18}/>
-                                    </button>
-                                </>
-                            ) : (
-                                <div className={`flex items-center gap-2 font-black uppercase text-xs px-4 py-2 rounded-xl border-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] 
-                                    ${status === 'correct' ? 'bg-emerald-100 text-emerald-800 border-emerald-500' : 'bg-amber-100 text-amber-800 border-amber-500'}`}>
-                                    {status === 'correct' ? <CheckCircle size={16}/> : <Eye size={16}/>}
-                                    {status === 'correct' ? 'Correct' : 'Revealed'}
-                                </div>
-                            )}
-                        </div>
-                   </div>
-
-                   {/* Hint en caso de error (Estilo Reading) */}
-                   {status === 'incorrect' && (
-                       <div className="text-xs font-bold text-rose-700 bg-rose-100/80 p-3 rounded-xl border-l-4 border-rose-500 flex items-center gap-2 animate-in slide-in-from-top-1">
-                           <XCircle size={14}/> Hint: {step.hint}
-                       </div>
-                   )}
-                </div>
-              );
-            })}
-          </div>
-          
-          {/* Mensaje de desbloqueo (Estilo Reading) */}
-          {isPracticeUnlocked && (
-             <div className="mt-8 bg-emerald-600 text-white p-4 rounded-xl font-black uppercase text-center flex items-center justify-center gap-3 animate-in zoom-in border-4 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]">
-                <Unlock size={24}/> 
-                <span>Practice Unlocked!</span>
-                <ArrowRight size={24} className="animate-pulse"/>
-             </div>
-          )}
         </div>
-      </section>
+      </div>
 
-      {/* --- FASE 2: PRÁCTICA (Estilo Reading) --- */}
-      <section 
-        id="practice-section"
-        className={`transition-all duration-700 ${isPracticeUnlocked ? 'opacity-100 translate-y-0' : 'opacity-50 blur-sm pointer-events-none grayscale'}`}
-      >
-        <div className="relative bg-[#fffdf5] p-6 md:p-10 rounded-[2.5rem] border-4 border-slate-900 shadow-[12px_12px_0px_0px_rgba(15,23,42,1)]">
-            
-            {/* Badge Flotante (Estilo Reading) */}
-            <div className="absolute -top-1 left-10 bg-slate-900 text-white px-6 py-3 rounded-b-xl border-x-4 border-b-4 border-slate-900 font-black uppercase text-xs tracking-widest z-10">
-              Active Practice
-            </div>
-
-            {/* Icono de fondo decorativo */}
-            <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none text-slate-900">
-              <PenTool size={180} />
-            </div>
-            
-            {!isPracticeUnlocked && (
-               <div className="absolute inset-0 z-20 flex items-center justify-center">
-                  <div className="bg-slate-900 text-white p-6 rounded-3xl shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] flex flex-col items-center gap-4 border-4 border-slate-900 animate-in zoom-in">
-                     <Lock size={48} />
-                     <span className="font-black uppercase tracking-widest text-sm">Finish Theory First</span>
+      <div className="space-y-3">
+        {blocks.map(([key, block]) => {
+          const isDone = understood[key];
+          return (
+            <div key={key} className="rounded-2xl border-2 overflow-hidden transition-all"
+              style={{background:isDone?'rgba(255,255,255,0.25)':'rgba(255,255,255,0.15)',borderColor:isDone?'var(--c-main)':'rgba(255,255,255,0.4)'}}>
+              <div className="flex items-center justify-between px-5 py-4 gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center font-black text-sm border-2 shrink-0"
+                    style={isDone?{background:'var(--c-main)',borderColor:'var(--c-main)',color:'#fff'}:{background:'rgba(255,255,255,0.4)',borderColor:'rgba(255,255,255,0.5)',color:'var(--c-text)'}}>
+                    {isDone?<CheckCircle size={16}/>:<Bookmark size={14}/>}
                   </div>
-               </div>
-            )}
-
-            <div className="relative z-10 mb-10 flex items-center gap-4 border-b-4 border-slate-200 pb-6 mt-8">
-                <div className="bg-slate-900 text-white p-3 rounded-xl border-4 border-slate-900 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] rotate-3">
-                  <PenTool size={24}/>
+                  <p className="font-black text-sm text-[var(--c-dark)] uppercase tracking-wide">{block.title}</p>
                 </div>
-                <h3 className="text-2xl font-black text-slate-900 uppercase italic">Complete the Sentences</h3>
-            </div>
-
-            <div className="space-y-4">
-              {quizData.map((item, idx) => {
-                const isChecked = checkedPracticeIds.includes(item.id);
-                const isRevealed = revealedPracticeIds.includes(item.id);
-                // Si fue revelado, lo consideramos "incorrecto" visualmente (ámbar) o "revelado"
-                const isCorrect = isChecked && !isRevealed ? checkPracticeItem(item) : false;
-                
-                const sentenceParts = item.q.split('______');
-
-                return (
-                  <div key={item.id} className={`
-                      p-6 rounded-[2.5rem] border-4 transition-all
-                      ${isChecked 
-                        ? (isCorrect 
-                          ? 'bg-emerald-50 border-emerald-500 shadow-[6px_6px_0px_0px_#10b981]' 
-                          : (isRevealed 
-                            ? 'bg-amber-50 border-amber-500 shadow-[6px_6px_0px_0px_#f59e0b]' 
-                            : 'bg-rose-50 border-rose-500 shadow-[6px_6px_0px_0px_#f43f5e]')) 
-                        : 'bg-white border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]'}
-                  `}>
-                      <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-                        
-                        {/* Número (Estilo Reading) */}
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm border-2 border-slate-900 bg-white text-slate-500 shrink-0 select-none">
-                          {idx + 1}
-                        </div>
-                        
-                        <div className="flex-grow font-bold text-slate-800 text-lg leading-loose">
-                            {sentenceParts.map((part, pIdx) => (
-                              <React.Fragment key={pIdx}>
-                                <span dangerouslySetInnerHTML={{__html: part}} />
-                                {pIdx < sentenceParts.length - 1 && (
-                                  <input 
-                                    disabled={isChecked}
-                                    value={practiceAnswers[item.id]?.[pIdx] || ''} 
-                                    className={`
-                                        mx-2 border-4 px-3 py-2 bg-white text-center focus:outline-none font-black uppercase w-32 rounded-xl transition-all
-                                        ${isChecked 
-                                            ? (isCorrect 
-                                              ? 'border-emerald-500 text-emerald-900 shadow-[4px_4px_0px_0px_#10b981]' 
-                                              : (isRevealed 
-                                                ? 'border-amber-500 text-amber-900 shadow-[4px_4px_0px_0px_#f59e0b]' 
-                                                : 'border-rose-500 text-rose-900 shadow-[4px_4px_0px_0px_#f43f5e]'))
-                                            : 'border-slate-300 focus:border-blue-600 focus:shadow-[4px_4px_0px_0px_#2563eb] text-blue-900'
-                                        }
-                                    `} 
-                                    placeholder="?"
-                                    autoComplete="off"
-                                    onChange={(e) => handlePracticeInput(item.id, pIdx, e.target.value)}
-                                  />
-                                )}
-                              </React.Fragment>
-                            ))}
-                        </div>
-
-                        <div className="shrink-0 flex items-center gap-2">
-                            {!isChecked ? (
-                                <>
-                                    <button 
-                                        onClick={() => setCheckedPracticeIds([...checkedPracticeIds, item.id])} 
-                                        className="bg-slate-900 text-white border-4 border-slate-900 px-6 py-2 rounded-xl font-black uppercase text-xs shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-[0_0_0_0_rgba(15,23,42,1)] transition-all"
-                                    >
-                                        CHECK
-                                    </button>
-                                </>
-                            ) : (
-                                <div className="flex flex-col items-end gap-2">
-                                    <div className={`flex items-center gap-2 font-black uppercase text-xs px-4 py-2 rounded-xl border-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] 
-                                        ${isCorrect ? 'bg-emerald-100 text-emerald-800 border-emerald-500' : (isRevealed ? 'bg-amber-100 text-amber-800 border-amber-500' : 'bg-rose-100 text-rose-800 border-rose-500')}`}>
-                                        {isCorrect ? <CheckCircle size={16}/> : (isRevealed ? <Eye size={16}/> : <XCircle size={16}/>)} 
-                                        {isCorrect ? 'Correct' : (isRevealed ? 'Revealed' : 'Error')}
-                                    </div>
-                                    
-                                    {/* Botón de ayuda si fallaron (Estilo Reading) */}
-                                    {!isCorrect && !isRevealed && (
-                                        <button 
-                                            onClick={() => revealPracticeItem(item)}
-                                            className="text-[10px] font-black uppercase text-slate-500 hover:text-amber-600 flex items-center gap-1 bg-white px-2 py-1 rounded-lg border-2 border-slate-300 hover:border-amber-500 transition-all"
-                                        >
-                                            <Eye size={12}/> Show Answer
-                                        </button>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                      </div>
-                      
-                      {/* Feedback de respuesta */}
-                      {(isChecked && !isCorrect && !isRevealed) && (
-                         <div className="mt-3 pl-8 text-xs font-bold text-rose-600 flex gap-2 animate-in slide-in-from-top-1">
-                             <span>Try again or click 'Show Answer'</span>
-                         </div>
-                      )}
+                <button onClick={()=>setUnderstood(p=>({...p,[key]:!p[key]}))}
+                  className="shrink-0 btn-ghost text-[11px]" style={isDone?{background:'var(--c-soft)',borderColor:'var(--c-main)',color:'var(--c-main)'}:{}}>
+                  {isDone?'✓ Got it':'Got it!'}
+                </button>
+              </div>
+              <div className={`px-5 pb-4 space-y-2 transition-all ${isDone?'opacity-40':''}`}>
+                {block.content.map((line,i)=>(
+                  <div key={i} className="text-sm text-[var(--text-secondary)] px-4 py-2.5 rounded-xl flex gap-3 leading-relaxed"
+                    style={{background:'rgba(255,255,255,0.40)',border:'1.5px solid rgba(255,255,255,0.5)'}}>
+                    <span className="text-[var(--c-main)] shrink-0 mt-0.5">
+                      {line.includes('❌')?<AlertTriangle size={14}/>:<ChevronRight size={14}/>}
+                    </span>
+                    <span dangerouslySetInnerHTML={{__html:line}}/>
                   </div>
-                );
-              })}
+                ))}
+              </div>
             </div>
-        </div>
-      </section>
+          );
+        })}
+      </div>
+
+      {allDone&&(
+        <button onClick={onComplete} className="btn-tool w-full mt-8 flex items-center justify-center gap-3 py-4 text-sm">
+          <Unlock size={20}/> Start Practice <ArrowRight size={20} className="animate-pulse"/>
+        </button>
+      )}
     </div>
   );
 };
 
+/* ── Fase 2: Práctica fill-in ────────────────────────────────────────── */
+const FillPractice = ({quiz}) => {
+  const [answers,   setAnswers]  = useState({});
+  const [statuses,  setStatuses] = useState({});
+  const [streak,    setStreak]   = useState(0);
+  const [maxStreak, setMaxStreak]= useState(0);
+  const [score,     setScore]    = useState(0);
+
+  const isItemCorrect = item => {
+    const state = answers[item.id]||{};
+    const gaps  = item.q.split('______').length-1;
+    const list  = item.ans.includes(',')?item.ans.split(',').map(s=>s.trim().toLowerCase()):[item.ans.trim().toLowerCase()];
+    for (let i=0;i<gaps;i++) {
+      const v=normalize(state[i]); if(!v)return false;
+      if(list.length===gaps){if(v!==list[i])return false;}
+      else{if(!list.includes(v))return false;}
+    }
+    return true;
+  };
+
+  const handleCheck = item => {
+    if (statuses[item.id]) return;
+    const ok = isItemCorrect(item);
+    setStatuses(p=>({...p,[item.id]:ok?'correct':'wrong'}));
+    if(ok){const ns=streak+1;setStreak(ns);setMaxStreak(m=>Math.max(m,ns));setScore(s=>s+1);}else setStreak(0);
+  };
+
+  const handleReveal = item => {
+    const parts = item.ans.includes(',')?item.ans.split(','):[item.ans];
+    const f={};parts.forEach((p,i)=>{f[i]=p.trim();});
+    setAnswers(prev=>({...prev,[item.id]:f}));
+    setStatuses(p=>({...p,[item.id]:'revealed'})); setStreak(0);
+  };
+
+  const checkedCount = Object.keys(statuses).length;
+  const allChecked   = checkedCount===quiz.length;
+  const pct          = quiz.length>0?Math.round((score/quiz.length)*100):0;
+  const restart      = ()=>{ setAnswers({}); setStatuses({}); setStreak(0); setMaxStreak(0); setScore(0); };
+
+  return (
+    <div className="card-tool p-6 md:p-10">
+      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8 pb-6"
+        style={{borderBottom:'2px solid rgba(255,255,255,0.35)'}}>
+        <span className="card-title">Active Practice</span>
+        <div className="md:ml-auto flex items-center gap-3 flex-wrap">
+          {streak>=2&&<div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl badge-revealed animate-in zoom-in"><Flame size={14}/><span className="font-black text-xs">{streak} streak!</span></div>}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl" style={{background:'rgba(255,255,255,0.4)',border:'2px solid rgba(255,255,255,0.5)'}}>
+            <Star size={14} className="text-[var(--c-dark)]"/>
+            <span className="font-black text-xs text-[var(--c-dark)]">{score}<span className="opacity-60">/{quiz.length}</span></span>
+          </div>
+          <div className="flex gap-1">
+            {quiz.map(item=>(
+              <div key={item.id} className={`w-2.5 h-2.5 rounded-full transition-all ${statuses[item.id]==='correct'?'dot-correct':statuses[item.id]?'dot-wrong':'dot-pending'}`}/>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        {quiz.map((item,idx)=>{
+          const status  = statuses[item.id];
+          const correct = status==='correct';
+          const locked  = !!status;
+          const parts   = item.q.split('______');
+          const borderC = correct?'var(--ok-border)':status==='revealed'?'var(--warn-border)':status==='wrong'?'var(--fail-border)':'rgba(255,255,255,0.4)';
+          const bgC     = correct?'var(--ok-bg)':status==='revealed'?'var(--warn-bg)':status==='wrong'?'var(--fail-bg)':'rgba(255,255,255,0.20)';
+
+          return (
+            <div key={item.id} className="p-5 md:p-6 rounded-2xl border-2 transition-all" style={{background:bgC,borderColor:borderC}}>
+              <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm border-2 shrink-0"
+                  style={locked?{background:correct?'var(--ok-bg)':status==='revealed'?'var(--warn-bg)':'var(--fail-bg)',
+                                  borderColor:correct?'var(--ok-border)':status==='revealed'?'var(--warn-border)':'var(--fail-border)',
+                                  color:correct?'var(--ok-text)':status==='revealed'?'var(--warn-text)':'var(--fail-text)'}
+                              :{background:'var(--c-main)',borderColor:'transparent',color:'#fff'}}>
+                  {locked?(correct?<CheckCircle size={16}/>:status==='revealed'?<Unlock size={16}/>:<XCircle size={16}/>):idx+1}
+                </div>
+                <div className="flex-grow text-lg md:text-xl font-medium text-[var(--text-primary)] leading-loose">
+                  {parts.map((part,pIdx)=>(
+                    <React.Fragment key={pIdx}>
+                      <span dangerouslySetInnerHTML={{__html:part}}/>
+                      {pIdx<parts.length-1&&(
+                        <input disabled={locked} value={answers[item.id]?.[pIdx]||''} placeholder="?"
+                          onChange={e=>{ setAnswers(p=>({...p,[item.id]:{...(p[item.id]||{}),[pIdx]:e.target.value}})); if(statuses[item.id]==='wrong')setStatuses(p=>({...p,[item.id]:undefined})); }}
+                          onKeyDown={e=>{if(e.key==='Enter'&&!locked)handleCheck(item);}}
+                          className="mx-2 inline-block w-36 px-3 py-1 text-center font-black uppercase rounded-xl outline-none transition-all text-base"
+                          style={{background:'rgba(255,255,255,0.55)',borderBottom:`4px solid ${borderC}`,color:'var(--text-primary)'}}
+                        />
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
+                <div className="shrink-0 flex items-center gap-2">
+                  {!locked?(
+                    <><button onClick={()=>handleCheck(item)} className="btn-tool">Check</button>
+                      <button onClick={()=>handleReveal(item)} className="btn-ghost">Reveal</button></>
+                  ):(
+                    <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border-2 font-black uppercase text-xs tracking-widest ${correct?'badge-correct':status==='revealed'?'badge-revealed':'badge-wrong'}`}>
+                      {correct?<CheckCircle size={14}/>:status==='revealed'?<Unlock size={14}/>:<XCircle size={14}/>}
+                      {correct?'Correct':status==='revealed'?'Revealed':'Wrong'}
+                    </div>
+                  )}
+                </div>
+              </div>
+              {locked&&!correct&&(
+                <div className="mt-4 px-4 py-3 rounded-xl animate-in slide-in-from-top-2" style={{background:'rgba(255,255,255,0.45)',border:'1.5px solid rgba(255,255,255,0.6)'}}>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)]">Answer:</span>
+                    <span className="text-[var(--text-primary)] font-black">{item.ans}</span>
+                  </div>
+                  <p className="text-[var(--text-secondary)] italic text-xs">{item.explanation}</p>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {allChecked&&(
+        <div className={`mt-8 p-8 rounded-2xl border-2 text-center animate-in zoom-in ${pct===100?'badge-correct':pct>=40?'':'badge-wrong'}`}
+          style={pct>=40&&pct<100?{background:'var(--c-soft)',borderColor:'var(--c-border)'}:{}}>
+          <p className="text-5xl mb-3">{pct===100?'🏆':pct>=70?'🌟':pct>=40?'💪':'🔄'}</p>
+          <p className="text-6xl font-black text-[var(--text-primary)] mb-1">{score}<span className="text-2xl text-[var(--text-muted)]">/{quiz.length}</span></p>
+          <div className="flex justify-center gap-6 mb-6">
+            <div><p className="text-xs font-black uppercase tracking-widest text-[var(--text-muted)] mb-1">Score</p><p className="font-black text-lg text-[var(--text-primary)]">{pct}%</p></div>
+            <div><p className="text-xs font-black uppercase tracking-widest text-[var(--text-muted)] mb-1">Best Streak</p><p className="font-black text-lg text-[var(--warn-text)]">{maxStreak} 🔥</p></div>
+          </div>
+          <button onClick={restart} className="btn-tool flex items-center gap-2 mx-auto"><RotateCcw size={16}/> Try Again</button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ── Main ────────────────────────────────────────────────────────────── */
+const ActiveGrammarLab = ({data}) => {
+  const [phase, setPhase] = useState('rules');
+  const quiz = data.activeQuiz||data.theoryQuiz||[];
+
+  return (
+    <div className="space-y-10 animate-in fade-in duration-500 pb-20">
+      <div className="flex items-center justify-center gap-3">
+        {[{id:'rules',label:'Study',icon:<BookOpen size={14}/>},{id:'practice',label:'Practice',icon:<Hammer size={14}/>}].map((p,i)=>(
+          <React.Fragment key={p.id}>
+            <div className={`flex items-center gap-2 px-4 py-2 rounded-xl font-black uppercase text-xs tracking-widest border-2 transition-all ${phase===p.id?'btn-tool':''}`}
+              style={phase!==p.id?{background:'var(--surface)',borderColor:'var(--surface-border)',color:'var(--text-muted)'}:{}}>
+              {p.icon} {p.label}
+              {phase==='practice'&&p.id==='rules'&&<CheckCircle size={12}/>}
+              {phase==='rules'&&p.id==='practice'&&<Lock size={12}/>}
+            </div>
+            {i===0&&<ArrowRight size={14} className="text-[var(--text-muted)] shrink-0"/>}
+          </React.Fragment>
+        ))}
+      </div>
+      {phase==='rules'?<RuleCards theory={data.theoryBlock} onComplete={()=>setPhase('practice')}/>:<FillPractice quiz={quiz}/>}
+    </div>
+  );
+};
 export default ActiveGrammarLab;

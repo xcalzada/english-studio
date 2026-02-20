@@ -1,73 +1,65 @@
 import React from 'react';
-import { BookOpen, Sofa, Headphones, FileText, PenTool, ArrowLeft, Lightbulb } from 'lucide-react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
+import { TOOLS_CONFIG } from '../../toolsConfig';
 
+/**
+ * UnitMenu — colores 100% desde index.css.
+ * Este componente NO define ningún color inline.
+ * Para cambiar colores, edita index.css únicamente.
+ */
 export const UnitMenu = ({ unit, onSelectTab, onBack }) => {
-  
-  const menuItems = [
-    { id: 'grammar',   label: 'Grammar Lab',   icon: <BookOpen size={32}/>,   color: 'bg-blue-600',   border: 'border-blue-800' },
-    { id: 'vocab',     label: 'Vocabulary',    icon: <Sofa size={32}/>,       color: 'bg-pink-600',   border: 'border-pink-800' },
-    { id: 'listening', label: 'Audio Room',    icon: <Headphones size={32}/>, color: 'bg-purple-600', border: 'border-purple-800' },
-    { id: 'reading',   label: 'Reading',       icon: <FileText size={32}/>,   color: 'bg-emerald-600', border: 'border-emerald-800' },
-    { id: 'writing',   label: 'Project',       icon: <PenTool size={32}/>,    color: 'bg-orange-600', border: 'border-orange-800' },
-  ];
-
-  if (unit.activeRules) {
-    menuItems.push({
-        id: 'discovery', 
-        label: 'Discovery', 
-        icon: <Lightbulb size={32}/>, 
-        color: 'bg-amber-500', 
-        border: 'border-amber-700',
-        special: true 
-    });
-  }
-
   return (
-    // CAMBIO AQUI: max-w-7xl
-    <div className="max-w-7xl mx-auto pt-10 px-6 animate-in zoom-in-95 duration-500 pb-20">
-      
-      <div className="flex flex-col items-center mb-12 text-center">
-        <button onClick={onBack} className="self-start mb-6 flex items-center gap-2 font-black text-slate-400 uppercase tracking-widest text-xs hover:text-slate-900 transition-colors">
-            <ArrowLeft size={16}/> Back to Units
-        </button>
-        <h2 className="text-4xl md:text-5xl font-black text-slate-900 uppercase italic tracking-tighter leading-none mb-2">
-            {unit.title}
-        </h2>
-        <p className="text-slate-500 font-bold uppercase tracking-widest text-sm">{unit.grammarTitle}</p>
+    <div className="min-h-screen p-6 md:p-10" style={{ background: 'var(--page-bg)' }}>
+
+      {/* ── Back ─────────────────────────────────────────────────────────── */}
+      <button onClick={onBack} className="btn-ghost flex items-center gap-2 mb-8">
+        <ArrowLeft size={16} /> All Units
+      </button>
+
+      {/* ── Header de la unidad ──────────────────────────────────────────── */}
+      <div className="s-tool rounded-[2rem] p-8 md:p-10 mb-8 relative overflow-hidden">
+        {/* glow decorativo — color viene de --c0 via CSS */}
+        <div className="absolute -bottom-8 -right-8 w-48 h-48 rounded-full blur-3xl"
+          style={{ background: 'var(--c0)', opacity: .12 }} />
+
+        <div className="relative z-10">
+          <span className="unit-header-badge">Grammar Focus</span>
+          <h1 className="unit-header-title">{unit.grammarTitle}</h1>
+          <p className="unit-header-subtitle">{unit.title}</p>
+          {unit.description && (
+            <p className="unit-header-desc">{unit.description}</p>
+          )}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {menuItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => onSelectTab(item.id)}
-            className={`
-                relative group overflow-hidden
-                bg-white border-4 border-slate-900 rounded-[2.5rem] p-8 
-                shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]
-                hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] 
-                active:translate-y-1 active:shadow-[0_0_0_0_rgba(15,23,42,1)]
-                transition-all duration-200 text-left flex flex-col items-center justify-center gap-4 h-64
-                ${item.special ? 'ring-4 ring-amber-300' : ''}
-            `}
-          >
-            {item.special && <div className="absolute top-4 right-4 bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-200">Bonus</div>}
-            <div className={`absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-slate-200 to-transparent opacity-0 group-hover:opacity-100 transition-opacity`} />
-            <div className={`
-                ${item.color} text-white p-6 rounded-2xl 
-                border-4 border-slate-900
-                shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]
-                group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]
-                transition-all
-            `}>
-                {item.icon}
-            </div>
-            <span className="font-black text-2xl uppercase italic tracking-tighter text-slate-800 group-hover:text-slate-900">
-                {item.label}
-            </span>
-          </button>
-        ))}
+      {/* ── Grid de herramientas ─────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {TOOLS_CONFIG.map(tool => {
+          const Icon = tool.icon;
+          return (
+            <button
+              key={tool.id}
+              onClick={() => onSelectTab(tool.id)}
+              className={`tool-${tool.id} home-card text-left p-6 rounded-[1.75rem]`}
+            >
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <div className="tool-card-icon">
+                  <Icon size={22} />
+                </div>
+                <span className="text-3xl">{tool.emoji}</span>
+              </div>
+              <h3 className="tool-card-title mb-1">{tool.label}</h3>
+              <p className="tool-card-desc">{tool.desc}</p>
+              <div className="tool-card-cta">
+                Open <ChevronRight size={14} />
+              </div>
+            </button>
+          );
+        })}
       </div>
+
     </div>
   );
 };
+
+export default UnitMenu;
