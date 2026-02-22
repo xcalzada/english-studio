@@ -1,406 +1,516 @@
-export const comparativesUnit = {
-  id: 'comparatives-mastery',
-  title: 'Comparando el Mundo',
-  grammarTitle: 'Comparatives',
-  description: 'Domina las formas comparativas: -er, more, than, irregulares y modificadores.',
+// src/units/comparatives.js — Units 87 · 88 · 90 (English Grammar in Use)
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // TEORÍA — fiel al libro Murphy + poster de apuntes
-  // ═══════════════════════════════════════════════════════════════════════════
+const quiz = [
+  // ── BLOCK 1: Forming comparatives (easy) ── 1–12
+  { id:'q01', type:'fill',
+    q:'Rome is old, but Athens is ______.',
+    ans:'older',
+    explanation:'Short 1-syllable adjective: old → older. Never "more old".' },
+  { id:'q02', type:'fill',
+    q:"Helen's car isn't very big. She wants a ______ one.",
+    ans:'bigger',
+    explanation:'big → bigger (CVC rule: double the last consonant).' },
+  { id:'q03', type:'fill',
+    q:"My bag isn't very heavy. Your bag is ______.",
+    ans:'heavier',
+    explanation:'Words ending in -y: change y → i then add -er. heavy → heavier.' },
+  { id:'q04', type:'fill',
+    q:"Don't take the bus. It's ______ to take a taxi.",
+    ans:'easier',
+    explanation:'easy → easier (-y to -ier). NOT "more easy".' },
+  { id:'q05', type:'fill',
+    q:"The weather wasn't very good yesterday, but it's ______ today.",
+    ans:'better',
+    explanation:'Irregular: good → better. Never "more good".' },
+  { id:'q06', type:'fill',
+    q:"'Do you feel better today?' 'No, I feel ______.'",
+    ans:'worse',
+    explanation:'Irregular: bad → worse. Never "more bad".' },
+  { id:'q07', type:'choice',
+    q:'What is the comparative of <strong>expensive</strong>?',
+    options:['expensiver','more expensive','most expensive','expensiveer'],
+    ans:'more expensive',
+    explanation:'Long words (3+ syllables) use more + adjective: more expensive.' },
+  { id:'q08', type:'choice',
+    q:'What is the comparative of <strong>happy</strong>?',
+    options:['more happy','happyer','happier','hapier'],
+    ans:'happier',
+    explanation:'Words ending in -y: change y → i + er: happy → happier.' },
+  { id:'q09', type:'choice',
+    q:'What is the comparative of <strong>big</strong>?',
+    options:['biger','more big','bigger','bigest'],
+    ans:'bigger',
+    explanation:'CVC spelling: double the final consonant before -er. big → bigger.' },
+  { id:'q10', type:'choice',
+    q:'What is the comparative of <strong>far</strong>?',
+    options:['farer','more far','most far','further'],
+    ans:'further',
+    explanation:'Irregular: far → further.' },
+  { id:'q11', type:'fill',
+    q:'This coat is OK, but the other one is ______.',
+    ans:'nicer',
+    explanation:'nice → nicer (drop -e, add -er).' },
+  { id:'q12', type:'fill',
+    q:'You must be ______ careful.',
+    ans:'more',
+    explanation:'"careful" has 2+ syllables → use more: more careful.' },
+
+  // ── BLOCK 2: Using THAN (easy-medium) ── 13–22
+  { id:'q13', type:'fill',
+    q:'Athens is older ______ Rome.',
+    ans:'than',
+    explanation:'Always use "than" after a comparative adjective.' },
+  { id:'q14', type:'fill',
+    q:'Canada is much bigger ______ France.',
+    ans:'than',
+    explanation:'"much bigger than" — than always follows the comparative.' },
+  { id:'q15', type:'fill',
+    q:'The film was very short — less ______ an hour.',
+    ans:'than',
+    explanation:'"less than" is the opposite of "more than". Both need "than".' },
+  { id:'q16', type:'choice',
+    q:'I can run faster ______ him.',
+    options:['that','then','than','as'],
+    ans:'than',
+    explanation:'Use "than" (not "that" or "then") after comparatives.' },
+  { id:'q17', type:'choice',
+    q:'Small difference: Box A is ______ bigger than Box B.',
+    options:['much','very','a bit','most'],
+    ans:'a bit',
+    explanation:'"a bit" = small difference. "much" = big difference.' },
+  { id:'q18', type:'choice',
+    q:'Big difference: Canada is ______ bigger than France.',
+    options:['a bit','a little','much','very'],
+    ans:'much',
+    explanation:'"much bigger" shows a large difference.' },
+  { id:'q19', type:'fill',
+    q:"Kate is 26, Ben is 24. Kate is ______ than Ben.",
+    ans:'older',
+    explanation:'old → older than.' },
+  { id:'q20', type:'fill',
+    q:"Ben is a very good swimmer. Kate isn't. Ben is a ______ swimmer than Kate.",
+    ans:'better',
+    explanation:'Irregular: good → better.' },
+  { id:'q21', type:'fill',
+    q:"Kate is 1m68. Ben is 1m63. Kate is ______ than Ben.",
+    ans:'taller',
+    explanation:'tall → taller than.' },
+  { id:'q22', type:'fill',
+    q:'The Europa Hotel costs £150. The Grand costs £130. The Europa is ______ expensive than the Grand.',
+    ans:'more',
+    explanation:'"expensive" (long word) → more expensive than.' },
+
+  // ── BLOCK 3: Superlatives (medium) ── 23–34
+  { id:'q23', type:'fill',
+    q:"The church is very old. It's the ______ building in the town.",
+    ans:'oldest',
+    explanation:'Superlative of "old" is "the oldest". Always use THE.' },
+  { id:'q24', type:'fill',
+    q:'What is the ______ river in the world?',
+    ans:'longest',
+    explanation:'Superlative: long → the longest.' },
+  { id:'q25', type:'fill',
+    q:"Money is important, but it isn't the most ______ thing in life.",
+    ans:'important',
+    explanation:'"most important" — long word superlative: the most + adjective.' },
+  { id:'q26', type:'choice',
+    q:'What is the superlative of <strong>bad</strong>?',
+    options:['the baddest','the most bad','the worst','the worser'],
+    ans:'the worst',
+    explanation:'Irregular: bad → worse → the worst.' },
+  { id:'q27', type:'choice',
+    q:'What is the superlative of <strong>easy</strong>?',
+    options:['the most easy','the easiest','the easyest','the easier'],
+    ans:'the easiest',
+    explanation:'Words ending in -y: change y → i + est: the easiest.' },
+  { id:'q28', type:'choice',
+    q:'What is the superlative of <strong>good</strong>?',
+    options:['the goodest','the most good','the better','the best'],
+    ans:'the best',
+    explanation:'Irregular: good → better → the best.' },
+  { id:'q29', type:'fill',
+    q:"Luke is a good player, but he isn't ______ in the team.",
+    ans:'the best',
+    explanation:'Superlative without a noun: "the best" = the best player.' },
+  { id:'q30', type:'fill',
+    q:"It's the ______ film I've ever seen.",
+    ans:'worst',
+    explanation:"Superlative + ever: the worst film I've ever seen." },
+  { id:'q31', type:'fill',
+    q:'It was a very happy day. It was the ______ day of my life.',
+    ans:'happiest',
+    explanation:'happy → the happiest (-y to -iest).' },
+  { id:'q32', type:'fill',
+    q:'The Europa Hotel is ______ most expensive hotel in the city.',
+    ans:'the',
+    explanation:'Always use THE before superlatives: the most expensive.' },
+  { id:'q33', type:'matchpairs',
+    q:'Match each adjective with its <strong>superlative</strong> form.',
+    leftLabel:'Adjective', rightLabel:'Superlative',
+    pairs:[
+      { left:'old',         right:'the oldest' },
+      { left:'good',        right:'the best' },
+      { left:'bad',         right:'the worst' },
+      { left:'happy',       right:'the happiest' },
+      { left:'expensive',   right:'the most expensive' },
+      { left:'interesting', right:'the most interesting' },
+    ] },
+  { id:'q34', type:'fill',
+    q:'Brazil is ______ largest country in South America.',
+    ans:'the',
+    explanation:'Always use "the" with superlatives: the largest.' },
+
+  // ── BLOCK 4: Error correction (medium-hard) ── 35–41
+  { id:'q35', type:'error',
+    q:'Rome is more old than Athens.',
+    ans:'Rome is older than Athens.',
+    explanation:'Short adjectives use -er: old → older. Never "more old".' },
+  { id:'q36', type:'error',
+    q:'She is the most tall student in the class.',
+    ans:'She is the tallest student in the class.',
+    explanation:'Short adjectives use -est for superlative: tall → the tallest.' },
+  { id:'q37', type:'error',
+    q:"It's the more expensive restaurant in the city.",
+    ans:"It's the most expensive restaurant in the city.",
+    explanation:'"the more expensive" is wrong. Superlative = the most expensive.' },
+  { id:'q38', type:'error',
+    q:'London is more beautiful that Paris.',
+    ans:'London is more beautiful than Paris.',
+    explanation:'After comparatives, use "than" (not "that").' },
+  { id:'q39', type:'error',
+    q:'She is a bit more taller than me.',
+    ans:'She is a bit taller than me.',
+    explanation:'Never add "more" before -er forms. "Taller" is already comparative.' },
+  { id:'q40', type:'error',
+    q:'Jack is more strong than his brother.',
+    ans:'Jack is stronger than his brother.',
+    explanation:'Short adjective: strong → stronger. NOT "more strong".' },
+  { id:'q41', type:'error',
+    q:'What is the most longest river in the world?',
+    ans:'What is the longest river in the world?',
+    explanation:'Never add "most" before -est forms. "Longest" is already superlative.' },
+
+  // ── BLOCK 5: Word ordering (hard) ── 42–46
+  { id:'q42', type:'order',
+    words:['The','church','is','the','oldest','building','in','the','town','.'],
+    ans:'The church is the oldest building in the town.',
+    explanation:'Use "the" before all superlatives: the oldest.' },
+  { id:'q43', type:'order',
+    words:['His','father','is','much','older','than','his','mother','.'],
+    ans:'His father is much older than his mother.',
+    explanation:'"much older than" — much shows a big difference.' },
+  { id:'q44', type:'order',
+    words:['I','can','run','faster','than','him','.'],
+    ans:'I can run faster than him.',
+    explanation:'After "than" use object pronouns: him, her, them, me.' },
+  { id:'q45', type:'order',
+    words:['The','Europa','Hotel','is','the','most','expensive','in','the','city','.'],
+    ans:'The Europa Hotel is the most expensive in the city.',
+    explanation:'Superlative without noun: "the most expensive" = the most expensive hotel.' },
+  { id:'q46', type:'order',
+    words:['Emma','is','a','bit','older','than','Joe','.'],
+    ans:'Emma is a bit older than Joe.',
+    explanation:'"a bit older than" = slightly older than.' },
+
+  // ── BLOCK 6: Translation (hard) ── 47–50
+  { id:'q47', type:'translate',
+    q:'Atenas es más antigua que Roma.',
+    ans:'Athens is older than Rome.',
+    hint:'antiguo → old → older' },
+  { id:'q48', type:'translate',
+    q:'Es la peor película que he visto nunca.',
+    ans:"It's the worst film I've ever seen.",
+    hint:"la peor → the worst · nunca → ever" },
+  { id:'q49', type:'translate',
+    q:'El hotel fue mucho más caro de lo que esperaba.',
+    ans:'The hotel was much more expensive than I expected.',
+    hint:'mucho más caro → much more expensive' },
+  { id:'q50', type:'translate',
+    q:'¿Cuál es el río más largo del mundo?',
+    ans:'What is the longest river in the world?',
+    hint:'el más largo → the longest · del mundo → in the world' },
+];
+
+export const comparativesUnit = {
+  id: 'comparatives',
+  grammarTitle: 'Comparative & Superlative',
+  title: 'old/older · older than · the oldest',
+  description: 'Units 87 · 88 · 90 — How to compare people, places and things in English',
+
   theoryBlock: {
 
-    // ── BLOQUE 1: Qué es un comparativo ──────────────────────────────────────
-    block1: {
-      title: '¿Qué es un comparativo?',
+    // ── UNIT 87: old/older — forming comparatives, NO "than" yet ─────────────
+    unit87: {
+      title: 'Unit 87 · old/older · expensive/more expensive',
       content: [
-        { type: 'text', text: 'Usamos los comparativos para decir que algo es <strong>MÁS [adjetivo/adverbio]</strong> que otra cosa. En inglés hay dos formas de construirlos: con <strong>-er</strong> o con <strong>more</strong>.' },
-        { type: 'table',
-          headers: ['Base', '→', 'Comparativo', 'Significa'],
-          rows: [
-            ['old',       '→', '<strong>older</strong>',          'más viejo'],
-            ['heavy',     '→', '<strong>heavier</strong>',        'más pesado'],
-            ['expensive', '→', '<strong>more expensive</strong>', 'más caro'],
-          ]
-        },
-        { type: 'tip', emoji: '🔑', text: 'La palabra <strong>than</strong> (= "que") une las dos cosas que comparamos. Siempre va después del comparativo.' },
-        { type: 'example', en: 'She\'s <strong>taller than</strong> him.', es: 'Ella es más alta que él.' },
-        { type: 'example', en: 'The Europa Hotel is <strong>more expensive than</strong> the Grand.', es: 'El Hotel Europa es más caro que el Grand.' },
-        { type: 'rule', warn: true, text: '❌ <em>Athens is older <u>that</u> Rome.</em> — incorrecto.<br>✅ El conector siempre es <strong>than</strong>, nunca "that".' },
-      ]
+        { type:'text',
+          text:'<strong>Older, heavier, more expensive</strong> are <em>comparative</em> forms. The comparative is <strong>-er</strong> (older) or <strong>more …</strong> (more expensive).' },
+
+        { type:'compare', label:'',
+          left:  { emoji:'👴', label:'old',   sub:'I\'m 92', size:'sm' },
+          right: { emoji:'👴', label:'older',  sub:'I\'m 93', size:'lg' } },
+        { type:'compare', label:'',
+          left:  { emoji:'🏋️', label:'heavy',   sub:'40 kg', size:'sm' },
+          right: { emoji:'🏋️', label:'heavier', sub:'50 kg', size:'lg' } },
+        { type:'compare', label:'',
+          left:  { emoji:'👟', label:'expensive',      sub:'£105', size:'sm' },
+          right: { emoji:'👠', label:'more expensive', sub:'£120', size:'lg' } },
+
+        { type:'subtitle', text:'B · older/heavier etc. — Short words (1 syllable) → -er' },
+        { type:'table',
+          headers:['Adjective','→','Comparative','Adjective','→','Comparative'],
+          rows:[
+            ['old',  '→', '<strong>older</strong>',   'slow',  '→', '<strong>slower</strong>'],
+            ['nice', '→', '<strong>nicer</strong>',   'cheap', '→', '<strong>cheaper</strong>'],
+            ['late', '→', '<strong>later</strong>',   'big',   '→', '<strong>bigger</strong>'],
+            ['thin', '→', '<strong>thinner</strong>', 'hot',   '→', '<strong>hotter</strong>'],
+          ] },
+        { type:'rule',
+          text:'<strong>Spelling:</strong> big → bi<strong>gg</strong>er · hot → ho<strong>tt</strong>er · thin → thi<strong>nn</strong>er<br>When a short word ends in consonant–vowel–consonant, double the last consonant.' },
+
+        { type:'subtitle', text:'Words ending in -y → -ier' },
+        { type:'table',
+          headers:['Adjective','→','Comparative'],
+          rows:[
+            ['easy',  '→', '<strong>easier</strong>'],
+            ['heavy', '→', '<strong>heavier</strong>'],
+            ['early', '→', '<strong>earlier</strong>'],
+          ] },
+
+        { type:'example', en:'Rome is old, but Athens is <strong>older</strong>.', es:'(not more old)' },
+        { type:'example', en:'Is it <strong>cheaper</strong> to go by car or by train?', es:'(not more cheap)' },
+        { type:'example', en:"Helen wants a <strong>bigger</strong> car.", es:'' },
+        { type:'example', en:"Don't take the bus. It's <strong>easier</strong> to take a taxi.", es:'(not more easy)' },
+
+        { type:'subtitle', text:'far → further' },
+        { type:'example', en:"A: How far is it to the station? A mile?  B: No, it's <strong>further</strong>. About two miles.", es:'' },
+
+        { type:'subtitle', text:'C · more … — Long words (2/3/4 syllables) → more …' },
+        { type:'table',
+          headers:['Adjective','→','Comparative'],
+          rows:[
+            ['careful',     '→', '<strong>more careful</strong>'],
+            ['expensive',   '→', '<strong>more expensive</strong>'],
+            ['polite',      '→', '<strong>more polite</strong>'],
+            ['interesting', '→', '<strong>more interesting</strong>'],
+          ] },
+        { type:'example', en:'You must be <strong>more careful</strong>.', es:'' },
+        { type:'example', en:"I don't like my job. I want to do something <strong>more interesting</strong>.", es:'' },
+        { type:'example', en:'Is it <strong>more expensive</strong> to go by car or by train?', es:'' },
+
+        { type:'subtitle', text:'D · Irregular forms' },
+        { type:'table',
+          headers:['Adjective','→','Comparative'],
+          rows:[
+            ['good / well', '→', '<strong>better</strong>'],
+            ['bad',         '→', '<strong>worse</strong>'],
+          ] },
+        { type:'example', en:"The weather wasn't very good yesterday, but it's <strong>better</strong> today.", es:'' },
+        { type:'example', en:"'Do you feel better today?' 'No, I feel <strong>worse</strong>.'", es:'' },
+        { type:'example', en:"Which is <strong>worse</strong> — a headache or a toothache?", es:'' },
+      ],
     },
 
-    // ── BLOQUE 2: Regla -er (1 sílaba) ───────────────────────────────────────
-    block2: {
-      title: 'Regla 1 — Palabras cortas (1 sílaba) → añadimos -er',
+    // ── UNIT 88: older than / more expensive than ─────────────────────────────
+    unit88: {
+      title: 'Unit 88 · older than … · more expensive than …',
       content: [
-        { type: 'text', text: 'Los adjetivos y adverbios de <strong>una sílaba</strong> forman el comparativo añadiendo <strong>-er</strong> al final.' },
-        { type: 'grid', items: [
-          { base: 'old',   comp: 'older',   emoji: '👴' },
-          { base: 'slow',  comp: 'slower',  emoji: '🐢' },
-          { base: 'cheap', comp: 'cheaper', emoji: '💰' },
-          { base: 'nice',  comp: 'nicer',   emoji: '😊' },
-          { base: 'late',  comp: 'later',   emoji: '🕐' },
-          { base: 'fast',  comp: 'faster',  emoji: '⚡' },
-          { base: 'tall',  comp: 'taller',  emoji: '📏' },
-          { base: 'large', comp: 'larger',  emoji: '🌍' },
-        ]},
-        { type: 'subtitle', text: '✏️ Ortografía — casos especiales' },
-        { type: 'table',
-          headers: ['Regla de ortografía', 'Ejemplos'],
-          rows: [
-            ['Termina en <strong>-e</strong> → solo añade <strong>-r</strong>',                                    'nic<strong>e</strong> → nic<strong>er</strong> &nbsp;/&nbsp; larg<strong>e</strong> → larg<strong>er</strong>'],
-            ['Termina en <strong>consonante-vocal-consonante</strong> → dobla la última letra', 'bi<strong>g</strong> → bi<strong>gg</strong>er &nbsp;/&nbsp; ho<strong>t</strong> → ho<strong>tt</strong>er &nbsp;/&nbsp; thi<strong>n</strong> → thi<strong>nn</strong>er'],
-          ]
-        },
-        { type: 'example', en: 'Rome is <strong>old</strong>, but Athens is <strong>older</strong>. <em>(no "more old")</em>', es: 'Roma es vieja, pero Atenas es más vieja.' },
-        { type: 'example', en: 'Is it <strong>cheaper</strong> to go by car or by train? <em>(no "more cheap")</em>', es: '¿Es más barato ir en coche o en tren?' },
-        { type: 'example', en: 'Helen wants a <strong>bigger</strong> car. <em>(no "more big")</em>', es: 'Helen quiere un coche más grande.' },
-        { type: 'example', en: 'This coat is OK, but I think the other one is <strong>nicer</strong>. <em>(no "more nice")</em>', es: 'Este abrigo está bien, pero creo que el otro es más bonito.' },
-      ]
+        { type:'text',
+          text:'We use <strong>than</strong> after comparatives.' },
+
+        { type:'compare', label:'',
+          left:  { emoji:'🧑', label:'him',            sub:"I'm taller than you — 1m63", size:'sm' },
+          right: { emoji:'👩', label:'taller than him', sub:'1m68',                       size:'lg' } },
+
+        { type:'example', en:'Athens is <strong>older than</strong> Rome.', es:'' },
+        { type:'example', en:'Are oranges <strong>more expensive than</strong> bananas?', es:'' },
+        { type:'example', en:"It's <strong>easier</strong> to take a taxi <strong>than</strong> to take the bus.", es:'' },
+        { type:'example', en:"'How are you today?' 'Not bad. <strong>Better than</strong> yesterday.'", es:'' },
+        { type:'example', en:'The restaurant is <strong>more crowded than</strong> usual.', es:'' },
+
+        { type:'subtitle', text:'B · than me / than him / than her …' },
+        { type:'rule',
+          text:'We usually say: <strong>than me / than him / than her / than us / than them</strong>' },
+        { type:'example', en:'I can run faster <strong>than him</strong>.  <em>or</em>  I can run faster than he can.', es:'' },
+        { type:'example', en:'You are a better singer <strong>than me</strong>.  <em>or</em>  than I am.', es:'' },
+        { type:'example', en:'I got up earlier <strong>than her</strong>.  <em>or</em>  than she did.', es:'' },
+
+        { type:'subtitle', text:'C · more / less than …' },
+        { type:'example', en:"A: How much did your shoes cost? £60?  B: No, <strong>more than</strong> that.", es:'(= more than £60)' },
+        { type:'example', en:'The film was very short — <strong>less than</strong> an hour.', es:'' },
+        { type:'example', en:'They have <strong>more money than</strong> they need.', es:'' },
+        { type:'example', en:'You go out <strong>more than</strong> me.', es:'' },
+
+        { type:'subtitle', text:'D · a bit older / much older etc.' },
+        { type:'comparebar', adjective:'Box sizes — a bit bigger vs. much bigger',
+          items:[
+            { emoji:'📦', label:'Box A', value:88, unit:'' },
+            { emoji:'📦', label:'Box B', value:80, unit:'' },
+            { emoji:'📦', label:'Box C', value:200, unit:'' },
+            { emoji:'📦', label:'Box D', value:40,  unit:'' },
+          ] },
+        { type:'text',
+          text:'Box A is <strong>a bit bigger</strong> than Box B. &nbsp; Box C is <strong>much bigger</strong> than Box D.' },
+        { type:'table',
+          headers:['', 'Pattern', 'Example'],
+          rows:[
+            ['<strong>a bit</strong>', 'a bit + comparative + than', "Sue is <strong>a bit older</strong> than Joe — she's 25 and he's 24."],
+            ['<strong>much</strong>',  'much + comparative + than',  'Canada is <strong>much bigger</strong> than France.'],
+          ] },
+        { type:'example', en:'The hotel was <strong>much more expensive</strong> than I expected.', es:'' },
+        { type:'example', en:'You go out <strong>much more</strong> than me.', es:'' },
+      ],
     },
 
-    // ── BLOQUE 3: Regla -ier (palabras en -y) ────────────────────────────────
-    block3: {
-      title: 'Regla 2 — Palabras con -y → cambia a -ier',
+    // ── UNIT 90: the oldest / the most expensive ──────────────────────────────
+    unit90: {
+      title: 'Unit 90 · the oldest · the most expensive',
       content: [
-        { type: 'tip', emoji: '🎪', text: 'Los adjetivos que terminan en <strong>-y</strong> hacen un truco: la <strong>-y</strong> desaparece y ponemos <strong>-ier</strong>.' },
-        { type: 'grid', items: [
-          { base: 'easy',  comp: 'easier',  emoji: '✅' },
-          { base: 'heavy', comp: 'heavier', emoji: '🏋️' },
-          { base: 'early', comp: 'earlier', emoji: '⏰' },
-          { base: 'happy', comp: 'happier', emoji: '😄' },
-          { base: 'busy',  comp: 'busier',  emoji: '📅' },
-          { base: 'noisy', comp: 'noisier', emoji: '🔊' },
-          { base: 'funny', comp: 'funnier', emoji: '😂' },
-        ]},
-        { type: 'example', en: 'Don\'t take the bus. It\'s <strong>easier</strong> to take a taxi. <em>(no "more easy")</em>', es: 'No cojas el autobús. Es más fácil coger un taxi.' },
-        { type: 'rule', warn: true, text: '❌ <em>more easy / more heavy / more noisy</em> — incorrecto.<br>✅ Con palabras en <strong>-y</strong>, siempre usamos <strong>-ier</strong>.' },
-      ]
-    },
+        { type:'comparebar', adjective:'Hotel prices in Kinton (per room per night)',
+          items:[
+            { emoji:'🏨', label:'Europa  £150', value:150, unit:'£' },
+            { emoji:'🏨', label:'Grand   £130', value:130, unit:'£' },
+            { emoji:'🏨', label:'Royal   £120', value:120, unit:'£' },
+            { emoji:'🏨', label:'Astoria £115', value:115, unit:'£' },
+            { emoji:'🏨', label:'Station £75',  value:75,  unit:'£' },
+          ] },
+        { type:'text',
+          text:'<strong>Bigger</strong> and <strong>more expensive</strong> are <em>comparative</em> forms. <strong>Biggest</strong> and <strong>most expensive</strong> are <em>superlative</em> forms.' },
+        { type:'example',
+          en:'Box A is <strong>bigger than</strong> Box B. → Box A is <strong>the biggest</strong> box.',
+          es:'comparative → superlative' },
+        { type:'example',
+          en:'The Europa Hotel is <strong>more expensive than</strong> the Grand. → The Europa is <strong>the most expensive</strong> hotel in the city.',
+          es:'' },
 
-    // ── BLOQUE 4: Regla more (2+ sílabas) ────────────────────────────────────
-    block4: {
-      title: 'Regla 3 — Palabras largas (2+ sílabas) → more ...',
-      content: [
-        { type: 'text', text: 'Los adjetivos y adverbios de <strong>dos o más sílabas</strong> (que no terminan en -y) forman el comparativo poniendo <strong>more</strong> delante. No se modifica la palabra.' },
-        { type: 'grid', items: [
-          { base: 'careful',     comp: 'more careful',     emoji: '🧐' },
-          { base: 'expensive',   comp: 'more expensive',   emoji: '💸' },
-          { base: 'polite',      comp: 'more polite',      emoji: '🤝' },
-          { base: 'interesting', comp: 'more interesting', emoji: '🤔' },
-          { base: 'comfortable', comp: 'more comfortable', emoji: '🛋️' },
-          { base: 'beautiful',   comp: 'more beautiful',   emoji: '🌸' },
-          { base: 'difficult',   comp: 'more difficult',   emoji: '🧩' },
-          { base: 'dangerous',   comp: 'more dangerous',   emoji: '⚠️' },
-        ]},
-        { type: 'subtitle', text: 'Adverbios en -ly → también usan more' },
-        { type: 'grid', items: [
-          { base: 'slowly',    comp: 'more slowly',    emoji: '🐢' },
-          { base: 'carefully', comp: 'more carefully', emoji: '🎯' },
-          { base: 'fluently',  comp: 'more fluently',  emoji: '🗣️' },
-        ]},
-        { type: 'example', en: 'You must be <strong>more careful</strong>.', es: 'Debes ser más cuidadoso.' },
-        { type: 'example', en: 'I want to do something <strong>more interesting</strong>.', es: 'Quiero hacer algo más interesante.' },
-        { type: 'example', en: 'Is it <strong>more expensive</strong> to go by car or by train?', es: '¿Es más caro ir en coche o en tren?' },
-        { type: 'teacher', text: '💡 <strong>Palabras con doble opción</strong> como <em>clever, quiet, narrow, simple, common</em> pueden usar <em>-er</em> o <em>more</em>. Ambas son correctas: <em>quieter</em> = <em>more quiet</em> ✅' },
-      ]
-    },
+        { type:'subtitle', text:'B · Forming superlatives' },
+        { type:'text',
+          text:'The superlative form is <strong>-est</strong> (oldest) or <strong>most …</strong> (most expensive).' },
 
-    // ── BLOQUE 5: Irregulares ─────────────────────────────────────────────────
-    block5: {
-      title: 'Regla 4 — Irregulares (¡hay que memorizar!)',
-      content: [
-        { type: 'tip', emoji: '⭐', text: 'Estas palabras no siguen ninguna regla. Tienen su propia forma comparativa. ¡A memorizarlas!' },
-        { type: 'table',
-          headers: ['Adjetivo / Adverbio', '→', 'Comparativo', 'Ejemplo del libro'],
-          rows: [
-            ['<strong>good</strong> / well',  '→', '<strong>better</strong>',         'The weather wasn\'t good yesterday, but it\'s <strong>better</strong> today.'],
-            ['<strong>bad</strong> / badly',   '→', '<strong>worse</strong>',          '"Do you feel better?" — "No, I feel <strong>worse</strong>."'],
-            ['<strong>far</strong>',            '→', '<strong>further / farther</strong>', '"How far is it?" — "It\'s <strong>further</strong> than I thought."'],
-            ['<strong>much / many</strong>',   '→', '<strong>more</strong>',           'They\'ve got <strong>more</strong> money than they need.'],
-            ['<strong>little</strong>',        '→', '<strong>less</strong>',           'The film was <strong>less</strong> than an hour long.'],
-          ]
-        },
-        { type: 'rule', warn: true, text: '❌ Nunca: <em>more good, more bad, gooder, badder</em>.<br>✅ Siempre: <strong>better</strong> y <strong>worse</strong>.' },
-        { type: 'example', en: 'Which is <strong>worse</strong> — a headache or a toothache?', es: '¿Qué es peor — un dolor de cabeza o un dolor de muelas?' },
-      ]
-    },
+        { type:'subtitle', text:'Short words (old/cheap/nice etc.) → the -est' },
+        { type:'table',
+          headers:['Adjective','→','Superlative'],
+          rows:[
+            ['old',  '→', '<strong>the oldest</strong>'],
+            ['cheap','→', '<strong>the cheapest</strong>'],
+            ['nice', '→', '<strong>the nicest</strong>'],
+            ['big',  '→', '<strong>the biggest</strong>'],
+            ['hot',  '→', '<strong>the hottest</strong>'],
+          ] },
+        { type:'rule',
+          text:'<strong>Spelling:</strong> big → the bi<strong>gg</strong>est · hot → the ho<strong>tt</strong>est &nbsp; (same CVC rule as comparatives)' },
+        { type:'table',
+          headers:['Adjective','Comparative','Superlative'],
+          rows:[
+            ['good', 'better', '<strong>the best</strong>'],
+            ['bad',  'worse',  '<strong>the worst</strong>'],
+          ] },
 
-    // ── BLOQUE 6: than + pronombres ───────────────────────────────────────────
-    block6: {
-      title: 'Usar than — pronombres y estructura',
-      content: [
-        { type: 'text', text: 'Después de <strong>than</strong> normalmente usamos pronombres objeto (<em>me, him, her, us, them</em>), aunque también se puede usar el sujeto con verbo.' },
-        { type: 'table',
-          headers: ['Forma informal (más común)', 'Forma formal (también correcta)'],
-          rows: [
-            ['I can run faster than <strong>him</strong>.', 'I can run faster than <strong>he can</strong>.'],
-            ['You are a better singer than <strong>me</strong>.', 'You are a better singer than <strong>I am</strong>.'],
-            ['I got up earlier than <strong>her</strong>.', 'I got up earlier than <strong>she did</strong>.'],
-          ]
-        },
-        { type: 'example', en: 'Athens is <strong>older than</strong> Rome.', es: 'Atenas es más antigua que Roma.' },
-        { type: 'example', en: 'Are oranges <strong>more expensive than</strong> bananas?', es: '¿Son las naranjas más caras que los plátanos?' },
-        { type: 'example', en: 'The restaurant is <strong>more crowded than</strong> usual.', es: 'El restaurante está más lleno de gente que de costumbre.' },
-      ]
-    },
+        { type:'subtitle', text:'Words ending in -y (easy/heavy etc.) → the -iest' },
+        { type:'table',
+          headers:['Adjective','→','Superlative'],
+          rows:[
+            ['easy',   '→', '<strong>the easiest</strong>'],
+            ['heavy',  '→', '<strong>the heaviest</strong>'],
+            ['pretty', '→', '<strong>the prettiest</strong>'],
+          ] },
 
-    // ── BLOQUE 7: more than / less than ──────────────────────────────────────
-    block7: {
-      title: 'More than / Less than — cantidad',
-      content: [
-        { type: 'text', text: '<strong>More than</strong> = más que / más de &nbsp;&nbsp; | &nbsp;&nbsp; <strong>Less than</strong> = menos que / menos de' },
-        { type: 'example', en: 'A: How much did your shoes cost? £30?<br>B: No, <strong>more than</strong> that.', es: '¿Cuánto costaron tus zapatos? ¿30 libras? — No, más que eso.' },
-        { type: 'example', en: 'The film was very short — <strong>less than</strong> an hour.', es: 'La película fue muy corta — menos de una hora.' },
-        { type: 'example', en: 'They\'ve got <strong>more</strong> money <strong>than</strong> they need.', es: 'Tienen más dinero del que necesitan.' },
-        { type: 'example', en: 'You go out <strong>more than</strong> me.', es: 'Sales más que yo.' },
-      ]
-    },
+        { type:'subtitle', text:'Long words (careful/expensive/interesting etc.) → the most …' },
+        { type:'table',
+          headers:['Adjective','→','Superlative'],
+          rows:[
+            ['careful',     '→', '<strong>the most careful</strong>'],
+            ['interesting', '→', '<strong>the most interesting</strong>'],
+            ['expensive',   '→', '<strong>the most expensive</strong>'],
+          ] },
 
-    // ── BLOQUE 8: a bit / much + comparativo ─────────────────────────────────
-    block8: {
-      title: 'A bit / Much — intensificar el comparativo',
-      content: [
-        { type: 'text', text: 'Podemos añadir palabras delante del comparativo para decir <strong>cuánto más</strong> es algo:' },
-        { type: 'table',
-          headers: ['Modificador', 'Significado', 'Ejemplo'],
-          rows: [
-            ['<strong>a bit</strong>',  'un poco más',   'Sue is <strong>a bit older</strong> than Gary — she\'s 25 and he\'s 24.'],
-            ['<strong>much</strong>',   'mucho más',     'Canada is <strong>much bigger</strong> than France.'],
-            ['<strong>a lot</strong>',  'mucho más',     'This hotel was <strong>a lot more expensive</strong> than I expected.'],
-            ['<strong>far</strong>',    'muchísimo más', 'It\'s <strong>far more difficult</strong> than I thought.'],
-          ]
-        },
-        { type: 'example', en: 'Box A is <strong>a bit bigger</strong> than Box B.', es: 'La caja A es un poco más grande que la caja B.' },
-        { type: 'example', en: 'Box C is <strong>much bigger</strong> than Box D.', es: 'La caja C es mucho más grande que la caja D.' },
-        { type: 'example', en: 'The hotel was <strong>much more expensive</strong> than I expected.', es: 'El hotel era mucho más caro de lo que esperaba.' },
-      ]
-    },
+        { type:'subtitle', text:'C · Using superlatives — always with THE' },
+        { type:'example', en:"The church is very old. It's <strong>the oldest</strong> building in the town.", es:'(= it is older than all the other buildings)' },
+        { type:'example', en:'What is <strong>the longest</strong> river in the world?', es:'' },
+        { type:'example', en:"Money is important, but it isn't <strong>the most important</strong> thing in life.", es:'' },
+        { type:'example', en:'Excuse me, where is <strong>the nearest</strong> bank?', es:'' },
 
-    // ── BLOQUE 9: Resumen visual ──────────────────────────────────────────────
-    block9: {
-      title: '🧠 Resumen — ¿qué regla uso?',
-      content: [
-        { type: 'tip', emoji: '🤔', text: 'Hazte estas preguntas <strong>en orden</strong> cada vez que necesites un comparativo:' },
-        { type: 'rule', text: '1️⃣ ¿Es <em>good/well, bad/badly, far, much, little</em>? → Forma irregular: <strong>better / worse / further / more / less</strong>' },
-        { type: 'rule', text: '2️⃣ ¿Termina en <strong>-y</strong>? → Cambia a <strong>-ier</strong>: <em>happy → happier</em>' },
-        { type: 'rule', text: '3️⃣ ¿Es una palabra corta (1 sílaba)? → Añade <strong>-er</strong>: <em>fast → faster</em>' },
-        { type: 'rule', text: '4️⃣ ¿Es larga (2+ sílabas) o adverbio en -ly? → Pon <strong>more</strong> delante: <em>more careful</em>' },
-        { type: 'teacher', text: '🏆 Y recuerda: usa siempre <strong>than</strong> (no "that") para unir lo que comparas. Puedes añadir <strong>a bit</strong> o <strong>much</strong> delante para decir cuánto más.' },
-      ]
-    },
+        { type:'subtitle', text:'D · Superlative without a noun' },
+        { type:'example', en:"Luke is a good player, but he isn't <strong>the best</strong> in the team.", es:'(the best = the best player)' },
 
-  }, // fin theoryBlock
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // EJERCICIOS — 20 ejercicios mixtos, fieles al contenido del libro
-  // ═══════════════════════════════════════════════════════════════════════════
-  theoryQuiz: [
-
-    // ── FILL ─────────────────────────────────────────────────────────────────
-
-    {
-      id: 'c01',
-      type: 'fill',
-      q: 'Rome is old, but Athens is ______ (old).',
-      ans: 'older',
-      explanation: 'Old = 1 sílaba → añadimos -er: older. (no "more old")'
+        { type:'subtitle', text:'E · Superlative + I\'ve ever / you\'ve ever …' },
+        { type:'example', en:"The film was very bad. I think it's <strong>the worst</strong> film I've <strong>ever</strong> seen.", es:'' },
+        { type:'example', en:"What is <strong>the most unusual</strong> thing you've <strong>ever</strong> done?", es:'' },
+      ],
     },
-    {
-      id: 'c02',
-      type: 'fill',
-      q: 'The train is ______ (fast) than the bus.',
-      ans: 'faster',
-      explanation: 'Fast = 1 sílaba → faster. Consonante-vocal-consonante pero termina en consonante sola: simplemente añadimos -er.'
-    },
-    {
-      id: 'c03',
-      type: 'fill',
-      q: 'Don\'t take the bus — it\'s ______ (easy) to take a taxi.',
-      ans: 'easier',
-      explanation: 'Easy termina en -y → cambia a -i y añadimos -er: easier. (no "more easy")'
-    },
-    {
-      id: 'c04',
-      type: 'fill',
-      q: 'You must be ______ (careful) when you drive at night.',
-      ans: 'more careful',
-      explanation: 'Careful = 2 sílabas, no termina en -y → usamos more: more careful.'
-    },
-    {
-      id: 'c05',
-      type: 'fill',
-      q: 'The weather wasn\'t good yesterday, but it\'s ______ (good) today.',
-      ans: 'better',
-      explanation: 'Good es irregular → comparativo: better. (nunca "more good" o "gooder")'
-    },
-    {
-      id: 'c06',
-      type: 'fill',
-      q: 'My headache is ______ (bad) than this morning.',
-      ans: 'worse',
-      explanation: 'Bad es irregular → comparativo: worse. (nunca "more bad" o "badder")'
-    },
-    {
-      id: 'c07',
-      type: 'fill',
-      q: '"How far is it to the station?" — "About two miles. It\'s ______ (far) than I thought."',
-      ans: 'further',
-      explanation: 'Far es irregular → comparativo: further (o farther). Ambas formas son correctas.'
-    },
-    {
-      id: 'c08',
-      type: 'fill',
-      q: 'Canada is ______ (big) than France.',
-      ans: 'bigger',
-      explanation: 'Big = 1 sílaba y termina en consonante-vocal-consonante (b-i-g) → doblamos la g: bigger.'
-    },
-    {
-      id: 'c09',
-      type: 'fill',
-      q: 'This job is ______ (stressful) than my last one.',
-      ans: 'more stressful',
-      explanation: 'Stressful = 2 sílabas, no termina en -y → more stressful.'
-    },
-    {
-      id: 'c10',
-      type: 'fill',
-      q: 'Sue is ______ (a bit / old) than Gary — she\'s 25 and he\'s 24.',
-      ans: 'a bit older',
-      explanation: '"A bit" intensifica el comparativo: a bit older = un poco más vieja.'
-    },
-
-    // ── CHOICE ───────────────────────────────────────────────────────────────
-
-    {
-      id: 'c11',
-      type: 'choice',
-      q: 'Which is the correct comparative of "heavy"?',
-      options: ['more heavy', 'heavier', 'heavyer', 'heavierer'],
-      ans: 'heavier',
-      explanation: 'Heavy termina en -y → cambia la y por i y añadimos -er: heavier.'
-    },
-    {
-      id: 'c12',
-      type: 'choice',
-      q: 'The Europa Hotel is ______ than the Grand Hotel.',
-      options: ['more expensive', 'expensiver', 'more expensiver', 'expensiveer'],
-      ans: 'more expensive',
-      explanation: 'Expensive = 3 sílabas → usamos more. Nunca añadimos -er a palabras largas.'
-    },
-    {
-      id: 'c13',
-      type: 'choice',
-      q: '"Do you feel better today?" — "No, I feel ______."',
-      options: ['more bad', 'worse', 'badder', 'worser'],
-      ans: 'worse',
-      explanation: 'Bad es irregular. Su único comparativo es worse.'
-    },
-    {
-      id: 'c14',
-      type: 'choice',
-      q: 'She speaks English ______ than her brother.',
-      options: ['more fluently', 'fluentlier', 'fluenter', 'fluentlyer'],
-      ans: 'more fluently',
-      explanation: 'Fluently es un adverbio en -ly → siempre usamos more.'
-    },
-    {
-      id: 'c15',
-      type: 'choice',
-      q: 'The film was very short — ______ an hour.',
-      options: ['less than', 'fewer than', 'lower than', 'lesser than'],
-      ans: 'less than',
-      explanation: 'Para cantidad (tiempo, dinero, etc.) usamos less than = menos de.'
-    },
-
-    // ── ERROR ─────────────────────────────────────────────────────────────────
-
-    {
-      id: 'c16',
-      type: 'error',
-      q: 'This phone is more cheap than that one.',
-      ans: 'This phone is cheaper than that one.',
-      explanation: 'Cheap = 1 sílaba → usa -er. Nunca "more cheap" con palabras cortas.'
-    },
-    {
-      id: 'c17',
-      type: 'error',
-      q: 'London is bigger that Paris.',
-      ans: 'London is bigger than Paris.',
-      explanation: 'El conector en comparaciones es THAN, nunca "that".'
-    },
-    {
-      id: 'c18',
-      type: 'error',
-      q: 'I want to do something more interesting that my current job.',
-      ans: 'I want to do something more interesting than my current job.',
-      explanation: 'Recuerda: siempre "than" (no "that") después del comparativo.'
-    },
-
-    // ── ORDER ─────────────────────────────────────────────────────────────────
-
-    {
-      id: 'c19',
-      type: 'order',
-      words: ['is', 'more', 'expensive', 'The', 'Europa', 'Hotel', 'than', 'the', 'Grand'],
-      ans: 'The Europa Hotel is more expensive than the Grand',
-      explanation: 'Estructura: [Sujeto] + is + comparativo + than + [lo que comparamos].'
-    },
-    {
-      id: 'c20',
-      type: 'order',
-      words: ['much', 'bigger', 'Canada', 'than', 'is', 'France'],
-      ans: 'Canada is much bigger than France',
-      explanation: '"Much" intensifica el comparativo: mucho más grande. Canada is much bigger than France.'
-    },
-
-  ], // fin theoryQuiz
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // VOCABULARIO
-  // ═══════════════════════════════════════════════════════════════════════════
-  vocabulary: [
-    { id: 'v1',  word: 'Older',             span: 'Más viejo/a'         },
-    { id: 'v2',  word: 'Cheaper',           span: 'Más barato/a'        },
-    { id: 'v3',  word: 'Bigger',            span: 'Más grande'          },
-    { id: 'v4',  word: 'Heavier',           span: 'Más pesado/a'        },
-    { id: 'v5',  word: 'Easier',            span: 'Más fácil'           },
-    { id: 'v6',  word: 'Earlier',           span: 'Más temprano'        },
-    { id: 'v7',  word: 'Better',            span: 'Mejor'               },
-    { id: 'v8',  word: 'Worse',             span: 'Peor'                },
-    { id: 'v9',  word: 'Further',           span: 'Más lejos'           },
-    { id: 'v10', word: 'More expensive',    span: 'Más caro/a'          },
-    { id: 'v11', word: 'More comfortable',  span: 'Más cómodo/a'        },
-    { id: 'v12', word: 'More interesting',  span: 'Más interesante'     },
-    { id: 'v13', word: 'More careful',      span: 'Más cuidadoso/a'     },
-    { id: 'v14', word: 'Than',              span: 'Que (comparación)'   },
-    { id: 'v15', word: 'A bit',             span: 'Un poco (más)'       },
-    { id: 'v16', word: 'Much',              span: 'Mucho (más)'         },
-    { id: 'v17', word: 'Less than',         span: 'Menos que / menos de'},
-    { id: 'v18', word: 'More than',         span: 'Más que / más de'    },
-  ],
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // READING
-  // ═══════════════════════════════════════════════════════════════════════════
-  reading: {
-    title: 'City Life vs Countryside',
-    text: 'Many people think that living in the city is better than living in the countryside. Life in the city is faster and more exciting, but it is also more expensive and more stressful. The countryside is quieter and the air is cleaner, but finding a job is harder. Some people say the quality of life is better in the countryside because it is safer for children and the houses are much bigger. In the end, the best place to live depends on what is more important to you.',
-    questions: [
-      { id: 'r1', q: 'Is city life more expensive than country life?',      ans: 'Yes'     },
-      { id: 'r2', q: 'What is harder to find in the countryside?',          ans: 'A job'   },
-      { id: 'r3', q: 'What is cleaner in the countryside?',                 ans: 'The air' },
-      { id: 'r4', q: 'Are houses bigger in the city or the countryside?',   ans: 'The countryside' },
-    ]
   },
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // LISTENING
-  // ═══════════════════════════════════════════════════════════════════════════
-  listening: {
-    text: "The new sports centre is much bigger and better than the old one. It's more modern and more comfortable, but it's also a bit more expensive. The changing rooms are cleaner and the equipment is newer.",
-    correctItems: ['much bigger', 'better', 'more expensive'],
-    options: ['much bigger', 'better', 'faster', 'more expensive', 'cheaper', 'older', 'more modern', 'cleaner']
-  }
+  theoryQuiz: quiz,
+  activeQuiz:  quiz,
 
-}; // fin comparativesUnit
+  vocabulary: [
+    { id:'v01', word:'older',                span:'más viejo/a' },
+    { id:'v02', word:'bigger',               span:'más grande' },
+    { id:'v03', word:'heavier',              span:'más pesado/a' },
+    { id:'v04', word:'more expensive',       span:'más caro/a' },
+    { id:'v05', word:'easier',               span:'más fácil' },
+    { id:'v06', word:'better',               span:'mejor' },
+    { id:'v07', word:'worse',                span:'peor' },
+    { id:'v08', word:'further',              span:'más lejos' },
+    { id:'v09', word:'taller than',          span:'más alto/a que' },
+    { id:'v10', word:'much bigger',          span:'mucho más grande' },
+    { id:'v11', word:'a bit older',          span:'un poco mayor' },
+    { id:'v12', word:'more than',            span:'más de / más que' },
+    { id:'v13', word:'less than',            span:'menos de / menos que' },
+    { id:'v14', word:'the oldest',           span:'el/la más viejo/a' },
+    { id:'v15', word:'the most expensive',   span:'el/la más caro/a' },
+    { id:'v16', word:'the best',             span:'el/la mejor' },
+    { id:'v17', word:'the worst',            span:'el/la peor' },
+    { id:'v18', word:'the longest',          span:'el/la más largo/a' },
+    { id:'v19', word:'the tallest',          span:'el/la más alto/a' },
+    { id:'v20', word:"the most … I've ever", span:"el/la más … que he … nunca" },
+  ],
+
+  listening: {
+    text: "Last summer I visited two amazing cities: Rome and Athens. Rome is beautiful and very old, but Athens is actually older. The Colosseum in Rome is one of the most impressive buildings in the world, but the Parthenon in Athens is more ancient. Greek food is generally cheaper than Italian food, but some people think Italian food is better. The streets in Rome are busier and more crowded than in Athens. However, Athens has the most interesting history of any city I have visited. My sister says it is the most beautiful city she has ever seen. I think both cities are much more exciting than staying at home.",
+    options:[
+      'older','more impressive','cheaper','better',
+      'the most interesting','the most beautiful','more expensive','the newest',
+    ],
+    correctItems:['older','cheaper','better','the most interesting','the most beautiful'],
+  },
+
+  reading: {
+    title: 'Faster, Higher, Stronger',
+    source: 'English Studio · Level A2–B1',
+    passage: `The Olympic motto is "Citius, Altius, Fortius" — in English, "Faster, Higher, Stronger." These three words are all comparative adjectives, and they perfectly describe what the Olympic Games are about: athletes trying to perform better than they did before, and better than their competitors.
+
+In the 100-metre sprint, the winner is simply the runner who is faster than all the others. But in sports like gymnastics or diving, judges decide who is more graceful, more controlled, and more precise. The best athlete is not always the strongest — sometimes, the most flexible or the most creative wins.
+
+Modern athletes are generally bigger, faster, and stronger than athletes from 100 years ago. A sprinter today is significantly faster than the world record holder from 1924. Training methods are more scientific, nutrition is more carefully planned, and equipment is more advanced than ever before.
+
+However, some experts argue that natural talent is still more important than technology. The greatest athletes are not just faster or stronger — they are also more mentally resilient, more disciplined, and more passionate about their sport.`,
+    questions: [
+      { id:'r01', type:'mc',
+        q:'What does the Olympic motto describe?',
+        options:['Athletes trying to perform better than before','The history of the Olympic Games','Different types of sport','The rules of competitions'],
+        ans:'Athletes trying to perform better than before',
+        explanation:'The text says athletes try to "perform better than they did before, and better than their competitors".' },
+      { id:'r02', type:'mc',
+        q:'In which sports do judges decide the winner based on grace and control?',
+        options:['100-metre sprint and swimming','Gymnastics and diving','All Olympic sports','Swimming and cycling'],
+        ans:'Gymnastics and diving',
+        explanation:'"in sports like gymnastics or diving, judges decide who is more graceful, more controlled…"' },
+      { id:'r03', type:'mc',
+        q:'According to the text, why are modern athletes better than those from 100 years ago?',
+        options:['They are naturally more talented','The Olympics are more popular','Training, nutrition and equipment are more advanced','They train more hours per day'],
+        ans:'Training, nutrition and equipment are more advanced',
+        explanation:'"Training methods are more scientific, nutrition is more carefully planned, and equipment is more advanced."' },
+      { id:'r04', type:'sa',
+        q:'Find TWO comparative adjectives from the final paragraph that describe what makes the greatest athletes special beyond physical ability.',
+        ans:'more mentally resilient|more disciplined|more passionate' },
+      { id:'r05', type:'mc',
+        q:'Which sentence correctly uses a comparative adverb?',
+        options:['Swimmers today swim more quick than in 1924.','Swimmers today swim more quickly than in 1924.','Swimmers today swim quicklier than in 1924.','Swimmers today swim most quickly than in 1924.'],
+        ans:'Swimmers today swim more quickly than in 1924.',
+        explanation:'Adverbs ending in -ly use "more" for the comparative: more quickly (never "quicklier").' },
+    ],
+  },
+};
+
+export const comparativesReadingPatch = {};
