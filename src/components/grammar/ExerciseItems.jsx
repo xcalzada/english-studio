@@ -1,7 +1,32 @@
 import React, { useState, useCallback } from 'react';
-import { CheckCircle, XCircle, Unlock, RotateCcw } from 'lucide-react';
+import { CheckCircle, XCircle, Unlock, RotateCcw, Lightbulb } from 'lucide-react';
 import { normalize } from '../../utils/normalize';
-import { sanitize } from '../../utils/sanitize';
+
+const HintBox = ({ hint }) => {
+  if (!hint) return null;
+  return (
+    <div className="flex items-start gap-2 px-3 py-2 rounded-xl"
+      style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.25)' }}>
+      <Lightbulb size={13} className="shrink-0 mt-0.5" style={{ color: '#fbbf24' }} />
+      <p className="text-xs font-semibold leading-snug" style={{ color: '#fbbf24' }}>{hint}</p>
+    </div>
+  );
+};
+
+const HintToggle = ({ hint, locked }) => {
+  const [visible, setVisible] = useState(false);
+  if (!hint || locked) return null;
+  return visible
+    ? <HintBox hint={hint} />
+    : (
+      <button
+        onClick={() => setVisible(true)}
+        className="flex items-center gap-1.5 w-fit text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl transition-all"
+        style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.20)', color: '#fbbf24' }}>
+        <Lightbulb size={11} /> Hint
+      </button>
+    );
+};
 
 const StatusBadge = ({ status }) => (
   <div className={`flex items-center gap-1.5 px-4 py-2 rounded-2xl font-black uppercase text-xs tracking-widest
@@ -27,11 +52,12 @@ export const ErrorItem = React.memo(({ item, onResult }) => {
   }, [item.ans, onResult]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div className="badge-wrong p-3 rounded-2xl">
         <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: 'var(--fail-text)' }}>🔍 Find and fix the error:</p>
-        <p className="text-base font-bold text-white" dangerouslySetInnerHTML={{ __html: sanitize(item.q) }} />
+        <p className="text-base font-bold text-white" dangerouslySetInnerHTML={{ __html: item.q }} />
       </div>
+      <HintToggle hint={item.hint} locked={locked} />
       <div className="flex items-center gap-2">
         <input
           disabled={locked} value={input}
@@ -45,7 +71,9 @@ export const ErrorItem = React.memo(({ item, onResult }) => {
         <div className="flex gap-2 shrink-0">
           {!locked
             ? <><button onClick={check} disabled={!input.trim()} className="btn-tool px-5 py-3 disabled:opacity-30">Check</button>
-                 <button onClick={reveal} className="btn-ghost px-4 py-3">Reveal</button></>
+                 <button onClick={reveal} className="btn-ghost px-4 py-3">Reveal</button>
+                 <span className="text-[9px] font-black uppercase tracking-widest hidden lg:block"
+                   style={{ color: 'var(--text-3)' }}>↵ Enter</span></>
             : <StatusBadge status={status} />}
         </div>
       </div>
@@ -85,6 +113,7 @@ export const OrderItem = React.memo(({ item, onResult }) => {
 
   return (
     <div className="space-y-3">
+      <HintToggle hint={item.hint} locked={locked} />
       <div className="min-h-[56px] flex flex-wrap gap-2 p-3 rounded-2xl border-2 transition-all"
         style={{ background: 'rgba(255,255,255,0.08)', borderColor }}>
         {chosen.length === 0 && <span className="text-sm italic self-center pl-1" style={{ color: 'var(--text-3)' }}>👆 Tap words to build your sentence…</span>}

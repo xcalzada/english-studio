@@ -1,17 +1,6 @@
 import React, { useState, useCallback, useId } from 'react';
-import { CheckCircle, XCircle, Unlock } from 'lucide-react';
+import { CheckCircle, XCircle, Unlock, Lightbulb } from 'lucide-react';
 import { normalize } from '../../utils/normalize';
-
-// FIX: minimal sanitizer — strips tags except safe formatting ones
-const ALLOWED = /^(b|i|em|strong|span|u)$/i;
-const sanitize = (html) => {
-  const tmp = document.createElement('div');
-  tmp.innerHTML = html;
-  tmp.querySelectorAll('*').forEach(el => {
-    if (!ALLOWED.test(el.tagName)) el.replaceWith(document.createTextNode(el.textContent));
-  });
-  return tmp.innerHTML;
-};
 
 const StatusBadge = ({ status }) => (
   <div className={`flex items-center gap-1.5 px-4 py-2 rounded-2xl font-black uppercase text-xs tracking-widest
@@ -21,6 +10,32 @@ const StatusBadge = ({ status }) => (
     {status === 'wrong'    && <><XCircle     size={14} /> Wrong</>}
   </div>
 );
+
+const HintBox = ({ hint }) => {
+  if (!hint) return null;
+  return (
+    <div className="flex items-start gap-2 px-3 py-2 rounded-xl mb-3"
+      style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.25)' }}>
+      <Lightbulb size={13} className="shrink-0 mt-0.5" style={{ color: '#fbbf24' }} />
+      <p className="text-xs font-semibold leading-snug" style={{ color: '#fbbf24' }}>{hint}</p>
+    </div>
+  );
+};
+
+const HintToggle = ({ hint, locked }) => {
+  const [visible, setVisible] = useState(false);
+  if (!hint || locked) return null;
+  return visible
+    ? <HintBox hint={hint} />
+    : (
+      <button
+        onClick={() => setVisible(true)}
+        className="flex items-center gap-1.5 w-fit mb-3 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl transition-all"
+        style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.20)', color: '#fbbf24' }}>
+        <Lightbulb size={11} /> Hint
+      </button>
+    );
+};
 
 export const FillItem = React.memo(({ item, onResult }) => {
   const [answers, setAnswers] = useState({});
@@ -57,32 +72,38 @@ export const FillItem = React.memo(({ item, onResult }) => {
   const borderColor = status === 'correct' ? 'var(--ok-border)' : status === 'revealed' ? 'var(--warn-border)' : status === 'wrong' ? 'var(--fail-border)' : 'var(--c3)';
 
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-      <div className="flex-grow text-lg font-bold text-white leading-loose">
-        {parts.map((part, pIdx) => (
-          <React.Fragment key={pIdx}>
-            <span dangerouslySetInnerHTML={{ __html: sanitize(part) }} />
-            {pIdx < parts.length - 1 && (
-              <input
-                id={`${id}-${pIdx}`}
-                disabled={locked}
-                value={answers[pIdx] || ''}
-                placeholder="?"
-                aria-label={`Gap ${pIdx + 1}`}
-                onChange={e => setAnswers(p => ({ ...p, [pIdx]: e.target.value }))}
-                onKeyDown={e => { if (e.key === 'Enter' && !locked) check(); }}
-                className="mx-2 inline-block w-32 px-3 py-1 text-center font-black uppercase rounded-xl outline-none text-base"
-                style={{ background: 'rgba(255,255,255,0.12)', borderBottom: `4px solid ${borderColor}`, color: '#fff' }}
-              />
-            )}
-          </React.Fragment>
-        ))}
-      </div>
-      <div className="shrink-0 flex gap-2">
-        {!locked
-          ? <><button onClick={check} disabled={!allFilled} className="btn-tool disabled:opacity-30">Check</button>
-               <button onClick={reveal} className="btn-ghost">Reveal</button></>
-          : <StatusBadge status={status} />}
+    <div className="flex flex-col gap-3">
+      <HintToggle hint={item.hint} locked={locked} />
+      <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+        <div className="flex-grow text-lg font-bold text-white leading-loose">
+          {parts.map((part, pIdx) => (
+            <React.Fragment key={pIdx}>
+              <span dangerouslySetInnerHTML={{ __html: part }} />
+              {pIdx < parts.length - 1 && (
+                <input
+                  id={`${id}-${pIdx}`}
+                  disabled={locked}
+                  value={answers[pIdx] || ''}
+                  placeholder="?"
+                  aria-label={`Gap ${pIdx + 1}`}
+                  onChange={e => setAnswers(p => ({ ...p, [pIdx]: e.target.value }))}
+                  onKeyDown={e => { if (e.key === 'Enter' && !locked) check(); }}
+                  className="mx-2 inline-block w-32 px-3 py-1 text-center font-black uppercase rounded-xl outline-none text-base"
+                  style={{ background: 'rgba(255,255,255,0.12)', borderBottom: `4px solid ${borderColor}`, color: '#fff' }}
+                  title="Press Enter to check"
+                />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+        <div className="shrink-0 flex gap-2">
+          {!locked
+            ? <><button onClick={check} disabled={!allFilled} className="btn-tool disabled:opacity-30">Check</button>
+                 <button onClick={reveal} className="btn-ghost">Reveal</button>
+                 <span className="text-[9px] font-black uppercase tracking-widest hidden lg:block"
+                   style={{ color: 'var(--text-3)' }}>↵ Enter</span></>
+            : <StatusBadge status={status} />}
+        </div>
       </div>
     </div>
   );

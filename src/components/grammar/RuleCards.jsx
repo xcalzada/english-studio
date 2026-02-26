@@ -2,10 +2,11 @@ import React, { useState, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, CheckCircle, BookOpen } from 'lucide-react';
 import { RenderItem } from './TheoryRenderers';
 
-export const RuleCards = React.memo(({ theory, onComplete }) => {
+export const RuleCards = React.memo(({ theory, onComplete, initialBlock }) => {
   const blocks  = Object.entries(theory || {});
   const total   = blocks.length;
-  const [idx, setIdx]        = useState(0);
+  const initialIdx = initialBlock ? Math.max(0, blocks.findIndex(([k]) => k === initialBlock)) : 0;
+  const [idx, setIdx]        = useState(initialIdx);
   const [confirmed, setConf] = useState({});
 
   const [key, block] = blocks[idx] || ['', {}];
@@ -82,12 +83,12 @@ export const RuleCards = React.memo(({ theory, onComplete }) => {
         {!isConfirmed ? (
           <button onClick={confirm}
             className="btn-tool flex-1 flex items-center justify-center gap-2 py-3 font-black text-sm">
-            <CheckCircle size={18} /> Got it — I understand this unit
+            <CheckCircle size={18} /> Got it!
           </button>
         ) : (
           <button onClick={goNext}
             className="btn-tool flex-1 flex items-center justify-center gap-2 py-3 font-black text-sm">
-            {idx < total - 1 ? <><ChevronRight size={18} /> Next unit</> : allDone ? <><CheckCircle size={18} /> Start Practice</> : <><ChevronRight size={18} /> Next unit</>}
+            {idx < total - 1 ? <><ChevronRight size={18} /> Next</> : allDone ? <><CheckCircle size={18} /> Start Practice</> : <><ChevronRight size={18} /> Next</>}
           </button>
         )}
       </div>
@@ -98,7 +99,7 @@ export const RuleCards = React.memo(({ theory, onComplete }) => {
           style={{ background: 'rgba(var(--c0-rgb, 99,102,241),0.15)', border: '2px solid var(--c0)' }}>
           <p className="text-2xl mb-1">🎉</p>
           <p className="font-black text-white text-sm mb-3">
-            You've studied all {total} units — time to practice!
+            You've studied all {total} blocks — time to practice!
           </p>
           <button onClick={onComplete}
             className="btn-tool mx-auto flex items-center gap-2 px-8 py-3 text-sm font-black">
