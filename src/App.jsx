@@ -5,7 +5,6 @@ import { TOOLS_CONFIG }   from './toolsConfig';
 import { UnitMenu }       from './components/ui/UnitMenu';
 import { ErrorBoundary }  from './components/ErrorBoundary';
 
-// Lazy-load each tool — parsed only when first accessed
 const TOOL_COMPONENTS = {
   grammar:   lazy(() => import('./features/GrammarLab')),
   vocab:     lazy(() => import('./features/VocabLab')),
@@ -26,6 +25,7 @@ const UNIT_THEMES = ['tool-grammar', 'tool-vocab', 'tool-listening', 'tool-readi
 const App = () => {
   const [activeUnitId, setActiveUnitId] = useState(null);
   const [activeTab,    setActiveTab]    = useState(null);
+
   const currentUnit = activeUnitId ? UNITS_DATA[activeUnitId] : null;
 
   const handleBack = () => setActiveTab(null);

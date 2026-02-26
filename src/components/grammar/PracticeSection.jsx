@@ -1,11 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { PenTool, Star, Flame, RotateCcw, CheckCircle, XCircle } from 'lucide-react';
-import { FillItem }       from './FillItem';
-import { ChoiceItem }     from './ChoiceItem';
+import { FillItem }             from './FillItem';
+import { ChoiceItem }           from './ChoiceItem';
 import { ErrorItem, OrderItem } from './ExerciseItems';
-import { TranslateItem }  from './TranslateItem';
-import { MatchPairsItem } from './MatchPairsItem';
-import { useStreak }      from '../../hooks/useStreak';
+import { TranslateItem }        from './TranslateItem';
+import { MatchPairsItem }       from './MatchPairsItem';
+import { useStreak }            from '../../hooks/useStreak';
 
 const TYPE_LABEL = {
   fill:       '✏️ Fill in',
@@ -26,6 +26,7 @@ const TypeBadge = ({ type }) => (
 const ExerciseItem = React.memo(({ item, idx, result, onResult, showExplanation = false }) => {
   const checked = result !== undefined;
   const ok      = result === true;
+
   return (
     <div className={`p-5 md:p-6 rounded-2xl border-2 transition-all ${checked && ok ? 'state-correct' : checked ? 'state-wrong' : 'item-surface'}`}
       style={!checked ? { borderColor: 'rgba(255,255,255,0.18)' } : {}}>
@@ -37,12 +38,14 @@ const ExerciseItem = React.memo(({ item, idx, result, onResult, showExplanation 
         </div>
         <TypeBadge type={item.type} />
       </div>
+
       {item.type === 'fill'       && <FillItem       item={item} onResult={onResult} />}
       {item.type === 'choice'     && <ChoiceItem     item={item} onResult={onResult} />}
       {item.type === 'error'      && <ErrorItem      item={item} onResult={onResult} />}
       {item.type === 'order'      && <OrderItem      item={item} onResult={onResult} />}
       {item.type === 'translate'  && <TranslateItem  item={item} onResult={onResult} />}
       {item.type === 'matchpairs' && <MatchPairsItem item={item} onResult={onResult} />}
+
       {checked && !ok && showExplanation && item.ans && (
         <div className="mt-4 px-4 py-3 rounded-xl animate-in slide-in-from-top-2"
           style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.14)' }}>
@@ -63,14 +66,22 @@ const ExerciseItem = React.memo(({ item, idx, result, onResult, showExplanation 
 export const PracticeSection = ({ quiz, showExplanation = false }) => {
   const [results, setResults] = useState({});
   const [key,     setKey]     = useState(0);
+  const recorded = useRef(new Set());                          // FIX: tracks recorded IDs
   const { streak, maxStreak, score, record, reset: resetStreak } = useStreak();
 
   const handleResult = useCallback((id, ok) => {
-    setResults(p => { if (p[id] !== undefined) return p; return { ...p, [id]: ok }; });
+    if (recorded.current.has(id)) return;                      // FIX: guard without setter
+    recorded.current.add(id);
     record(ok);
+    setResults(p => ({ ...p, [id]: ok }));
   }, [record]);
 
-  const restart = useCallback(() => { setResults({}); resetStreak(); setKey(k => k + 1); }, [resetStreak]);
+  const restart = useCallback(() => {
+    setResults({});
+    recorded.current = new Set();                              // FIX: clear on restart
+    resetStreak();
+    setKey(k => k + 1);
+  }, [resetStreak]);
 
   const checkedCount = Object.keys(results).length;
   const allChecked   = quiz.length > 0 && checkedCount === quiz.length;
@@ -123,10 +134,14 @@ export const PracticeSection = ({ quiz, showExplanation = false }) => {
           <p className="text-5xl mb-3">{pct === 100 ? '🏆' : pct >= 70 ? '🌟' : pct >= 40 ? '💪' : '🔄'}</p>
           <p className="text-6xl font-black text-white mb-1">{score}<span className="text-2xl opacity-50">/{quiz.length}</span></p>
           <div className="flex justify-center gap-8 mt-4 mb-6">
-            <div><p className="text-xs font-black uppercase tracking-widest mb-1" style={{ color: 'var(--text-3)' }}>Score</p>
-              <p className="font-black text-xl text-white">{pct}%</p></div>
-            <div><p className="text-xs font-black uppercase tracking-widest mb-1" style={{ color: 'var(--text-3)' }}>Best Streak</p>
-              <p className="font-black text-xl" style={{ color: 'var(--warn-text)' }}>{maxStreak} 🔥</p></div>
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest mb-1" style={{ color: 'var(--text-3)' }}>Score</p>
+              <p className="font-black text-xl text-white">{pct}%</p>
+            </div>
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest mb-1" style={{ color: 'var(--text-3)' }}>Best Streak</p>
+              <p className="font-black text-xl" style={{ color: 'var(--warn-text)' }}>{maxStreak} 🔥</p>
+            </div>
           </div>
           <button onClick={restart} className="btn-tool flex items-center gap-2 mx-auto">
             <RotateCcw size={16} /> Try Again

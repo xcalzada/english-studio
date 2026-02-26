@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { CheckCircle, XCircle, Unlock, RotateCcw } from 'lucide-react';
 import { normalize } from '../../utils/normalize';
+import { sanitize } from '../../utils/sanitize';
 
 const StatusBadge = ({ status }) => (
   <div className={`flex items-center gap-1.5 px-4 py-2 rounded-2xl font-black uppercase text-xs tracking-widest
@@ -29,7 +30,7 @@ export const ErrorItem = React.memo(({ item, onResult }) => {
     <div className="space-y-4">
       <div className="badge-wrong p-3 rounded-2xl">
         <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: 'var(--fail-text)' }}>🔍 Find and fix the error:</p>
-        <p className="text-base font-bold text-white" dangerouslySetInnerHTML={{ __html: item.q }} />
+        <p className="text-base font-bold text-white" dangerouslySetInnerHTML={{ __html: sanitize(item.q) }} />
       </div>
       <div className="flex items-center gap-2">
         <input

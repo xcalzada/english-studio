@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { CheckCircle, XCircle } from 'lucide-react';
 import { normalize } from '../../utils/normalize';
+import { sanitize } from '../../utils/sanitize';
 
 export const ChoiceItem = React.memo(({ item, onResult }) => {
   const [selected, setSelected] = useState(null);
@@ -15,20 +16,20 @@ export const ChoiceItem = React.memo(({ item, onResult }) => {
 
   return (
     <div className="space-y-4">
-      <p className="text-lg font-bold text-white leading-snug" dangerouslySetInnerHTML={{ __html: item.q }} />
+      <p className="text-lg font-bold text-white leading-snug" dangerouslySetInnerHTML={{ __html: sanitize(item.q) }} />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {item.options.map(opt => {
           const isCorrect  = normalize(opt) === normalize(item.ans);
           const isSelected = selected === opt;
           let cls = 'p-3 rounded-2xl border-2 font-bold text-sm text-left transition-all flex items-center gap-2 cursor-pointer ';
-          if (locked && isCorrect)               cls += 'badge-correct scale-[1.02]';
-          else if (locked && isSelected)         cls += 'badge-wrong';
-          else if (locked)                       cls += 'opacity-40 item-surface';
-          else                                   cls += 'item-surface hover:border-[var(--c3)] hover:bg-white/10 hover:scale-[1.01]';
+          if (locked && isCorrect)                cls += 'badge-correct scale-[1.02]';
+          else if (locked && isSelected)          cls += 'badge-wrong';
+          else if (locked)                        cls += 'opacity-40 item-surface';
+          else                                    cls += 'item-surface hover:border-[var(--c3)] hover:bg-white/10 hover:scale-[1.01]';
           return (
             <button key={opt} onClick={() => choose(opt)} disabled={locked} className={cls}>
-              {locked && isCorrect               && <CheckCircle size={15} className="shrink-0" style={{ color: 'var(--ok-text)' }} />}
-              {locked && isSelected && !isCorrect && <XCircle    size={15} className="shrink-0" style={{ color: 'var(--fail-text)' }} />}
+              {locked && isCorrect                && <CheckCircle size={15} className="shrink-0" style={{ color: 'var(--ok-text)' }} />}
+              {locked && isSelected && !isCorrect && <XCircle     size={15} className="shrink-0" style={{ color: 'var(--fail-text)' }} />}
               {opt}
             </button>
           );

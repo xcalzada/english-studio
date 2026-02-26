@@ -21,7 +21,8 @@
 import { comparativesUnit, comparativesReadingPatch } from './comparatives';
 
 export const ALL_UNITS = [
-  { ...comparativesUnit, ...comparativesReadingPatch },
+  // FIX: explicit merge — only reading field from patch, avoids silent overwrites
+  { ...comparativesUnit, reading: comparativesReadingPatch.reading },
 
   // Añade nuevas unidades aquí:
   // { ...presentSimpleUnit },

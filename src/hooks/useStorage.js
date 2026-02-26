@@ -1,27 +1,23 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export function useStorage(key, defaultValue = '') {
   const [value,  setValue]  = useState(defaultValue);
-  const [status, setStatus] = useState('idle'); // idle | saved | error
-  const mounted = useRef(true);
+  const [status, setStatus] = useState('idle');
 
   useEffect(() => {
-    mounted.current = true;
-    return () => { mounted.current = false; };
-  }, []);
-
-  useEffect(() => {
+    let alive = true;                              // FIX: local flag per effect, no shared ref
     window.storage?.get(key)
-      .then(r => { if (mounted.current && r) setValue(r.value); })
+      .then(r => { if (alive && r) setValue(r.value); })
       .catch(() => {});
+    return () => { alive = false; };
   }, [key]);
 
   const save = useCallback(async (val) => {
     try {
       await window.storage.set(key, val);
-      if (mounted.current) setStatus('saved');
+      setStatus('saved');
     } catch {
-      if (mounted.current) setStatus('error');
+      setStatus('error');
     }
   }, [key]);
 

@@ -1,0 +1,29 @@
+/**
+ * src/units/index.js — Registro de unidades
+ *
+ * Importado por src/data.js. Para añadir una unidad:
+ *   1. Crea src/units/myUnit.js
+ *   2. Importa el export principal aquí y añádelo a ALL_UNITS
+ *
+ * Contrato requerido por cada unidad:
+ *   id           string        único, snake_case
+ *   grammarTitle string        título para la home card
+ *   title        string        subtítulo descriptivo
+ *   description? string        texto para UnitMenu (opcional)
+ *   theoryBlock  object        { key: { title, content[] } }
+ *   theoryQuiz   QuizItem[]    ejercicios para GrammarLab
+ *   activeQuiz?  QuizItem[]    si existe, ActiveGrammarLab lo usa en vez de theoryQuiz
+ *   vocabulary   VocabItem[]   { id, word, span }
+ *   listening    object        { text, options[], correctItems[] }
+ *   reading?     object        { title?, source?, passage, questions[] }
+ */
+
+import { comparativesUnit, comparativesReadingPatch } from './comparatives';
+
+export const ALL_UNITS = [
+  { ...comparativesUnit, ...comparativesReadingPatch },
+
+  // Añade nuevas unidades aquí:
+  // { ...presentSimpleUnit },
+  // { ...pastSimpleUnit },
+];

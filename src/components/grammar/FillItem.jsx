@@ -2,6 +2,17 @@ import React, { useState, useCallback, useId } from 'react';
 import { CheckCircle, XCircle, Unlock } from 'lucide-react';
 import { normalize } from '../../utils/normalize';
 
+// FIX: minimal sanitizer — strips tags except safe formatting ones
+const ALLOWED = /^(b|i|em|strong|span|u)$/i;
+const sanitize = (html) => {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  tmp.querySelectorAll('*').forEach(el => {
+    if (!ALLOWED.test(el.tagName)) el.replaceWith(document.createTextNode(el.textContent));
+  });
+  return tmp.innerHTML;
+};
+
 const StatusBadge = ({ status }) => (
   <div className={`flex items-center gap-1.5 px-4 py-2 rounded-2xl font-black uppercase text-xs tracking-widest
     ${status === 'correct' ? 'badge-correct' : status === 'revealed' ? 'badge-revealed' : 'badge-wrong'}`}>
@@ -39,9 +50,9 @@ export const FillItem = React.memo(({ item, onResult }) => {
     onResult(false);
   }, [item, onResult]);
 
-  const parts  = item.q.split('______');
-  const locked = !!status;
-  const gaps = parts.length - 1;
+  const parts     = item.q.split('______');
+  const locked    = !!status;
+  const gaps      = parts.length - 1;
   const allFilled = Array.from({ length: gaps }, (_, i) => normalize(answers[i])).every(Boolean);
   const borderColor = status === 'correct' ? 'var(--ok-border)' : status === 'revealed' ? 'var(--warn-border)' : status === 'wrong' ? 'var(--fail-border)' : 'var(--c3)';
 
@@ -50,7 +61,7 @@ export const FillItem = React.memo(({ item, onResult }) => {
       <div className="flex-grow text-lg font-bold text-white leading-loose">
         {parts.map((part, pIdx) => (
           <React.Fragment key={pIdx}>
-            <span dangerouslySetInnerHTML={{ __html: part }} />
+            <span dangerouslySetInnerHTML={{ __html: sanitize(part) }} />
             {pIdx < parts.length - 1 && (
               <input
                 id={`${id}-${pIdx}`}
