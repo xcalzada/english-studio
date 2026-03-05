@@ -19,11 +19,11 @@
  */
 
 import { comparativesUnit, comparativesReadingPatch } from './comparatives';
-
+import { presentSimpleUnit } from './presentSimple';
 export const ALL_UNITS = [
   // FIX: explicit merge — only reading field from patch, avoids silent overwrites
   { ...comparativesUnit, reading: comparativesReadingPatch.reading },
-
+  { ...presentSimpleUnit },
   // Añade nuevas unidades aquí:
   // { ...presentSimpleUnit },
   // { ...pastSimpleUnit },

@@ -4,6 +4,7 @@ import { UNITS_DATA }     from './data';
 import { TOOLS_CONFIG }   from './toolsConfig';
 import { UnitMenu }       from './components/ui/UnitMenu';
 import { ErrorBoundary }  from './components/ErrorBoundary';
+import { useSession }     from './hooks/useSession';
 
 const TOOL_COMPONENTS = {
   grammar:   lazy(() => import('./features/GrammarLab')),
@@ -26,10 +27,20 @@ const App = () => {
   const [activeUnitId, setActiveUnitId] = useState(null);
   const [activeTab,    setActiveTab]    = useState(null);
 
+  // ── Sesión anónima — se inicializa una vez al arrancar ──────────
+  const { userId, token, ready } = useSession();
+  console.log('App token:', token, 'ready:', ready);
   const currentUnit = activeUnitId ? UNITS_DATA[activeUnitId] : null;
 
   const handleBack = () => setActiveTab(null);
   const handleHome = () => { setActiveUnitId(null); setActiveTab(null); };
+
+  // Esperar a que la sesión esté lista antes de renderizar
+  if (!ready) return (
+    <div style={{ minHeight: '100vh', background: 'var(--page-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="skeleton w-32 h-8 rounded-xl" />
+    </div>
+  );
 
   /* ── TOOL VIEW ── */
   if (activeUnitId && currentUnit && activeTab) {
@@ -59,8 +70,8 @@ const App = () => {
         </nav>
         <div className="max-w-7xl mx-auto w-full px-4 pt-8 pb-24">
           <ErrorBoundary>
-            <Suspense fallback={<ToolLoader />}>
-              <ContentComponent data={currentUnit} />
+            <Suspense fallback={<ToolLoader />}>              
+              <ContentComponent data={currentUnit} unitId={activeUnitId} toolId={activeTab} token={token} />
             </Suspense>
           </ErrorBoundary>
         </div>
@@ -68,62 +79,64 @@ const App = () => {
     );
   }
 
-  /* ── UNIT MENU ── */
+  /* ── UNIT TOOL MENU ── */
   if (activeUnitId && currentUnit) {
     return (
-      <div className="tool-grammar page-transition" style={{ minHeight: '100vh', background: 'var(--page-bg)' }}>
-        <ErrorBoundary>
-          <UnitMenu unit={currentUnit} onSelectTab={setActiveTab} onBack={handleHome} />
-        </ErrorBoundary>
+      <div className={`${UNIT_THEMES[Object.keys(UNITS_DATA).indexOf(activeUnitId) % UNIT_THEMES.length]} page-transition`}
+        style={{ minHeight: '100vh', background: 'var(--page-bg)' }}>
+        <nav className="nav-bar w-full sticky top-0 z-20">
+          <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
+            <button onClick={handleHome} className="btn-ghost">← Home</button>
+            <span className="text-sm font-black text-white uppercase tracking-tight truncate">{currentUnit.grammarTitle}</span>
+          </div>
+        </nav>
+        <div className="max-w-7xl mx-auto w-full px-4 pt-8 pb-24">
+          <UnitMenu unit={currentUnit} onSelectTab={setActiveTab} />
+        </div>
       </div>
     );
   }
 
   /* ── HOME ── */
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--page-bg)' }} className="font-sans p-6">
-      <nav className="flex justify-center mb-14 mt-6">
-        <div className="relative cursor-pointer hover:scale-105 transition-transform">
-          <div className="absolute inset-0 blur-2xl opacity-40 rounded-full" style={{ background: 'rgba(147,197,253,.6)' }} />
-          <div className="relative p-4 md:p-5 rounded-3xl flex items-center gap-4 card-base">
-            <div className="p-3 rounded-2xl shadow-lg" style={{ background: 'linear-gradient(135deg,#3b82f6,#6d28d9)' }}>
-              <Layers className="text-white" size={28} strokeWidth={2.5} />
-            </div>
-            <div>
-              <h1 className="text-4xl md:text-5xl font-black uppercase italic tracking-tighter leading-none display-font text-white">
-                English
-                <span style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundImage: 'linear-gradient(135deg,#3b82f6,#a78bfa)', backgroundClip: 'text' }}>Studio</span>
-              </h1>
-              <p className="font-bold text-[10px] uppercase tracking-[.3em] text-right mt-0.5" style={{ color: 'var(--text-3)' }}>Kids Edition ⭐</p>
-            </div>
+    <div className="page-transition" style={{ minHeight: '100vh', background: 'var(--page-bg)' }}>
+      <nav className="nav-bar w-full sticky top-0 z-20">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Layers size={20} style={{ color: 'var(--c0)' }} />
+            <span className="text-base font-black text-white uppercase tracking-tight">English Studio</span>
           </div>
+          {userId && (
+            <span className="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg"
+              style={{ color: 'var(--text-3)', background: 'rgba(255,255,255,0.06)' }}>
+              ● Connected
+            </span>
+          )}
         </div>
       </nav>
-
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {Object.values(UNITS_DATA).map((unit, index) => (
-          <button
-            key={unit.id}
-            onClick={() => { setActiveUnitId(unit.id); setActiveTab(null); }}
-            className={`${UNIT_THEMES[index % UNIT_THEMES.length]} home-card group text-left p-7 h-72 flex flex-col justify-between`}
-          >
-            <div className="unit-badge absolute top-5 right-5 z-20">UNIT {index + 1}</div>
-            <div className="absolute -bottom-3 -right-3 opacity-[.08] rotate-12 group-hover:scale-110 transition-transform duration-500">
-              <Crown size={150} style={{ color: 'var(--c0)' }} />
-            </div>
-            <div className="relative z-10">
-              <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg"
-                style={{ background: 'rgba(255,255,255,.18)', border: '1.5px solid var(--c3)', color: '#fff' }}>
-                Grammar Focus
-              </span>
-              <h2 className="text-3xl font-black uppercase italic leading-none mt-3 mb-1 display-font text-white">{unit.grammarTitle}</h2>
-              <p className="font-bold text-base leading-tight text-white opacity-75">{unit.title}</p>
-            </div>
-            <div className="relative z-10 self-start mt-3 btn-primary">
-              Start <Zap size={13} className="fill-current" />
-            </div>
-          </button>
-        ))}
+      <div className="max-w-7xl mx-auto w-full px-4 pt-12 pb-24">
+        <div className="mb-12 text-center">
+          <h1 className="display-font text-5xl md:text-7xl text-white mb-3">English Studio</h1>
+          <p className="text-base font-semibold" style={{ color: 'var(--text-3)' }}>Choose a unit to start learning</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Object.entries(UNITS_DATA).map(([id, unit], i) => {
+            const theme = UNIT_THEMES[i % UNIT_THEMES.length];
+            return (
+              <button key={id} onClick={() => setActiveUnitId(id)}
+                className={`${theme} card-tool p-6 text-left hover:scale-[1.02] transition-transform`}>
+                <div className="flex items-start justify-between mb-4">
+                  <div className="p-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.10)' }}>
+                    <Crown size={20} style={{ color: 'var(--c0)' }} />
+                  </div>
+                  <Zap size={14} style={{ color: 'var(--text-3)' }} />
+                </div>
+                <h2 className="display-font text-2xl text-white mb-1">{unit.grammarTitle}</h2>
+                <p className="text-xs font-semibold" style={{ color: 'var(--text-3)' }}>{unit.title}</p>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

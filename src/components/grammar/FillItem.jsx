@@ -37,9 +37,20 @@ const HintToggle = ({ hint, locked }) => {
     );
 };
 
-export const FillItem = React.memo(({ item, onResult }) => {
-  const [answers, setAnswers] = useState({});
-  const [status,  setStatus]  = useState(null);
+// Construye las respuestas iniciales a partir de la respuesta correcta guardada
+function buildInitialAnswers(item, wasCorrect) {
+  if (wasCorrect === undefined) return {};
+  const parts = item.ans.includes(',') ? item.ans.split(',') : [item.ans];
+  return Object.fromEntries(parts.map((p, i) => [i, p.trim()]));
+}
+
+export const FillItem = React.memo(({ item, onResult, savedResult }) => {
+  // savedResult = true (correcto), false (incorrecto/revelado), undefined (no hecho)
+  const initialAnswers = savedResult !== undefined ? buildInitialAnswers(item, savedResult) : {};
+  const initialStatus  = savedResult === true ? 'correct' : savedResult === false ? 'wrong' : null;
+
+  const [answers, setAnswers] = useState(initialAnswers);
+  const [status,  setStatus]  = useState(initialStatus);
   const id = useId();
 
   const check = useCallback(() => {

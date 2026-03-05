@@ -1,10 +1,9 @@
 import React from 'react';
 import { CheckCircle, AlertTriangle, ChevronRight, ArrowRight } from 'lucide-react';
-import { sanitize } from '../../utils/sanitize';
 
 export const Ex = React.memo(({ en, es }) => (
   <div className="card-inner p-4 space-y-1">
-    <p className="font-bold text-white text-base leading-snug" dangerouslySetInnerHTML={{ __html: sanitize(en) }} />
+    <p className="font-bold text-white text-base leading-snug" dangerouslySetInnerHTML={{ __html: en }} />
     {es && <p className="text-sm italic" style={{ color: 'var(--text-3)' }}>{es}</p>}
   </div>
 ));
@@ -12,7 +11,7 @@ export const Ex = React.memo(({ en, es }) => (
 export const Rule = React.memo(({ text, warn }) => (
   <div className={`flex gap-3 p-3 rounded-2xl border-2 text-sm font-semibold ${warn ? 'badge-wrong' : 'badge-correct'}`}>
     <span className="text-xl shrink-0">{warn ? '⚠️' : '✅'}</span>
-    <span dangerouslySetInnerHTML={{ __html: sanitize(text) }} />
+    <span dangerouslySetInnerHTML={{ __html: text }} />
   </div>
 ));
 
@@ -31,14 +30,14 @@ export const Grid = React.memo(({ items }) => (
 export const Teacher = React.memo(({ text }) => (
   <div className="flex gap-3 p-3 rounded-2xl badge-warn">
     <span className="text-2xl shrink-0">👨‍🏫</span>
-    <p className="text-sm font-semibold leading-relaxed" dangerouslySetInnerHTML={{ __html: sanitize(text) }} />
+    <p className="text-sm font-semibold leading-relaxed" dangerouslySetInnerHTML={{ __html: text }} />
   </div>
 ));
 
 export const Tip = React.memo(({ emoji, text }) => (
   <div className="flex gap-3 p-3 rounded-2xl card-inner">
     <span className="text-2xl shrink-0 mt-0.5">{emoji}</span>
-    <p className="text-sm font-semibold leading-relaxed" style={{ color: 'var(--text-2)' }} dangerouslySetInnerHTML={{ __html: sanitize(text) }} />
+    <p className="text-sm font-semibold leading-relaxed" style={{ color: 'var(--text-2)' }} dangerouslySetInnerHTML={{ __html: text }} />
   </div>
 ));
 
@@ -58,7 +57,7 @@ export const Table = React.memo(({ rows, headers }) => (
         {rows.map((row, i) => (
           <tr key={i} className="border-b border-white/10" style={{ background: i % 2 === 0 ? 'rgba(255,255,255,0.05)' : 'transparent' }}>
             {row.map((cell, j) => (
-              <td key={j} className="px-4 py-3 text-white font-semibold" dangerouslySetInnerHTML={{ __html: sanitize(cell) }} />
+              <td key={j} className="px-4 py-3 text-white font-semibold" dangerouslySetInnerHTML={{ __html: cell }} />
             ))}
           </tr>
         ))}
@@ -136,7 +135,7 @@ export const RenderItem = React.memo(({ item }) => {
       <span style={{ color: 'var(--c0)', flexShrink: 0, marginTop: 2 }}>
         {item.includes('❌') ? <AlertTriangle size={15} /> : item.includes('✅') ? <CheckCircle size={15} /> : <ChevronRight size={15} />}
       </span>
-      <span className="text-sm leading-relaxed font-semibold" style={{ color: 'var(--text-2)' }} dangerouslySetInnerHTML={{ __html: sanitize(item) }} />
+      <span className="text-sm leading-relaxed font-semibold" style={{ color: 'var(--text-2)' }} dangerouslySetInnerHTML={{ __html: item }} />
     </div>
   );
   switch (item.type) {
@@ -148,8 +147,13 @@ export const RenderItem = React.memo(({ item }) => {
     case 'table':      return <Table      rows={item.rows} headers={item.headers} />;
     case 'compare':    return <Compare    left={item.left} right={item.right} label={item.label} />;
     case 'comparebar': return <CompareBar items={item.items} adjective={item.adjective} />;
-    case 'subtitle':   return <p className="text-xs font-black uppercase tracking-widest pt-1" style={{ color: 'var(--c0)' }}>● {item.text}</p>;
-    case 'text':       return <p className="text-sm font-semibold leading-relaxed" style={{ color: 'var(--text-2)' }} dangerouslySetInnerHTML={{ __html: sanitize(item.text) }} />;
+    case 'subtitle':   return (
+      <div style={{ marginTop: 12, marginBottom: 2 }}>
+        <div style={{ height: 2, width: 32, borderRadius: 99, background: 'var(--c0)', marginBottom: 6, opacity: 0.7 }} />
+        <p className="text-sm font-black uppercase tracking-wider" style={{ color: 'var(--c0)' }}>{item.text}</p>
+      </div>
+    );
+    case 'text':       return <p className="text-sm font-semibold leading-relaxed" style={{ color: 'var(--text-2)' }} dangerouslySetInnerHTML={{ __html: item.text }} />;
     default:           return null;
   }
 });
