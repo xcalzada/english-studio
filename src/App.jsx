@@ -1,10 +1,11 @@
 import React, { useState, lazy, Suspense } from 'react';
-import { Layers, Crown, Zap } from 'lucide-react';
-import { UNITS_DATA }     from './data';
-import { TOOLS_CONFIG }   from './toolsConfig';
-import { UnitMenu }       from './components/ui/UnitMenu';
-import { ErrorBoundary }  from './components/ErrorBoundary';
-import { useSession }     from './hooks/useSession';
+import { Layers, Crown, Zap, Trophy } from 'lucide-react';
+import { UNITS_DATA }        from './data';
+import { TOOLS_CONFIG }      from './toolsConfig';
+import { UnitMenu }          from './components/ui/UnitMenu';
+import { ErrorBoundary }     from './components/ErrorBoundary';
+import { useSession }        from './hooks/useSession';
+import ProgressDashboard     from './features/ProgressDashboard';
 
 const TOOL_COMPONENTS = {
   grammar:   lazy(() => import('./features/GrammarLab')),
@@ -24,16 +25,17 @@ const ToolLoader = () => (
 const UNIT_THEMES = ['tool-grammar', 'tool-vocab', 'tool-listening', 'tool-reading', 'tool-discovery', 'tool-writing'];
 
 const App = () => {
-  const [activeUnitId, setActiveUnitId] = useState(null);
-  const [activeTab,    setActiveTab]    = useState(null);
+  const [activeUnitId,    setActiveUnitId]    = useState(null);
+  const [activeTab,       setActiveTab]       = useState(null);
+  const [showProgress,    setShowProgress]    = useState(false);
 
   // ── Sesión anónima — se inicializa una vez al arrancar ──────────
   const { userId, token, ready } = useSession();
-  console.log('App token:', token, 'ready:', ready);
+
   const currentUnit = activeUnitId ? UNITS_DATA[activeUnitId] : null;
 
   const handleBack = () => setActiveTab(null);
-  const handleHome = () => { setActiveUnitId(null); setActiveTab(null); };
+  const handleHome = () => { setActiveUnitId(null); setActiveTab(null); setShowProgress(false); };
 
   // Esperar a que la sesión esté lista antes de renderizar
   if (!ready) return (
@@ -41,6 +43,16 @@ const App = () => {
       <div className="skeleton w-32 h-8 rounded-xl" />
     </div>
   );
+
+  /* ── PROGRESS DASHBOARD ── */
+  if (showProgress) {
+    return (
+      <ProgressDashboard
+        token={token}
+        onBack={handleHome}
+      />
+    );
+  }
 
   /* ── TOOL VIEW ── */
   if (activeUnitId && currentUnit && activeTab) {
@@ -70,7 +82,7 @@ const App = () => {
         </nav>
         <div className="max-w-7xl mx-auto w-full px-4 pt-8 pb-24">
           <ErrorBoundary>
-            <Suspense fallback={<ToolLoader />}>              
+            <Suspense fallback={<ToolLoader />}>
               <ContentComponent data={currentUnit} unitId={activeUnitId} toolId={activeTab} token={token} />
             </Suspense>
           </ErrorBoundary>
@@ -106,12 +118,27 @@ const App = () => {
             <Layers size={20} style={{ color: 'var(--c0)' }} />
             <span className="text-base font-black text-white uppercase tracking-tight">English Studio</span>
           </div>
-          {userId && (
-            <span className="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg"
-              style={{ color: 'var(--text-3)', background: 'rgba(255,255,255,0.06)' }}>
-              ● Connected
-            </span>
-          )}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowProgress(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all"
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: 'rgba(255,255,255,0.7)',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.14)'; e.currentTarget.style.color = '#fff'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
+            >
+              <Trophy size={13} /> Mi progreso
+            </button>
+            {userId && (
+              <span className="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg"
+                style={{ color: 'var(--text-3)', background: 'rgba(255,255,255,0.06)' }}>
+                ● Connected
+              </span>
+            )}
+          </div>
         </div>
       </nav>
       <div className="max-w-7xl mx-auto w-full px-4 pt-12 pb-24">
