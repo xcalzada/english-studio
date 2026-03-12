@@ -1,233 +1,231 @@
 // src/data/presentSimple.js
 // Present Simple — niños hispanohablantes 9-10 años (A1-A2)
-// Revisado: terminología profesional, visual, sin ambigüedades
+// SEGUNDA TANDA DE EJERCICIOS — contextos nuevos, misma estructura pedagógica
 
 const quiz = [
 
-  // ── BLOQUE 1: VERB TO BE ──────────────────────────────────────────
+  // ── BLOQUE 1: TO BE (am / is / are) — 6 ejercicios ───────────────
 
   { id:'ps01', type:'choice',
-    q:'🧒 I ______ 9 years old.',
+    q:'🌟 My best friend ______ really funny.',
     options:['am', 'is', 'are', 'be'],
-    ans:'am',
-    hint:'Con "I" (yo) → siempre AM.',
-    explanation:'Con <strong>I</strong> (yo) usamos <strong>am</strong>. Solo "I" usa "am". 👉 I <strong>am</strong> 9 years old.' },
+    ans:'is',
+    hint:'"My best friend" = él o ella (una persona) → IS.',
+    explanation:'"My best friend" = él o ella → <strong>is</strong>. Con él, ella o una cosa → siempre IS.' },
 
   { id:'ps02', type:'fill',
-    q:'🐶 My dog ______ very funny.',
-    ans:'is',
-    hint:'My dog = él (un animal) → IS.',
-    explanation:'"My dog" = él → <strong>is</strong>. Con él, ella o una cosa → siempre IS.' },
+    q:'🎨 I ______ a good artist!',
+    ans:'am',
+    hint:'Con "I" (yo) → siempre AM.',
+    explanation:'Con <strong>I</strong> (yo) → <strong>am</strong>. ¡Solo "I" usa "am"!' },
 
-  { id:'ps03', type:'fill',
-    q:'👨‍👩‍👧‍👦 My parents ______ very kind.',
+  { id:'ps03', type:'error',
+    q:'🏀 My teammates is very fast.',
+    ans:'My teammates are very fast.',
+    hint:'"My teammates" = ellos (más de uno) → ARE.',
+    explanation:'"My teammates" son varios → <strong>are</strong>. ARE es para nosotros, vosotros o ellos.' },
+
+  { id:'ps04', type:'fill',
+    q:'🌍 London and Paris ______ great cities.',
     ans:'are',
-    hint:'My parents = ellos (más de uno) → ARE.',
-    explanation:'"My parents" son dos personas → <strong>are</strong>. Con nosotros, vosotros o ellos → siempre ARE.' },
-
-  { id:'ps04', type:'error',
-    q:'🐱 My cat are very lazy.',
-    ans:'My cat is very lazy.',
-    hint:'My cat = él (un animal) → IS, no ARE.',
-    explanation:'"My cat" es uno solo → <strong>is</strong>. ARE es para más de una persona o cosa.' },
+    hint:'London and Paris = ellas (más de una cosa) → ARE.',
+    explanation:'"London and Paris" son dos cosas → <strong>are</strong>. Con más de uno siempre ARE.' },
 
   { id:'ps05', type:'choice',
-    q:'🏫 ______ your school big?',
+    q:'🤒 ______ your mum at home today? She is ill.',
     options:['Am', 'Is', 'Are', 'Do'],
     ans:'Is',
-    hint:'"Your school" = una sola cosa → IS va al principio en las preguntas.',
-    explanation:'"your school" es una cosa → IS. En las preguntas IS salta al principio: <strong>Is</strong> your school big? ✅' },
+    hint:'"Your mum" = ella (una persona) → IS al principio en preguntas.',
+    explanation:'En preguntas con ella → IS salta al principio: <strong>Is</strong> your mum at home? ✅' },
 
-  { id:'ps06', type:'fill',
-    q:'😢 I ______ not happy today.',
-    ans:'am',
-    hint:'I + negativo → I AM not.',
-    explanation:'Para decir que NO con "I" → I <strong>am</strong> not happy. Forma corta: I\'m not happy. 🙁' },
+  { id:'ps06', type:'error',
+    q:'😎 We is the best team in the school!',
+    ans:'We are the best team in the school!',
+    hint:'"We" (nosotros) → ARE, no IS.',
+    explanation:'"We" = nosotros → <strong>are</strong>. IS solo se usa con él, ella o una sola cosa.' },
 
-  // ── BLOQUE 2: VERBOS NORMALES — AFIRMATIVA ────────────────────────
+  // ── BLOQUE 2: VERBOS NORMALES — AFIRMATIVA — 7 ejercicios ─────────
 
   { id:'ps07', type:'fill',
-    q:'🎮 I ______ video games every day. (play)',
-    ans:'play',
-    hint:'Con "I" (yo) el verbo no cambia.',
-    explanation:'Con <strong>I</strong> el verbo no cambia: <strong>play</strong>. "Yo juego" → "I play".' },
+    q:'🐈 Our cat ______ all day on the sofa. (sleep)',
+    ans:'sleeps',
+    hint:'"Our cat" = él/ella (un animal) → añade -s.',
+    explanation:'"Our cat" = él → sleep + s = <strong>sleeps</strong>. Con él/ella/una cosa → el verbo lleva -s.' },
 
   { id:'ps08', type:'fill',
-    q:'🐹 My hamster ______ a lot. (eat)',
-    ans:'eats',
-    hint:'My hamster = él (un animal) → añade -s al verbo.',
-    explanation:'"My hamster" = él → eat + s = <strong>eats</strong>. Con él, ella o una cosa → el verbo lleva -s.' },
+    q:'⚽ My dad ______ football every Saturday. (watch)',
+    ans:'watches',
+    hint:'"watch" termina en -ch → añade -es.',
+    explanation:'"watch" termina en -ch → <strong>watches</strong>. Verbos que terminan en -ch, -sh, -ss añaden -es.' },
 
-  { id:'ps09', type:'fill',
-    q:'📚 She ______ every night before bed. (read)',
-    ans:'reads',
-    hint:'"She" (ella) → añade -s al verbo.',
-    explanation:'"She" = ella → read + s = <strong>reads</strong>. Con él/ella/una cosa → siempre -s.' },
+  { id:'ps09', type:'choice',
+    q:'🎤 My cousin ______ in a band. She is amazing!',
+    options:['sing', 'sings', 'singes', 'singing'],
+    ans:'sings',
+    hint:'"My cousin" = ella → el verbo lleva -s.',
+    explanation:'"My cousin" = ella → sing + s = <strong>sings</strong>. ("singes" no existe — "sing" no termina en -ge.)' },
 
-  { id:'ps10', type:'error',
-    q:'🚌 He go to school by bus.',
-    ans:'He goes to school by bus.',
-    hint:'"He" (él) → "go" termina en -o, añade -es: GOES.',
-    explanation:'"go" + él → <strong>goes</strong>. Verbos que terminan en -o añaden -es: go→goes, do→does. 🚌' },
+  { id:'ps10', type:'fill',
+    q:'🧁 My grandma ______ delicious cakes. (make)',
+    ans:'makes',
+    hint:'"My grandma" = ella → añade -s.',
+    explanation:'"My grandma" = ella → make + s = <strong>makes</strong>. Con él/ella/una cosa siempre -s.' },
 
-  { id:'ps11', type:'fill',
-    q:'📖 My sister ______ English at school. (study)',
-    ans:'studies',
-    hint:'"study" termina en consonante + y → cambia -y por -ies.',
-    explanation:'"study" termina en consonante + y → <strong>studies</strong>. Igual: try→tries, carry→carries.' },
+  { id:'ps11', type:'error',
+    q:'🚴 He ride his bike to school every day.',
+    ans:'He rides his bike to school every day.',
+    hint:'"He" (él) → el verbo necesita -s: ride → rides.',
+    explanation:'Con "he" el verbo lleva -s: ride → <strong>rides</strong>. Sin la -s es un error en Present Simple.' },
 
-  { id:'ps12', type:'choice',
-    q:'🎵 My brother ______ the guitar really well.',
-    options:['play', 'plays', 'playing', 'playes'],
-    ans:'plays',
-    hint:'"My brother" = él → el verbo lleva -s.',
-    explanation:'"My brother" = él → play + s = <strong>plays</strong>. "play" termina en vocal + y → solo -s, no -ies. ("playes" no existe.)' },
+  { id:'ps12', type:'fill',
+    q:'📱 My parents ______ their phones too much! (use)',
+    ans:'use',
+    hint:'"My parents" = ellos → el verbo no cambia.',
+    explanation:'"My parents" = ellos → el verbo no cambia: <strong>use</strong>. Solo cambia con él/ella/una cosa.' },
 
-  { id:'ps13', type:'fill',
-    q:'🏃 We ______ in the park after school. (run)',
-    ans:'run',
-    hint:'"We" (nosotros) → el verbo no cambia.',
-    explanation:'Con <strong>we</strong> (nosotros) el verbo no cambia: <strong>run</strong>. Solo añadimos -s con él/ella/una cosa.' },
+  { id:'ps13', type:'choice',
+    q:'🦜 That parrot ______ three languages!',
+    options:['speak', 'speaks', 'speakes', 'speaking'],
+    ans:'speaks',
+    hint:'"That parrot" = él (un animal) → el verbo lleva -s.',
+    explanation:'"That parrot" = él → speak + s = <strong>speaks</strong>. ("speakes" no existe — "speak" no termina en vocal.) 🦜' },
 
-  // ── BLOQUE 3: NEGATIVAS ───────────────────────────────────────────
+  // ── BLOQUE 3: NEGATIVAS — 6 ejercicios ───────────────────────────
 
   { id:'ps14', type:'fill',
-    q:"🥦 I ______ like broccoli! (not like)",
+    q:"☔ We ______ like rainy days. (not like)",
     ans:"don't like",
-    hint:"I (yo) + no → don't + verbo.",
-    explanation:"Con yo/tú/nosotros/ellos + no → <strong>don't</strong> + verbo: I <strong>don't</strong> like broccoli. 🤢" },
+    hint:'"We" (nosotros) + no → don\'t + verbo.',
+    explanation:'Con nosotros + no → <strong>don\'t</strong> + verbo: We <strong>don\'t</strong> like rainy days. ☔' },
 
-  { id:'ps15', type:'fill',
-    q:"🐕 My dog ______ like cats. (not like)",
-    ans:"doesn't like",
-    hint:"My dog = él → doesn't + verbo (sin -s).",
-    explanation:"Con él/ella/una cosa + no → <strong>doesn't</strong> + verbo: doesn't <strong>like</strong> (no \"likes\"). La -s está en \"doesn't\"." },
+  { id:'ps15', type:'error',
+    q:"My teacher don't speak Spanish.",
+    ans:"My teacher doesn't speak Spanish.",
+    hint:'"My teacher" = él/ella (una persona) → doesn\'t.',
+    explanation:'"My teacher" = él o ella → <strong>doesn\'t</strong>. "Don\'t" solo se usa con yo/tú/nosotros/ellos.' },
 
-  { id:'ps16', type:'error',
-    q:"She doesn't likes pizza.",
-    ans:"She doesn't like pizza.",
-    hint:"Después de doesn't → el verbo va sin -s.",
-    explanation:"Después de <strong>doesn't</strong> el verbo es siempre la forma base, sin -s: doesn't <strong>like</strong>. La -s ya está en \"does\"." },
+  { id:'ps16', type:'fill',
+    q:"🐠 My fish ______ make any noise. (not make)",
+    ans:"doesn't make",
+    hint:'"My fish" = él (un animal) → doesn\'t + verbo.',
+    explanation:'"My fish" = él → <strong>doesn\'t make</strong>. Con él/ella/una cosa → doesn\'t + verbo base.' },
 
   { id:'ps17', type:'choice',
-    q:"🎨 My friends ______ like drawing. They prefer football!",
-    options:["don't", "doesn't", "not", "isn't"],
-    ans:"don't",
-    hint:'"My friends" = ellos (más de uno) → don\'t.',
-    explanation:'"My friends" = ellos → <strong>don\'t</strong>. "Doesn\'t" solo se usa con él/ella/una cosa.' },
+    q:"🥕 My little sister ______ eat vegetables. She only wants chips!",
+    options:["don't", "doesn't", "isn't", "not"],
+    ans:"doesn't",
+    hint:'"My little sister" = ella (una persona) → doesn\'t.',
+    explanation:'"My little sister" = ella → <strong>doesn\'t</strong> eat. Con él/ella/una cosa → doesn\'t.' },
 
-  { id:'ps18', type:'fill',
-    q:"🌙 He ______ sleep early on weekends. (not sleep)",
-    ans:"doesn't sleep",
-    hint:'"He" (él) → doesn\'t + verbo.',
-    explanation:'"He" = él → <strong>doesn\'t sleep</strong>. Con él/ella/una cosa → "doesn\'t", y el verbo queda sin -s.' },
+  { id:'ps18', type:'error',
+    q:"They doesn't play video games on school days.",
+    ans:"They don't play video games on school days.",
+    hint:'"They" (ellos) → don\'t, no doesn\'t.',
+    explanation:'"They" = ellos → <strong>don\'t</strong>. "Doesn\'t" solo es para él/ella/una sola cosa.' },
 
-  { id:'ps19', type:'error',
-    q:"They don't plays football on Mondays.",
-    ans:"They don't play football on Mondays.",
-    hint:"Después de don't → el verbo va sin -s.",
-    explanation:"Después de <strong>don't</strong> el verbo es la forma base, sin -s: don't <strong>play</strong>. ⚽" },
+  { id:'ps19', type:'fill',
+    q:"😴 I ______ go to bed late. I\'m always tired! (not go)",
+    ans:"don't go",
+    hint:'"I" (yo) + no → don\'t + verbo.',
+    explanation:'Con "I" → <strong>don\'t go</strong>. Yo no me acuesto tarde. 😴' },
 
-  // ── BLOQUE 4: PREGUNTAS ───────────────────────────────────────────
+  // ── BLOQUE 4: PREGUNTAS — 6 ejercicios ───────────────────────────
 
   { id:'ps20', type:'choice',
-    q:"🍕 ______ you like pizza?",
+    q:"🐕 ______ your dog bark a lot?",
     options:['Do', 'Does', 'Is', 'Are'],
-    ans:'Do',
-    hint:'"You" (tú) → Do al principio.',
-    explanation:"Con tú/yo/nosotros/ellos → <strong>Do</strong> al principio: <strong>Do</strong> you like pizza? 🍕" },
+    ans:'Does',
+    hint:'"Your dog" = él (un animal) → Does al principio.',
+    explanation:'"Your dog" = él → <strong>Does</strong> your dog bark a lot? Con él/ella/una cosa → Does.' },
 
   { id:'ps21', type:'choice',
-    q:"🐈 ______ your cat sleep a lot?",
-    options:['Do', 'Does', 'Is', 'Are'],
-    ans:'Does',
-    hint:'"Your cat" = él (un animal) → Does al principio.',
-    explanation:"Con él/ella/una cosa → <strong>Does</strong> al principio: <strong>Does</strong> your cat sleep a lot? 😴" },
-
-  { id:'ps22', type:'error',
-    q:"Does she likes chocolate?",
-    ans:"Does she like chocolate?",
-    hint:"Después de Does → el verbo va sin -s.",
-    explanation:"Después de <strong>Does</strong> el verbo es la forma base, sin -s: Does she <strong>like</strong>? (no \"likes\"). 🍫" },
-
-  { id:'ps23', type:'choice',
-    q:"🎒 Where ______ you go to school?",
-    options:['do', 'does', 'is', 'are'],
-    ans:'do',
-    hint:'"You" (tú) → do en las preguntas con Where/What/When.',
-    explanation:"Where/What/When + tú → <strong>do</strong>: Where <strong>do</strong> you go to school?" },
-
-  { id:'ps24', type:'choice',
-    q:"🏊 ______ your brother swim well?",
-    options:['Do', 'Does', 'Is', 'Are'],
-    ans:'Does',
-    hint:'"Your brother" = él → Does.',
-    explanation:'"Your brother" = él → <strong>Does</strong> your brother swim well? ✅' },
-
-  { id:'ps25', type:'choice',
-    q:"🎂 ______ your parents work at the weekend?",
+    q:"🎬 ______ you and your friends watch films at the weekend?",
     options:['Do', 'Does', 'Is', 'Are'],
     ans:'Do',
-    hint:'"Your parents" = ellos (más de uno) → Do.',
-    explanation:'"Your parents" = ellos → <strong>Do</strong> your parents work at the weekend? 🎉' },
+    hint:'"You and your friends" = vosotros (más de uno) → Do.',
+    explanation:'"You and your friends" = vosotros → <strong>Do</strong>. Con yo/tú/nosotros/ellos → Do.' },
 
-  // ── BLOQUE 5: FRECUENCIA ──────────────────────────────────────────
+  { id:'ps22', type:'error',
+    q:"Do your sister study a lot?",
+    ans:"Does your sister study a lot?",
+    hint:'"Your sister" = ella (una persona) → Does, no Do.',
+    explanation:'"Your sister" = ella → <strong>Does</strong>. "Do" solo se usa con yo/tú/nosotros/ellos.' },
 
-  { id:'ps26', type:'choice',
-    q:"⏰ She ______ gets up at 7 o'clock. She does it every single day, no exceptions!",
+  { id:'ps23', type:'choice',
+    q:"🍳 What ______ your dad cook for breakfast?",
+    options:['do', 'does', 'is', 'are'],
+    ans:'does',
+    hint:'"Your dad" = él → does en preguntas con What/Where/When.',
+    explanation:'"Your dad" = él → <strong>does</strong>: What <strong>does</strong> your dad cook? Con él/ella → does.' },
+
+  { id:'ps24', type:'fill',
+    q:"🎹 ______ your teacher play the piano?",
+    ans:'Does',
+    hint:'"Your teacher" = él/ella (una persona) → Does.',
+    explanation:'"Your teacher" = él o ella → <strong>Does</strong>. Does salta al principio en las preguntas.' },
+
+  { id:'ps25', type:'error',
+    q:"Where do she live?",
+    ans:"Where does she live?",
+    hint:'"She" (ella) → does, no do. Además el verbo queda en forma base.',
+    explanation:'"She" = ella → <strong>does</strong>: Where <strong>does</strong> she live? Con ella siempre Does.' },
+
+  // ── BLOQUE 5: ADVERBIOS DE FRECUENCIA — 5 ejercicios ─────────────
+
+  { id:'ps26', type:'error',
+    q:"🦷 My brother brushes never his teeth in the morning.",
+    ans:"My brother never brushes his teeth in the morning.",
+    hint:'"Never" va ANTES del verbo, no después.',
+    explanation:'Los adverbios de frecuencia van <strong>antes</strong> del verbo: My brother <strong>never</strong> brushes. 🦷' },
+
+  { id:'ps27', type:'choice',
+    q:"🎮 He ______ plays video games. Only at the weekend — not during the week.",
     options:['always', 'never', 'sometimes', 'usually'],
+    ans:'sometimes',
+    hint:'"Only at the weekend, not during the week" = a veces → sometimes.',
+    explanation:'"Only at the weekend" = no todos los días → <strong>sometimes</strong> (a veces). Va antes del verbo.' },
+
+  { id:'ps28', type:'fill',
+    q:"🥣 We ______ have toast for breakfast. Every single morning!",
     ans:'always',
-    hint:'"Every single day, no exceptions" = 100% → always (siempre).',
-    explanation:'"Every single day" = todos los días sin excepción → <strong>always</strong> (siempre, 100%). Va antes del verbo: She <strong>always</strong> gets up at 7. ⏰' },
+    hint:'"Every single morning" = todos los días sin excepción → always.',
+    explanation:'"Every single morning" = 100% → <strong>always</strong>. Va antes del verbo: We <strong>always</strong> have toast.' },
 
-  { id:'ps27', type:'error',
-    q:"🐶 I walk always my dog after school.",
-    ans:"I always walk my dog after school.",
-    hint:'"Always" va ANTES del verbo, no después.',
-    explanation:'Los adverbios de frecuencia van <strong>antes</strong> del verbo: I <strong>always</strong> walk my dog. 🐕' },
+  { id:'ps29', type:'error',
+    q:"🐶 She takes usually her dog for a walk after school.",
+    ans:"She usually takes her dog for a walk after school.",
+    hint:'"Usually" va ANTES del verbo principal, no después.',
+    explanation:'<strong>Usually</strong> va antes del verbo: She <strong>usually</strong> takes her dog. No después. 🐕' },
 
-  { id:'ps28', type:'choice',
-    q:"🍦 I ______ eat ice cream. It's my favourite! (100% of the time)",
+  { id:'ps30', type:'choice',
+    q:"😅 I ______ forget my homework. It happens every single week!",
     options:['never', 'sometimes', 'always', 'usually'],
     ans:'always',
-    hint:'"100% of the time" = siempre → always.',
-    explanation:'"<strong>Always</strong>" = siempre (100%). "Never" = nunca (0%). "Sometimes" = a veces. "Usually" = normalmente. 🍦' },
+    hint:'"Every single week" = todas las semanas sin excepción → always.',
+    explanation:'"Every single week" = 100% → <strong>always</strong>: I <strong>always</strong> forget my homework. 😅' },
 
-  { id:'ps29', type:'choice',
-    q:"🌙 My little brother ______ cries at night. He always sleeps really well! (0% of the time)",
-    options:['always', 'usually', 'sometimes', 'never'],
-    ans:'never',
-    hint:'"0% of the time" = nunca → never.',
-    explanation:'"<strong>Never</strong>" = nunca (0%). Va antes del verbo: My brother <strong>never</strong> cries at night. 😴' },
+  // ── BLOQUE 6: HAVE / HAS — 2 ejercicios ──────────────────────────
 
-  { id:'ps30', type:'error',
-    q:"🌧️ It rain a lot in England.",
-    ans:"It rains a lot in England.",
-    hint:'"It" = una cosa (el tiempo, el clima) → el verbo lleva -s.',
-    explanation:'Usamos "it" para hablar del tiempo. "It" = una cosa → el verbo lleva -s: It <strong>rains</strong>. 🌧️' },
+  { id:'ps31', type:'error',
+    q:"🐇 My neighbour have a pet rabbit.",
+    ans:"My neighbour has a pet rabbit.",
+    hint:'"My neighbour" = él/ella → have es irregular: HAS.',
+    explanation:'"My neighbour" = él o ella → <strong>has</strong>. "have" es irregular: con él/ella/una cosa → has, no "haves". 🐇' },
 
-  // ── BLOQUE 6: HAVE / HAS ─────────────────────────────────────────
-
-  { id:'ps31', type:'choice',
-    q:"🐾 My cat ______ three kittens!",
-    options:['have', 'has', 'haves', 'is have'],
-    ans:'has',
-    hint:'"My cat" = él/ella → "have" es irregular: con él/ella/una cosa → HAS.',
-    explanation:'"have" (tener) es irregular con él/ella/una cosa: NO decimos "haves" → decimos <strong>has</strong>: My cat <strong>has</strong> three kittens. 🐾' },
-
-  { id:'ps32', type:'fill',
-    q:"🎒 I ______ a new schoolbag. (have)",
+  { id:'ps32', type:'choice',
+    q:"🎒 My two brothers ______ the same schoolbag!",
+    options:['has', 'have', 'haves', 'is have'],
     ans:'have',
-    hint:'Con "I" (yo) → have. Solo con él/ella/una cosa cambia a "has".',
-    explanation:'Con <strong>I</strong> → <strong>have</strong>: I <strong>have</strong> a new schoolbag. Solo con él/ella/una cosa usamos "has".' },
+    hint:'"My two brothers" = ellos (más de uno) → have.',
+    explanation:'"My two brothers" = ellos → <strong>have</strong>. Solo con él/ella/una cosa usamos "has".' },
 
-  // ── BLOQUE 7: PÁRRAFO FINAL ───────────────────────────────────────
+  // ── BLOQUE 7: PÁRRAFO FINAL — 1 ejercicio ────────────────────────
 
   { id:'ps33', type:'fill',
-    q:"📝 Complete the paragraph about Tom.\n\nTom ______ (1·be) 10 years old. He ______ (2·live) in Madrid with his family. He ______ (3·have) a dog called Rex. Every morning Tom ______ (4·always·walk) Rex before school. Tom ______ (5·not·like) getting up early, but Rex ______ (6·love) it!",
-    ans:"is, lives, has, always walks, doesn't like, loves",
-    hint:"(1) él + to be · (2) él + live+s · (3) él + have → has · (4) always + verbo con -s · (5) él + not → doesn't + verbo base · (6) él + love+s",
-    explanation:'(1) <strong>is</strong> — él + to be. (2) <strong>lives</strong> — él, live+s. (3) <strong>has</strong> — have es irregular con él. (4) <strong>always walks</strong> — always antes del verbo. (5) <strong>doesn\'t like</strong> — negativo con él. (6) <strong>loves</strong> — él, love+s. 🐕' },
+    q:"📝 Complete the paragraph about Sofia.\n\nSofia ______ (1·be) 9 years old. She ______ (2·have) a younger brother called Leo. Every morning she ______ (3·always·walk) to school with her mum. Sofia ______ (4·love) science — she ______ (5·read) science books every night. On Saturdays she ______ (6·not·watch) TV. She plays outside instead!",
+    ans:"is, has, always walks, loves, reads, doesn't watch",
+    hint:"(1) ella + to be · (2) ella + have → has · (3) always + verbo con -s · (4) ella + love+s · (5) ella + read+s · (6) ella + not → doesn't + verbo base",
+    explanation:'(1) <strong>is</strong> — ella + to be. (2) <strong>has</strong> — have irregular con ella. (3) <strong>always walks</strong> — always antes del verbo. (4) <strong>loves</strong> — ella, love+s. (5) <strong>reads</strong> — ella, read+s. (6) <strong>doesn\'t watch</strong> — negativo con ella. 📚' },
 
 ];
 
@@ -276,7 +274,7 @@ export const presentSimpleUnit = {
             + '<span style="color:#94a3b8;font-weight:900">+</span>'
             + '<span style="background:#059669;color:#fff;padding:4px 12px;border-radius:8px;font-weight:900;font-size:13px">am / is / are</span>'
             + '<span style="color:#94a3b8;font-weight:900">+</span>'
-            + '<span style="background:#0284c7;color:#fff;padding:4px 12px;border-radius:8px;font-weight:900;font-size:13px">atributo / lugar</span>'
+            + '<span style="background:#0284c7;color:#fff;padding:4px 12px;border-radius:8px;font-weight:900;font-size:13px">¿cómo? / ¿dónde? / ¿quién?</span>'
             + '</div>'
             + '<p style="margin-top:8px;font-size:13px">👉 I <strong>am</strong> happy. &nbsp;·&nbsp; She <strong>is</strong> 25. &nbsp;·&nbsp; They <strong>are</strong> my friends.</p>' },
 
@@ -289,7 +287,7 @@ export const presentSimpleUnit = {
             + '<span style="color:#94a3b8;font-weight:900">+</span>'
             + '<span style="background:#dc2626;color:#fff;padding:4px 12px;border-radius:8px;font-weight:900;font-size:13px">not</span>'
             + '<span style="color:#94a3b8;font-weight:900">+</span>'
-            + '<span style="background:#0284c7;color:#fff;padding:4px 12px;border-radius:8px;font-weight:900;font-size:13px">atributo / lugar</span>'
+            + '<span style="background:#0284c7;color:#fff;padding:4px 12px;border-radius:8px;font-weight:900;font-size:13px">¿cómo? / ¿dónde? / ¿quién?</span>'
             + '</div>'
             + '<p style="margin-top:8px;font-size:13px">👉 I <strong>\'m not</strong> tired. &nbsp;·&nbsp; She <strong>isn\'t</strong> here. &nbsp;·&nbsp; They <strong>aren\'t</strong> ready.</p>' },
         { type:'table',
@@ -307,7 +305,7 @@ export const presentSimpleUnit = {
             + '<span style="color:#94a3b8;font-weight:900">+</span>'
             + '<span style="background:#6366f1;color:#fff;padding:4px 12px;border-radius:8px;font-weight:900;font-size:13px">sujeto</span>'
             + '<span style="color:#94a3b8;font-weight:900">+</span>'
-            + '<span style="background:#0284c7;color:#fff;padding:4px 12px;border-radius:8px;font-weight:900;font-size:13px">atributo / lugar</span>'
+            + '<span style="background:#0284c7;color:#fff;padding:4px 12px;border-radius:8px;font-weight:900;font-size:13px">¿cómo? / ¿dónde? / ¿quién?</span>'
             + '<span style="background:#475569;color:#fff;padding:4px 10px;border-radius:8px;font-weight:900;font-size:15px">?</span>'
             + '</div>'
             + '<p style="margin-top:8px;font-size:13px">👉 <strong>Are</strong> you ready? &nbsp;·&nbsp; <strong>Is</strong> she at home? &nbsp;·&nbsp; <strong>How old are</strong> you?<br>💡 El verbo salta al principio — como en español: "¿Estás listo?"</p>' },
@@ -345,11 +343,11 @@ export const presentSimpleUnit = {
         { type:'table',
           headers:['El verbo termina en…', 'Regla', 'Ejemplo'],
           rows:[
-            ['-o',                        'añade -es',  'go → <strong>goes</strong> &nbsp;·&nbsp; do → <strong>does</strong>'],
-            ['-ch / -sh / -ss / -x',      'añade -es',  'watch → <strong>watches</strong> &nbsp;·&nbsp; wash → <strong>washes</strong>'],
+            ['-o',                        'añade -es',     'go → <strong>goes</strong> &nbsp;·&nbsp; do → <strong>does</strong>'],
+            ['-ch / -sh / -ss / -x',      'añade -es',     'watch → <strong>watches</strong> &nbsp;·&nbsp; wash → <strong>washes</strong>'],
             ['consonante + y',            'cambia a -ies', 'study → <strong>studies</strong> &nbsp;·&nbsp; try → <strong>tries</strong>'],
-            ['vocal + y',                 'añade -s',   'play → <strong>plays</strong> &nbsp;·&nbsp; say → <strong>says</strong>'],
-            ['cualquier otra terminación','añade -s',   'eat → <strong>eats</strong> &nbsp;·&nbsp; read → <strong>reads</strong>'],
+            ['vocal + y',                 'añade -s',      'play → <strong>plays</strong> &nbsp;·&nbsp; say → <strong>says</strong>'],
+            ['cualquier otra terminación','añade -s',      'eat → <strong>eats</strong> &nbsp;·&nbsp; read → <strong>reads</strong>'],
           ] },
 
         { type:'tip',
@@ -390,7 +388,6 @@ export const presentSimpleUnit = {
             + '<span style="background:#475569;color:#fff;padding:4px 10px;border-radius:8px;font-weight:900;font-size:15px">?</span>'
             + '</div>'
             + '<p style="margin-top:8px;font-size:13px">👉 <strong>Do</strong> you like pizza? &nbsp;·&nbsp; <strong>Does</strong> she like pizza? 🍕</p>' },
-
         { type:'text',
           text:'<p style="font-size:13px;font-weight:700;color:#94a3b8;margin-bottom:6px">📝 Con What, Where, When, Who…</p>'
             + '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0">'
@@ -404,7 +401,6 @@ export const presentSimpleUnit = {
             + '<span style="background:#475569;color:#fff;padding:4px 10px;border-radius:8px;font-weight:900;font-size:15px">?</span>'
             + '</div>'
             + '<p style="margin-top:8px;font-size:13px">👉 <strong>Where do</strong> you live? &nbsp;·&nbsp; <strong>What does</strong> she eat? 🍽️</p>' },
-
         { type:'table',
           headers:['Sujeto', 'Auxiliar', 'Ejemplo'],
           rows:[
@@ -443,7 +439,7 @@ export const presentSimpleUnit = {
             ['<strong>never</strong>',     'nunca',       'I <strong>never</strong> eat spinach. 🥬'],
           ] },
 
-        { type:'subtitle', text:'📐 Fórmula — posición del adverbio (verbos normales)' },
+        { type:'subtitle', text:'📐 Fórmula — verbos normales' },
         { type:'text',
           text:'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0">'
             + '<span style="background:#6366f1;color:#fff;padding:4px 12px;border-radius:8px;font-weight:900;font-size:13px">Sujeto</span>'
@@ -459,8 +455,7 @@ export const presentSimpleUnit = {
         { type:'rule', warn:true,
           text:'❌ I walk <strong>always</strong> to school.<br>✅ I <strong>always</strong> walk to school.<br>⚠️ El adverbio va ANTES del verbo, nunca después.' },
 
-        { type:'subtitle', text:'⚠️ Verbos Auxiliares "to be", "can", "could", "will", "would"' },
-
+        { type:'subtitle', text:'⚠️ Excepción — con am / is / are va DESPUÉS' },
         { type:'text',
           text:'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0">'
             + '<span style="background:#6366f1;color:#fff;padding:4px 12px;border-radius:8px;font-weight:900;font-size:13px">Sujeto</span>'
