@@ -7,6 +7,8 @@ import { rateLimiter } from "hono-rate-limiter";
 
 import auth     from "./routes/auth.js";
 import progress from "./routes/progress.js";
+import streak   from "./routes/streak.js";
+import xp       from "./routes/xp.js";
 
 // ── CORS whitelist ────────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
@@ -38,9 +40,25 @@ app.use("/api/progress/*", rateLimiter({
   keyGenerator: (c) => c.req.header("x-forwarded-for") ?? "unknown",
 }));
 
+// Rate limit: 200 eventos de racha por IP por minuto
+app.use("/api/streak/*", rateLimiter({
+  windowMs: 60 * 1000,
+  limit:    200,
+  keyGenerator: (c) => c.req.header("x-forwarded-for") ?? "unknown",
+}));
+
+// Rate limit: 200 eventos de XP por IP por minuto
+app.use("/api/xp/*", rateLimiter({
+  windowMs: 60 * 1000,
+  limit:    200,
+  keyGenerator: (c) => c.req.header("x-forwarded-for") ?? "unknown",
+}));
+
 // ── Routes ────────────────────────────────────────────────────────
 app.route("/api/auth",     auth);
 app.route("/api/progress", progress);
+app.route("/api/streak",   streak);
+app.route("/api/xp",       xp);
 
 // ── Health check ─────────────────────────────────────────────────
 app.get("/health", c => c.json({ ok: true }));

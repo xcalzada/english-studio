@@ -62,7 +62,7 @@ const StepDivider = () => (
 );
 
 // ── Main ──────────────────────────────────────────────────────────────
-const GrammarLab = ({ data }) => {
+const GrammarLab = ({ data, token }) => {
   const exerciseCount = (data.theoryQuiz || []).length;
 
   return (
@@ -87,7 +87,12 @@ const GrammarLab = ({ data }) => {
           sub="Pon a prueba lo que has aprendido"
           badge={`${exerciseCount} ejercicios`}
         />
-        <PracticeSection quiz={data.theoryQuiz || []} />
+        <PracticeSection
+          quiz={data.theoryQuiz || []}
+          unitId={data.id}
+          toolId="grammar"
+          token={token}
+        />
       </section>
     </div>
   );
