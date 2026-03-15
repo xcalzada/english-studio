@@ -2,7 +2,7 @@
 // Present Simple — niños hispanohablantes 9-10 años (A1-A2)
 // SEGUNDA TANDA DE EJERCICIOS — contextos nuevos, misma estructura pedagógica
 
-const quiz2 = [
+const quiz = [
 
   // ── BLOQUE 1: TO BE (am / is / are) — 6 ejercicios ───────────────
 
