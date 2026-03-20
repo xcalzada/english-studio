@@ -6,14 +6,14 @@ import { Hono }   from 'hono';
 import { cors }   from 'hono/cors';
 import { rateLimiter } from 'hono-rate-limiter';
 
-import progress           from './src/routes/progress.js';
-import streak             from './src/routes/streak.js';
-import xp                 from './src/routes/xp.js';
-import { dailyChallenge } from './src/routes/dailyChallenge.js';
-import sr                 from './src/routes/sr.js';
-import { errorDna }       from './src/routes/errorDna.js';
-import units              from './src/routes/units.js';
-import users              from './src/routes/users.js';
+import progress           from './_src/routes/progress.js';
+import streak             from './_src/routes/streak.js';
+import xp                 from './_src/routes/xp.js';
+import { dailyChallenge } from './_src/routes/dailyChallenge.js';
+import sr                 from './_src/routes/sr.js';
+import { errorDna }       from './_src/routes/errorDna.js';
+import units              from './_src/routes/units.js';
+import users              from './_src/routes/users.js';
 
 const ALLOWED_ORIGINS = [
   'http://localhost:3000',
