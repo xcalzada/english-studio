@@ -1,14 +1,10 @@
 // api/src/middleware/auth.ts
-// Valida el Bearer JWT en cada request y añade userId + userJwt al contexto.
+// Valida el Bearer JWT de Supabase en cada request y añade userId + userJwt al contexto.
+// Usa adminDb.auth.getUser() — funciona con RS256 y HS256 sin necesitar el secreto.
 // El userId NUNCA viene del body — siempre del token verificado.
 
 import { createMiddleware } from 'hono/factory';
-import { verify } from 'hono/jwt';
-
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET || JWT_SECRET.length < 32) {
-  throw new Error('JWT_SECRET must be set and at least 32 characters');
-}
+import { adminDb } from '../db/client.js';
 
 type AuthVars = {
   userId: string;
@@ -22,12 +18,12 @@ export const requireAuth = createMiddleware<{ Variables: AuthVars }>(async (c, n
   }
 
   const token = authHeader.slice(7);
-  try {
-    const payload = await verify(token, JWT_SECRET, 'HS256') as { sub: string };
-    c.set('userId', payload.sub);
-    c.set('userJwt', token);
-    await next();
-  } catch {
+  const { data: { user }, error } = await adminDb.auth.getUser(token);
+  if (error || !user) {
     return c.json({ error: 'Invalid or expired token' }, 401);
   }
+
+  c.set('userId', user.id);
+  c.set('userJwt', token);
+  await next();
 });

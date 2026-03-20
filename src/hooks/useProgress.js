@@ -1,29 +1,8 @@
-// src/hooks/useProgress.ts
 import { useState, useEffect, useCallback } from 'react';
 import { api } from '../api/client';
 
-interface Progress {
-  id:            string;
-  unit_id:       string;
-  tool_id:       string;
-  completed_ids: string[];
-  correct_ids:   string[];
-  score:         number;
-}
-
-interface RecordOpts {
-  revealed?: boolean;
-  phase?:    'study' | 'check' | 'practice';
-}
-
-interface UseProgressReturn {
-  progress: Progress | null;
-  loading:  boolean;
-  record:   (exerciseId: string, correct: boolean, opts?: RecordOpts) => Promise<void>;
-}
-
-export function useProgress(unitId: string, toolId: string, token?: string | null): UseProgressReturn {
-  const [progress, setProgress] = useState<Progress | null>(null);
+export function useProgress(unitId, toolId, token) {
+  const [progress, setProgress] = useState(null);
   const [loading,  setLoading]  = useState(false);
 
   useEffect(() => {
@@ -31,7 +10,7 @@ export function useProgress(unitId: string, toolId: string, token?: string | nul
     const controller = new AbortController();
     setLoading(true);
 
-    api.get<{ progress: Progress[] }>(
+    api.get(
       `/api/progress?unit_id=${unitId}&tool_id=${toolId}`,
       token
     )
@@ -42,11 +21,7 @@ export function useProgress(unitId: string, toolId: string, token?: string | nul
     return () => controller.abort();
   }, [unitId, toolId, token]);
 
-  const record = useCallback(async (
-    exerciseId: string,
-    correct:    boolean,
-    opts:       RecordOpts = {}
-  ) => {
+  const record = useCallback(async (exerciseId, correct, opts = {}) => {
     if (!token) return;
 
     setProgress(p => {
@@ -59,7 +34,7 @@ export function useProgress(unitId: string, toolId: string, token?: string | nul
     });
 
     try {
-      const res = await api.post<{ progress: Progress }>('/api/progress', {
+      const res = await api.post('/api/progress', {
         unit_id:     unitId,
         tool_id:     toolId,
         exercise_id: exerciseId,

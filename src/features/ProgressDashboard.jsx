@@ -3,6 +3,7 @@ import { Flame, Zap, Trophy, ArrowLeft, Star } from 'lucide-react';
 import { UNITS_DATA }    from '../data';
 import { TOOLS_CONFIG }  from '../toolsConfig';
 import { useStreak }     from '../hooks/useStreak';
+import { ErrorDnaPanel } from '../components/ui/ErrorDnaPanel';
 import { useXp, getLevelInfo } from '../hooks/useXp';
 import { useProgress }   from '../hooks/useProgress';
 
@@ -200,6 +201,15 @@ const ProgressDashboard = ({ token, onBack }) => {
             </div>
           </div>
         )}
+
+
+        {/* Error DNA */}
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[.25em] mb-4" style={{ color: 'var(--text-3)' }}>
+            🧬 Perfil de errores
+          </p>
+          <ErrorDnaPanel token={token} />
+        </div>
 
       </div>
     </div>

@@ -1,13 +1,15 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { PenTool, Star, Flame, RotateCcw, CheckCircle, XCircle, Zap, ChevronRight } from 'lucide-react';
+import { PenTool, Star, Flame, RotateCcw, CheckCircle, XCircle, Zap, ChevronRight, ChevronLeft } from 'lucide-react';
 import { FillItem }             from './FillItem';
 import { ChoiceItem }           from './ChoiceItem';
 import { ErrorItem, OrderItem } from './ExerciseItems';
 import { TranslateItem }        from './TranslateItem';
 import { MatchPairsItem }       from './MatchPairsItem';
 import { useStreak }            from '../../hooks/useStreak';
+import { GuestGate }            from '../ui/GuestGate';
 import { useXp, getLevelInfo }  from '../../hooks/useXp';
 import { useProgress }          from '../../hooks/useProgress';
+import { useSR }               from '../../hooks/useSR';
 
 const TYPE_LABEL = {
   fill:       '✏️ Completa',
@@ -64,59 +66,124 @@ const LevelBar = ({ totalXp }) => {
   );
 };
 
-const FinishScreen = ({ score, total, maxStreak, totalXp, onRestart }) => {
+const FinishScreen = ({ score, total, maxStreak, totalXp, onRestart, quiz, results, guestMode, onRegister }) => {
   const pct = total > 0 ? Math.round((score / total) * 100) : 0;
   return (
-    <div className={`p-8 rounded-3xl border-2 text-center animate-in zoom-in
-      ${pct === 100 ? 'badge-correct' : pct < 40 ? 'badge-wrong' : ''}`}
-      style={pct >= 40 && pct < 100 ? { background: 'rgba(255,255,255,0.08)', border: '2px solid var(--c3)' } : {}}>
-      <p className="text-5xl mb-3">{pct === 100 ? '🏆' : pct >= 70 ? '🌟' : pct >= 40 ? '💪' : '🔄'}</p>
-      <p className="text-6xl font-black text-white mb-1">
-        {score}<span className="text-2xl opacity-50">/{total}</span>
-      </p>
-      <div className="flex justify-center gap-8 mt-4 mb-6">
-        <div>
-          <p className="text-xs font-black uppercase tracking-widest mb-1" style={{ color: 'var(--text-3)' }}>Score</p>
-          <p className="font-black text-xl text-white">{pct}%</p>
+    <div className="space-y-6 animate-in zoom-in">
+      <div className={`p-8 rounded-3xl border-2 text-center
+        ${pct === 100 ? 'badge-correct' : pct < 40 ? 'badge-wrong' : ''}`}
+        style={pct >= 40 && pct < 100 ? { background: 'rgba(255,255,255,0.08)', border: '2px solid var(--c3)' } : {}}>
+        <p className="text-5xl mb-3">{pct === 100 ? '🏆' : pct >= 70 ? '🌟' : pct >= 40 ? '💪' : '🔄'}</p>
+        <p className="text-6xl font-black text-white mb-1">
+          {score}<span className="text-2xl opacity-50">/{total}</span>
+        </p>
+        <div className="flex justify-center gap-8 mt-4 mb-6">
+          <div>
+            <p className="text-xs font-black uppercase tracking-widest mb-1" style={{ color: 'var(--text-3)' }}>Score</p>
+            <p className="font-black text-xl text-white">{pct}%</p>
+          </div>
+          <div>
+            <p className="text-xs font-black uppercase tracking-widest mb-1" style={{ color: 'var(--text-3)' }}>Mejor racha</p>
+            <p className="font-black text-xl" style={{ color: 'var(--warn-text)' }}>{maxStreak} 🔥</p>
+          </div>
+          <div>
+            <p className="text-xs font-black uppercase tracking-widest mb-1" style={{ color: 'var(--text-3)' }}>Total XP</p>
+            <p className="font-black text-xl" style={{ color: 'var(--c0)' }}>{totalXp} ⭐</p>
+          </div>
         </div>
-        <div>
-          <p className="text-xs font-black uppercase tracking-widest mb-1" style={{ color: 'var(--text-3)' }}>Mejor racha</p>
-          <p className="font-black text-xl" style={{ color: 'var(--warn-text)' }}>{maxStreak} 🔥</p>
-        </div>
-        <div>
-          <p className="text-xs font-black uppercase tracking-widest mb-1" style={{ color: 'var(--text-3)' }}>Total XP</p>
-          <p className="font-black text-xl" style={{ color: 'var(--c0)' }}>{totalXp} ⭐</p>
-        </div>
+        <button onClick={onRestart} className="btn-tool flex items-center gap-2 mx-auto">
+          <RotateCcw size={16} /> Repetir
+        </button>
       </div>
-      <button onClick={onRestart} className="btn-tool flex items-center gap-2 mx-auto">
-        <RotateCcw size={16} /> Repetir
-      </button>
+
+      {/* Invitado: banner de registro tras completar */}
+      {guestMode && onRegister && (
+        <GuestGate inline onRegister={onRegister} />
+      )}
+
+      {/* Resumen ejercicio por ejercicio */}
+      {quiz.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: 'var(--text-3)' }}>
+            Resumen de ejercicios
+          </p>
+          {quiz.map((item, idx) => {
+            const ok      = results[item.id];
+            const skipped = ok === undefined;
+            return (
+              <div key={item.id}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl"
+                style={{
+                  background: skipped ? 'rgba(255,255,255,0.04)'
+                    : ok ? 'rgba(74,222,128,0.08)' : 'rgba(248,113,113,0.08)',
+                  border: `1px solid ${skipped ? 'rgba(255,255,255,0.08)'
+                    : ok ? 'rgba(74,222,128,0.25)' : 'rgba(248,113,113,0.25)'}`,
+                }}>
+                <div className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 font-black text-xs
+                  ${skipped ? '' : ok ? 'badge-correct' : 'badge-wrong'}`}
+                  style={skipped ? { background: 'rgba(255,255,255,0.08)', color: 'var(--text-3)' } : {}}>
+                  {skipped ? '—' : ok ? <CheckCircle size={14} /> : <XCircle size={14} />}
+                </div>
+                <p className="text-sm font-semibold text-white flex-1 leading-snug line-clamp-1"
+                  dangerouslySetInnerHTML={{ __html: item.q?.replace('______', '___') ?? item.id }} />
+                {!skipped && !ok && item.ans && (
+                  <span className="text-xs font-black shrink-0" style={{ color: '#4ade80' }}>
+                    ✓ {item.ans.split('|')[0]}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
 
 export const PracticeSection = ({
   quiz,
-  unitId = '',
-  toolId = 'grammar',
-  token  = null,
+  unitId    = '',
+  toolId    = 'grammar',
+  token     = null,
+  guestMode = false,
+  onRegister = null,
 }) => {
-  const { progress, record: saveProgress } = useProgress(unitId, toolId, token);
+  const { progress, loading: progressLoading, record: saveProgress } = useProgress(unitId, toolId, token);
+  const { sortQuiz, record: recordSR } = useSR(unitId, toolId, token);
 
-  const pendingQuiz = useMemo(() => {
-    if (!progress) return quiz;
-    const done = new Set(progress.completed_ids || []);
-    return quiz.filter(item => !done.has(item.id));
-  }, [quiz, progress]);
-
-  // Estado local: resultado pendiente del ejercicio actual (antes de que el padre lo procese)
-  // pendingResult: null | { ok: boolean } — se setea cuando el hijo llama onResult
-  // committedResults: { [id]: boolean } — resultados ya guardados y contabilizados
   const [pendingResult,     setPendingResult]     = useState(null);
   const [committedResults,  setCommittedResults]  = useState({});
   const [cursor,            setCursor]            = useState(0);
   const [finished,          setFinished]          = useState(false);
   const [key,               setKey]               = useState(0);
+  const [repeating,         setRepeating]         = useState(false); // ignorar filtro progress
+
+  // sessionQuiz: se fija UNA VEZ cuando el progreso carga — no cambia durante la sesión
+  const [sessionQuiz, setSessionQuiz] = React.useState(null);
+
+  React.useEffect(() => {
+    if (!progressLoading && sessionQuiz === null) {
+      const done = new Set(progress?.completed_ids || []);
+      const filtered = repeating ? sortQuiz(quiz) : sortQuiz(quiz.filter(item => !done.has(item.id)));
+      // Invitado: máximo 3 ejercicios
+      setSessionQuiz(guestMode ? filtered.slice(0, 3) : filtered);
+      setCursor(0);
+      setPendingResult(null);
+      setFinished(false);
+    }
+  }, [progressLoading]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Al repetir, forzar nueva sesión con todos los ejercicios
+  React.useEffect(() => {
+    if (repeating) {
+      setSessionQuiz(sortQuiz(quiz));
+      setCursor(0);
+      setPendingResult(null);
+      setFinished(false);
+    }
+  }, [repeating]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const pendingQuiz = sessionQuiz ?? [];
 
   const { streak, maxStreak, score, record: recordStreak, reset: resetStreak } = useStreak(token);
   const { totalXp, lastGain, award } = useXp(token);
@@ -143,7 +210,9 @@ export const PracticeSection = ({
       if (isNew) {
         const newStreak = ok ? streak + 1 : 0;
         recordStreak(ok);
-        award(ok, newStreak, true);
+        award(ok, newStreak, true).then(xpGained => {
+          recordSR(currentItem.id, ok, { xp: xpGained ?? 0, streak: newStreak });
+        });
         saveProgress(currentItem.id, ok, { phase: 'practice' });
         setCommittedResults(p => ({ ...p, [currentItem.id]: ok }));
       }
@@ -151,7 +220,7 @@ export const PracticeSection = ({
     setPendingResult(null);
     if (cursor + 1 >= totalPending) setFinished(true);
     else setCursor(c => c + 1);
-  }, [pendingResult, currentItem, committedResults, cursor, totalPending, streak, recordStreak, award, saveProgress]);
+  }, [pendingResult, currentItem, committedResults, cursor, totalPending, streak, recordStreak, award, saveProgress, recordSR]);
 
   // Saltar sin guardar resultado
   const skip = useCallback(() => {
@@ -160,14 +229,35 @@ export const PracticeSection = ({
     else setCursor(c => c + 1);
   }, [cursor, totalPending]);
 
+  // Ir al ejercicio anterior (solo navega, no cambia resultados)
+  const goBack = useCallback(() => {
+    if (cursor === 0) return;
+    const prevItem = pendingQuiz[cursor - 1];
+    const prevCommitted = prevItem ? committedResults[prevItem.id] : undefined;
+    // Si el ejercicio anterior ya fue respondido, restaurar pendingResult
+    // para que hasResult sea true y aparezca el botón Siguiente
+    setPendingResult(prevCommitted !== undefined ? { ok: prevCommitted } : null);
+    setCursor(c => c - 1);
+  }, [cursor, pendingQuiz, committedResults]);
+
   const restart = useCallback(() => {
     setPendingResult(null);
     setCommittedResults({});
     setCursor(0);
     setFinished(false);
+    setRepeating(true);
     resetStreak();
     setKey(k => k + 1);
   }, [resetStreak]);
+
+  // Cargando progreso del servidor
+  if (progressLoading) return (
+    <div className="card-tool p-10 space-y-4">
+      <div className="skeleton h-8 w-48 rounded-xl" />
+      <div className="skeleton h-32 rounded-2xl" />
+      <div className="skeleton h-12 w-32 rounded-xl" />
+    </div>
+  );
 
   if (!quiz.length) return (
     <div className="card-tool p-12 flex flex-col items-center gap-4 text-center">
@@ -226,6 +316,10 @@ export const PracticeSection = ({
           maxStreak={maxStreak}
           totalXp={totalXp}
           onRestart={restart}
+          quiz={pendingQuiz}
+          results={committedResults}
+          guestMode={guestMode}
+          onRegister={onRegister}
         />
       ) : currentItem ? (
         <div className="animate-in fade-in duration-300">
@@ -260,12 +354,25 @@ export const PracticeSection = ({
 
             {/* Ejercicio — key={cursor} fuerza remount al cambiar carta */}
             <div key={cursor}>
-              {currentItem.type === 'fill'       && <FillItem       item={currentItem} onResult={handleResult} />}
-              {currentItem.type === 'choice'     && <ChoiceItem     item={currentItem} onResult={handleResult} />}
-              {currentItem.type === 'error'      && <ErrorItem      item={currentItem} onResult={handleResult} />}
-              {currentItem.type === 'order'      && <OrderItem      item={currentItem} onResult={handleResult} />}
-              {currentItem.type === 'translate'  && <TranslateItem  item={currentItem} onResult={handleResult} />}
-              {currentItem.type === 'matchpairs' && <MatchPairsItem item={currentItem} onResult={handleResult} />}
+              {(() => {
+                // savedResult: committed en esta sesión > guardado en BD > undefined
+                const saved = committedResults[currentItem.id] !== undefined
+                  ? committedResults[currentItem.id]
+                  : progress?.correct_ids?.includes(currentItem.id)
+                    ? true
+                    : progress?.completed_ids?.includes(currentItem.id)
+                      ? false
+                      : undefined;
+
+                const props = { item: currentItem, onResult: handleResult, savedResult: saved };
+                if (currentItem.type === 'fill')       return <FillItem       {...props} />;
+                if (currentItem.type === 'choice')     return <ChoiceItem     {...props} />;
+                if (currentItem.type === 'error')      return <ErrorItem      {...props} />;
+                if (currentItem.type === 'order')      return <OrderItem      {...props} />;
+                if (currentItem.type === 'translate')  return <TranslateItem  {...props} />;
+                if (currentItem.type === 'matchpairs') return <MatchPairsItem {...props} />;
+                return null;
+              })()}
             </div>
 
             {/* Explicación — aparece tras responder, correcto O incorrecto */}
@@ -280,23 +387,36 @@ export const PracticeSection = ({
           </div>
 
           {/* Navegación */}
-          <div className="mt-5 flex items-center justify-between">
-            {/* Saltar — solo antes de responder */}
-            {!hasResult ? (
-              <button onClick={skip}
-                className="text-xs font-black uppercase tracking-widest px-3 py-2 rounded-xl"
-                style={{ color: 'var(--text-3)', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.10)' }}>
-                Saltar →
+          <div className="mt-5 flex items-center justify-between gap-3">
+            {/* Izquierda: Anterior */}
+            {cursor > 0 ? (
+              <button onClick={goBack}
+                className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest px-3 py-2 rounded-xl transition-all"
+                style={{ color: 'var(--text-3)', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.10)' }}
+                onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
+                onMouseLeave={e => e.currentTarget.style.color = 'var(--text-3)'}>
+                <ChevronLeft size={13} /> Anterior
               </button>
             ) : <div />}
 
-            {/* Siguiente — solo tras responder */}
-            {hasResult && (
-              <button onClick={goNext} className="btn-tool flex items-center gap-2 ml-auto">
-                {cursor + 1 >= totalPending ? '¡Finalizar! 🏆' : 'Siguiente'}
-                <ChevronRight size={16} />
-              </button>
-            )}
+            {/* Derecha: Saltar o Siguiente */}
+            <div className="flex items-center gap-2 ml-auto">
+              {!hasResult && (
+                <button onClick={skip}
+                  className="text-xs font-black uppercase tracking-widest px-3 py-2 rounded-xl transition-all"
+                  style={{ color: 'var(--text-3)', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.10)' }}
+                  onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'var(--text-3)'}>
+                  Saltar →
+                </button>
+              )}
+              {hasResult && (
+                <button onClick={goNext} className="btn-tool flex items-center gap-2">
+                  {cursor + 1 >= totalPending ? '¡Finalizar! 🏆' : 'Siguiente'}
+                  <ChevronRight size={16} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       ) : null}

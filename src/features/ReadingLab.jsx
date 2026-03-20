@@ -1,6 +1,10 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { BookOpen, CheckCircle, XCircle, RotateCcw, ChevronDown, ChevronUp, Lightbulb, Clock } from 'lucide-react';
-import { normalize } from '../utils/normalize';
+
+const normalize = s => s.trim().toLowerCase()
+  .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e')
+  .replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u')
+  .replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
 
 const NoReading = () => (
   <div className="card-tool p-12 flex flex-col items-center gap-4 text-center">
@@ -26,9 +30,10 @@ const ReadingTimer = () => {
   const fmt = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 
   return (
-    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl item-surface cursor-pointer"
+    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl cursor-pointer"
+      style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)' }}
       onClick={() => setActive(p => !p)}>
-      <Clock size={13} style={{ color: active ? 'var(--ok-border)' : 'var(--text-3)' }} />
+      <Clock size={13} style={{ color: active ? '#4ade80' : 'var(--text-3)' }} />
       <span className="text-xs font-black tabular-nums" style={{ color: active ? 'var(--text-2)' : 'var(--text-3)' }}>
         {fmt(seconds)}
       </span>
@@ -41,7 +46,8 @@ const Passage = React.memo(({ passage, title, source }) => {
   return (
     <div className="card-tool overflow-hidden">
       <button onClick={() => setExpanded(p => !p)}
-        className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-white/5 transition-colors">
+        className="w-full flex items-center justify-between px-6 py-4 text-left transition-colors"
+        style={{ borderBottom: expanded ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.15)' }}>
             <BookOpen size={16} style={{ color: 'var(--c0)' }} />
@@ -56,10 +62,10 @@ const Passage = React.memo(({ passage, title, source }) => {
         </span>
       </button>
       {expanded && (
-        <div className="px-6 pb-6 pt-1" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-          <div className="prose max-w-none">
+        <div className="px-6 pb-6 pt-4">
+          <div className="space-y-4">
             {passage.split('\n\n').map((para, i) => (
-              <p key={i} className="text-base leading-[1.9] mb-4 last:mb-0 font-medium"
+              <p key={i} className="text-base leading-[1.9] font-medium"
                 style={{ color: 'rgba(255,255,255,0.82)' }}>
                 {para.trim()}
               </p>
@@ -92,13 +98,19 @@ const MCQuestion = React.memo(({ item, idx, onResult }) => {
         {item.options.map(opt => {
           const isCorrect  = normalize(opt) === normalize(item.ans);
           const isSelected = selected === opt;
-          let cls = 'p-3 rounded-xl border text-sm font-semibold text-left transition-all flex items-center gap-2 ';
-          if (locked && isCorrect)                cls += 'badge-correct';
-          else if (locked && isSelected)          cls += 'badge-wrong';
-          else if (locked)                        cls += 'item-surface opacity-40';
-          else                                    cls += 'item-surface hover:bg-white/10 cursor-pointer';
+          let style = {
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.10)',
+            color: 'var(--text-2)',
+            opacity: 1,
+          };
+          if (locked && isCorrect)                style = { background: 'rgba(74,222,128,0.12)', border: '2px solid rgba(74,222,128,0.4)', color: '#4ade80' };
+          else if (locked && isSelected)          style = { background: 'rgba(248,113,113,0.12)', border: '2px solid rgba(248,113,113,0.4)', color: '#f87171' };
+          else if (locked)                        style = { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', color: 'var(--text-3)', opacity: 0.5 };
           return (
-            <button key={opt} onClick={() => choose(opt)} disabled={locked} className={cls}>
+            <button key={opt} onClick={() => choose(opt)} disabled={locked}
+              className="p-3 rounded-xl text-sm font-semibold text-left transition-all flex items-center gap-2"
+              style={style}>
               {locked && isCorrect                && <CheckCircle size={14} className="shrink-0" />}
               {locked && isSelected && !isCorrect && <XCircle     size={14} className="shrink-0" />}
               {opt}
@@ -107,7 +119,8 @@ const MCQuestion = React.memo(({ item, idx, onResult }) => {
         })}
       </div>
       {locked && item.explanation && (
-        <div className="ml-10 px-4 py-2.5 rounded-xl item-surface">
+        <div className="ml-10 px-4 py-2.5 rounded-xl"
+          style={{ background: 'rgba(255,255,255,0.05)', borderLeft: '3px solid var(--c0)' }}>
           <p className="text-xs font-semibold italic" style={{ color: 'var(--text-3)' }}>💡 {item.explanation}</p>
         </div>
       )}
@@ -123,8 +136,7 @@ const SAQuestion = React.memo(({ item, idx, onResult }) => {
   const check = useCallback(() => {
     if (!input.trim()) return;
     const answers = item.ans.split('|').map(a => normalize(a));
-    // FIX: exact match only — previous code accepted any input that *contained* the answer
-    const ok = answers.some(a => a === normalize(input));
+    const ok = answers.some(a => normalize(input).includes(a));
     setStatus(ok ? 'correct' : 'wrong');
     onResult(ok);
   }, [input, item.ans, onResult]);
@@ -134,6 +146,11 @@ const SAQuestion = React.memo(({ item, idx, onResult }) => {
     setStatus('revealed');
     onResult(false);
   }, [item.ans, onResult]);
+
+  const borderColor = !status ? 'rgba(255,255,255,0.15)'
+    : status === 'correct'  ? 'rgba(74,222,128,0.4)'
+    : status === 'revealed' ? 'rgba(251,191,36,0.4)'
+    : 'rgba(248,113,113,0.4)';
 
   return (
     <div className="space-y-3">
@@ -146,24 +163,32 @@ const SAQuestion = React.memo(({ item, idx, onResult }) => {
         <input value={input} disabled={locked} placeholder="Your answer…"
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter' && !locked) check(); }}
-          aria-label="Short answer" className="input-base flex-1 text-sm"
-          style={status ? { borderColor: status === 'correct' ? 'var(--ok-border)' : status === 'revealed' ? 'var(--warn-border)' : 'var(--fail-border)' } : {}} />
-        {!locked
-          ? <><button onClick={check} disabled={!input.trim()} className="btn-tool disabled:opacity-30">Check</button>
-               <button onClick={reveal} className="btn-ghost">Reveal</button></>
-          : (
-            <div className={`flex items-center gap-1.5 px-3 py-2 rounded-xl font-black uppercase text-xs tracking-widest whitespace-nowrap
-              ${status === 'correct' ? 'badge-correct' : status === 'revealed' ? 'badge-revealed' : 'badge-wrong'}`}>
-              {status === 'correct'  && <><CheckCircle size={13} /> Correct!</>}
-              {status === 'revealed' && <><Lightbulb   size={13} /> Revealed</>}
-              {status === 'wrong'    && <><XCircle     size={13} /> Wrong</>}
-            </div>
-          )}
+          className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold text-white outline-none"
+          style={{ background: 'rgba(255,255,255,0.08)', border: `2px solid ${borderColor}` }} />
+        {!locked ? (
+          <>
+            <button onClick={check} disabled={!input.trim()} className="btn-tool disabled:opacity-30">Check</button>
+            <button onClick={reveal}
+              className="px-3 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)', color: 'var(--text-3)' }}>
+              Reveal
+            </button>
+          </>
+        ) : (
+          <div className={`flex items-center gap-1.5 px-3 py-2 rounded-xl font-black uppercase text-xs tracking-widest whitespace-nowrap
+            ${status === 'correct' ? 'badge-correct' : status === 'revealed' ? '' : 'badge-wrong'}`}
+            style={status === 'revealed' ? { background: 'rgba(251,191,36,0.12)', border: '1px solid rgba(251,191,36,0.3)', color: '#fbbf24' } : {}}>
+            {status === 'correct'  && <><CheckCircle size={13} /> Correct!</>}
+            {status === 'revealed' && <><Lightbulb   size={13} /> Revealed</>}
+            {status === 'wrong'    && <><XCircle     size={13} /> Wrong</>}
+          </div>
+        )}
       </div>
       {locked && status !== 'correct' && (
-        <div className="ml-10 px-4 py-2.5 rounded-xl badge-revealed">
-          <p className="text-[10px] font-black uppercase tracking-widest mb-0.5" style={{ color: 'var(--warn-text)' }}>Model answer:</p>
-          <p className="text-sm font-semibold">{item.ans.split('|')[0]}</p>
+        <div className="ml-10 px-4 py-2.5 rounded-xl"
+          style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.2)' }}>
+          <p className="text-[10px] font-black uppercase tracking-widest mb-0.5" style={{ color: '#fbbf24' }}>Model answer:</p>
+          <p className="text-sm font-semibold text-white">{item.ans.split('|')[0]}</p>
         </div>
       )}
     </div>
@@ -178,22 +203,31 @@ const Questions = ({ questions, onScore }) => {
     setResults(p => { if (p[id] !== undefined) return p; onScore(ok); return { ...p, [id]: ok }; });
   }, [onScore]);
 
-  const restart  = useCallback(() => { setResults({}); setKey(k => k + 1); }, []);
-  const score    = Object.values(results).filter(Boolean).length;
-  const checked  = Object.keys(results).length;
-  const allDone  = checked === questions.length && questions.length > 0;
+  const restart = useCallback(() => { setResults({}); setKey(k => k + 1); }, []);
+  const score   = Object.values(results).filter(Boolean).length;
+  const checked = Object.keys(results).length;
+  const allDone = checked === questions.length && questions.length > 0;
 
   return (
     <div className="card-tool p-6 md:p-8">
-      <div className="flex items-center justify-between mb-8 pb-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+      <div className="flex items-center justify-between mb-8 pb-5"
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
         <h3 className="display-font text-2xl text-white">Comprehension</h3>
         <div className="flex items-center gap-3">
-          <span className="text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-full item-surface" style={{ color: 'var(--text-3)' }}>
+          <span className="text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-full"
+            style={{ background: 'rgba(255,255,255,0.06)', color: 'var(--text-3)' }}>
             {checked}/{questions.length}
           </span>
-          {allDone && <button onClick={restart} className="btn-ghost flex items-center gap-1.5 text-xs"><RotateCcw size={12} /> Retry</button>}
+          {allDone && (
+            <button onClick={restart}
+              className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-xl transition-all"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)', color: 'var(--text-3)' }}>
+              <RotateCcw size={12} /> Retry
+            </button>
+          )}
         </div>
       </div>
+
       <div key={key} className="space-y-8">
         {questions.map((q, idx) => (
           <div key={q.id} className="pb-8 last:pb-0"
@@ -204,21 +238,26 @@ const Questions = ({ questions, onScore }) => {
           </div>
         ))}
       </div>
+
       {allDone && (
         <div className={`mt-8 p-8 rounded-2xl border text-center animate-in zoom-in
-          ${score === questions.length ? 'badge-correct' : score >= questions.length * 0.6 ? '' : 'badge-wrong'}`}
+          ${score === questions.length ? 'badge-correct' : score < questions.length * 0.6 ? 'badge-wrong' : ''}`}
           style={score >= questions.length * 0.6 && score < questions.length
-            ? { background: 'rgba(255,255,255,0.08)', borderColor: 'rgba(255,255,255,0.15)' } : {}}>
+            ? { background: 'rgba(255,255,255,0.08)', border: '2px solid rgba(255,255,255,0.15)' } : {}}>
           <p className="text-5xl mb-3">{score === questions.length ? '🏆' : score >= questions.length * 0.6 ? '📚' : '🔄'}</p>
-          <p className="text-5xl font-black text-white mb-1">{score}<span className="text-xl opacity-50">/{questions.length}</span></p>
-          <p className="font-bold text-sm mt-1" style={{ color: 'var(--text-3)' }}>{Math.round((score / questions.length) * 100)}% comprehension</p>
+          <p className="text-5xl font-black text-white mb-1">
+            {score}<span className="text-xl opacity-50">/{questions.length}</span>
+          </p>
+          <p className="font-bold text-sm mt-1" style={{ color: 'var(--text-3)' }}>
+            {Math.round((score / questions.length) * 100)}% comprehension
+          </p>
         </div>
       )}
     </div>
   );
 };
 
-const ReadingRoom = ({ data }) => {
+const ReadingLab = ({ data }) => {
   const reading = data?.reading;
   const [totalScore, setTotalScore] = useState(0);
   const handleScore = useCallback(ok => { if (ok) setTotalScore(s => s + 1); }, []);
@@ -229,8 +268,10 @@ const ReadingRoom = ({ data }) => {
     <div className="space-y-6 animate-in fade-in duration-500 pb-20">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h2 className="display-font text-3xl text-white leading-none">Reading Room</h2>
-          <p className="text-xs font-semibold mt-1" style={{ color: 'var(--text-3)' }}>Read the passage, then answer the questions</p>
+          <h2 className="display-font text-3xl text-white leading-none">Reading Lab</h2>
+          <p className="text-xs font-semibold mt-1" style={{ color: 'var(--text-3)' }}>
+            Read the passage, then answer the questions
+          </p>
         </div>
         <ReadingTimer />
       </div>
@@ -240,4 +281,4 @@ const ReadingRoom = ({ data }) => {
   );
 };
 
-export default ReadingRoom;
+export default ReadingLab;

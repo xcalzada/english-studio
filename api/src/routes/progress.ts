@@ -24,12 +24,13 @@ progress.get("/", async (c) => {
 });
 
 const EventSchema = z.object({
-  unit_id:     z.string(),
-  tool_id:     z.enum(["grammar", "vocab", "listening", "reading", "writing", "discovery"]),
-  exercise_id: z.string(),
-  correct:     z.boolean(),
-  revealed:    z.boolean().default(false),
-  phase:       z.enum(["study", "check", "practice"]).default("practice"),
+  unit_id:       z.string(),
+  tool_id:       z.enum(["grammar", "vocab", "listening", "reading", "writing", "discovery"]),
+  exercise_id:   z.string(),
+  correct:       z.boolean(),
+  revealed:      z.boolean().default(false),
+  phase:         z.enum(["study", "check", "practice"]).default("practice"),
+  exercise_type: z.string().optional(),
 });
 
 // POST /api/progress — usa función SQL atómica (sin N+1)
@@ -39,7 +40,7 @@ progress.post("/", async (c) => {
   if (!parsed.success) return c.json({ error: parsed.error.flatten() }, 400);
 
   const userId = c.get("userId");
-  const { unit_id, tool_id, exercise_id, correct } = parsed.data;
+  const { unit_id, tool_id, exercise_id, correct, exercise_type } = parsed.data;
 
   const { data, error } = await adminDb.rpc("upsert_progress", {
     p_user_id:     userId,
@@ -50,6 +51,18 @@ progress.post("/", async (c) => {
   });
 
   if (error) return c.json({ error: error.message }, 500);
+
+  // Fire-and-forget — registrar stats del día sin bloquear la respuesta
+  if (exercise_type) {
+    adminDb.rpc("record_daily_stat", {
+      p_user_id: userId,
+      p_date:    new Date().toISOString().slice(0, 10),
+      p_type:    exercise_type,
+      p_correct: correct,
+    }).then(({ error: statError }) => {
+      if (statError) console.error("record_daily_stat:", statError.message);
+    });
+  }
 
   return c.json({ progress: data });
 });

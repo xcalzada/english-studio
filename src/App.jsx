@@ -5,15 +5,17 @@ import { TOOLS_CONFIG }      from './toolsConfig';
 import { UnitMenu }          from './components/ui/UnitMenu';
 import { ErrorBoundary }     from './components/ErrorBoundary';
 import { useSession }        from './hooks/useSession';
-import ProgressDashboard     from './features/ProgressDashboard';
+import AuthScreen               from './features/AuthScreen';
+import ProgressDashboard        from './features/ProgressDashboard';
+import { DailyChallengeWidget } from './components/ui/DailyChallengeWidget';
 
 const TOOL_COMPONENTS = {
   grammar:   lazy(() => import('./features/GrammarLab')),
   vocab:     lazy(() => import('./features/VocabLab')),
   listening: lazy(() => import('./features/AudioLab')),
-  reading:   lazy(() => import('./features/ReadingRoom')),
-  writing:   lazy(() => import('./features/WritingDraft')),
-  discovery: lazy(() => import('./features/ActiveGrammarLab')),
+  reading:   lazy(() => import('./features/ReadingLab')),
+  writing:   lazy(() => import('./features/WritingLab')),
+  discovery: lazy(() => import('./features/DiscoveryLab')),
 };
 
 const ToolLoader = () => (
@@ -28,14 +30,31 @@ const App = () => {
   const [activeUnitId,    setActiveUnitId]    = useState(null);
   const [activeTab,       setActiveTab]       = useState(null);
   const [showProgress,    setShowProgress]    = useState(false);
+  const [showAuth,        setShowAuth]        = useState(false);
 
   // ── Sesión anónima — se inicializa una vez al arrancar ──────────
-  const { userId, token, ready } = useSession();
+  const { userId, token, email, ready, signOut } = useSession();
+
+
 
   const currentUnit = activeUnitId ? UNITS_DATA[activeUnitId] : null;
 
   const handleBack = () => setActiveTab(null);
   const handleHome = () => { setActiveUnitId(null); setActiveTab(null); setShowProgress(false); };
+
+  // Modal de login/registro
+  if (showAuth && !token) return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
+      onClick={e => e.target === e.currentTarget && setShowAuth(false)}>
+      <div className="relative w-full max-w-sm">
+        <button onClick={() => setShowAuth(false)}
+          className="absolute -top-3 -right-3 z-10 w-8 h-8 rounded-full flex items-center justify-center font-black text-sm"
+          style={{ background: 'rgba(255,255,255,0.15)', color: 'white' }}>✕</button>
+        <AuthScreen onSuccess={() => setShowAuth(false)} />
+      </div>
+    </div>
+  );
 
   // Esperar a que la sesión esté lista antes de renderizar
   if (!ready) return (
@@ -43,6 +62,9 @@ const App = () => {
       <div className="skeleton w-32 h-8 rounded-xl" />
     </div>
   );
+
+  // Sin sesión → pantalla de login (salvo modo invitado)
+  // Sin login → acceso libre (sin guardar progreso)
 
   /* ── PROGRESS DASHBOARD ── */
   if (showProgress) {
@@ -132,11 +154,28 @@ const App = () => {
             >
               <Trophy size={13} /> Mi progreso
             </button>
-            {userId && (
-              <span className="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg"
-                style={{ color: 'var(--text-3)', background: 'rgba(255,255,255,0.06)' }}>
-                ● Connected
-              </span>
+            {email ? (
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg hidden sm:block"
+                  style={{ color: 'var(--text-3)', background: 'rgba(255,255,255,0.06)' }}>
+                  {email}
+                </span>
+                <button onClick={signOut}
+                  className="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-lg transition-all"
+                  style={{ color: 'var(--text-3)', background: 'rgba(255,255,255,0.06)' }}
+                  onMouseEnter={e => e.currentTarget.style.color = '#f87171'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'var(--text-3)'}>
+                  Salir
+                </button>
+              </div>
+            ) : (
+              <button onClick={() => setShowAuth(true)}
+                className="text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl transition-all"
+                style={{ background: 'var(--c0)', color: '#fff' }}
+                onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
+                onMouseLeave={e => e.currentTarget.style.opacity = '1'}>
+                Entrar
+              </button>
             )}
           </div>
         </div>
@@ -145,6 +184,11 @@ const App = () => {
         <div className="mb-12 text-center">
           <h1 className="display-font text-5xl md:text-7xl text-white mb-3">English Studio</h1>
           <p className="text-base font-semibold" style={{ color: 'var(--text-3)' }}>Choose a unit to start learning</p>
+        </div>
+
+        {/* Daily Challenge */}
+        <div className="max-w-2xl mx-auto mb-8">
+          <DailyChallengeWidget token={token} />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {Object.entries(UNITS_DATA).map(([id, unit], i) => {

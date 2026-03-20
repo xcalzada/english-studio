@@ -82,13 +82,14 @@ export function useXp(token = null) {
 
       if (xp_gained > 0) {
         setLastGain({ amount: xp_gained, levelUp: level_up });
-        // Limpiar el indicador después de 2s para que la animación no se quede fija
         setTimeout(() => {
           if (mounted.current) setLastGain(null);
         }, 2000);
       }
+      return xp_gained ?? 0;
     } catch (e) {
       console.error('useXp award error:', e);
+      return 0;
     }
   }, [token]);
 

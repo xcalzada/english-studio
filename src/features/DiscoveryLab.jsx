@@ -5,21 +5,17 @@ import { PracticeSection } from '../components/grammar/PracticeSection';
 import { normalize }       from '../utils/normalize';
 
 // ── Derive check questions grouped by theory block ────────────────
-// For each block key, picks up to 3 choice questions tagged with that block.
-// Falls back to untagged choice questions if a block has fewer than needed.
 function deriveBlockCheck(quiz, theoryBlock) {
   const blocks = Object.entries(theoryBlock || {});
   const byBlock = {};
   blocks.forEach(([key]) => { byBlock[key] = []; });
 
-  // First pass: tagged questions
   quiz.forEach(q => {
     if (q.type === 'choice' && q.block && byBlock[q.block] !== undefined) {
       byBlock[q.block].push(q);
     }
   });
 
-  // Each block gets up to 3 questions, shuffled
   return blocks.map(([key, block]) => ({
     key,
     title: block.title,
@@ -86,7 +82,8 @@ const CheckQuestion = React.memo(({ q, idx, onResult }) => {
         })}
       </div>
       {locked && q.explanation && (
-        <p className="pl-8 text-xs italic" style={{ color: 'var(--text-3)' }}>💡 {q.explanation}</p>
+        <p className="pl-8 text-xs italic" style={{ color: 'var(--text-3)' }}
+          dangerouslySetInnerHTML={{ __html: `💡 ${q.explanation}` }} />
       )}
     </div>
   );
@@ -106,19 +103,15 @@ const BlockSection = React.memo(({ block, blockIdx, answers, onResult }) => {
     <div className="overflow-hidden rounded-2xl"
       style={{
         background: 'rgba(255,255,255,0.04)',
-        border: `1px solid rgba(255,255,255,0.10)`,
+        border: '1px solid rgba(255,255,255,0.10)',
         boxShadow: '0 4px 24px rgba(0,0,0,0.20)',
       }}>
-
-      {/* Block header — same style as TheorySection */}
       <div className="flex items-center gap-3 px-5 py-4"
         style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
         <div className="w-8 h-8 rounded-xl flex items-center justify-center font-black text-sm shrink-0"
           style={{ background: `${color}28`, border: `1.5px solid ${color}55`, color }}>
           {allDone
-            ? correct === total
-              ? <CheckCircle size={15} />
-              : <XCircle size={15} />
+            ? correct === total ? <CheckCircle size={15} /> : <XCircle size={15} />
             : String.fromCharCode(65 + blockIdx)}
         </div>
         <span className="font-black text-white text-sm tracking-tight flex-1">{block.title}</span>
@@ -128,8 +121,6 @@ const BlockSection = React.memo(({ block, blockIdx, answers, onResult }) => {
           </span>
         )}
       </div>
-
-      {/* Questions */}
       <div className="px-5 py-5 space-y-6">
         {block.questions.map((q, i) => (
           <div key={q.id} className={i < block.questions.length - 1 ? 'pb-5' : ''}
@@ -156,7 +147,6 @@ const QuickCheck = ({ blockSections, theoryBlock, onPass, onGoBlock }) => {
   const allDone      = Object.keys(answers).length === total;
   const passed       = score >= Math.ceil(total * 0.6);
 
-  // Which blocks failed
   const failedBlocks = blockSections.filter(b =>
     b.questions.every(q => answers[q.id] !== undefined) &&
     b.questions.some(q => answers[q.id] === false)
@@ -164,8 +154,6 @@ const QuickCheck = ({ blockSections, theoryBlock, onPass, onGoBlock }) => {
 
   return (
     <div className="space-y-4 animate-in fade-in">
-
-      {/* Header */}
       <div className="flex items-center gap-3 px-5 py-3 rounded-2xl"
         style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.10)' }}>
         <Star size={16} style={{ color: 'var(--c0)' }} />
@@ -180,18 +168,10 @@ const QuickCheck = ({ blockSections, theoryBlock, onPass, onGoBlock }) => {
         )}
       </div>
 
-      {/* Block sections */}
       {blockSections.map((block, i) => (
-        <BlockSection
-          key={block.key}
-          block={block}
-          blockIdx={i}
-          answers={answers}
-          onResult={handleResult}
-        />
+        <BlockSection key={block.key} block={block} blockIdx={i} answers={answers} onResult={handleResult} />
       ))}
 
-      {/* Result */}
       {allDone && (
         <div className={`rounded-2xl p-6 text-center animate-in zoom-in border-2 ${passed ? 'badge-correct' : 'badge-wrong'}`}>
           <p className="text-4xl mb-2">{score === total ? '🏆' : passed ? '👍' : '📖'}</p>
@@ -204,10 +184,9 @@ const QuickCheck = ({ blockSections, theoryBlock, onPass, onGoBlock }) => {
               :               'Repasa los bloques marcados abajo.'}
           </p>
 
-          {/* Failed block buttons */}
           {!passed && failedBlocks.length > 0 && (
             <div className="mt-4 flex flex-col gap-2">
-              {failedBlocks.map((b, i) => (
+              {failedBlocks.map(b => (
                 <button key={b.key} onClick={() => onGoBlock(b.key)}
                   className="btn-ghost flex items-center gap-2 justify-center text-xs px-4 py-2.5">
                   <BookOpen size={13} /> Repasar: {b.title}
@@ -218,12 +197,10 @@ const QuickCheck = ({ blockSections, theoryBlock, onPass, onGoBlock }) => {
 
           <div className="flex gap-3 mt-4 justify-center">
             {passed
-              ? <button onClick={onPass}
-                  className="btn-tool flex items-center gap-2 px-8 py-3 text-sm font-black">
+              ? <button onClick={onPass} className="btn-tool flex items-center gap-2 px-8 py-3 text-sm font-black">
                   <Hammer size={18} /> Empezar práctica
                 </button>
-              : <button onClick={() => onGoBlock(null)}
-                  className="btn-ghost flex items-center gap-2 px-5 py-3 text-sm">
+              : <button onClick={() => onGoBlock(null)} className="btn-ghost flex items-center gap-2 px-5 py-3 text-sm">
                   <RotateCcw size={14} /> Repasar todo
                 </button>}
           </div>
@@ -233,10 +210,10 @@ const QuickCheck = ({ blockSections, theoryBlock, onPass, onGoBlock }) => {
   );
 };
 
-// ── ActiveGrammarLab ──────────────────────────────────────────────
-const ActiveGrammarLab = ({ data }) => {
-  const [phase,       setPhase]       = useState('study');
-  const [startBlock,  setStartBlock]  = useState(null); // null = first block
+// ── DiscoveryLab ──────────────────────────────────────────────────
+const DiscoveryLab = ({ data, token, guestMode = false, onRegister }) => {
+  const [phase,      setPhase]      = useState('study');
+  const [startBlock, setStartBlock] = useState(null);
 
   const quiz          = data.activeQuiz || data.theoryQuiz || [];
   const blockSections = useMemo(
@@ -244,7 +221,7 @@ const ActiveGrammarLab = ({ data }) => {
     [quiz, data.theoryBlock]
   );
 
-  const goCheck    = useCallback(() => { setPhase('check'); }, []);
+  const goCheck    = useCallback(() => setPhase('check'), []);
   const goPractice = useCallback(() => setPhase('practice'), []);
   const goStudy    = useCallback((blockKey = null) => {
     setStartBlock(blockKey);
@@ -309,11 +286,18 @@ const ActiveGrammarLab = ({ data }) => {
               <BookOpen size={12} /> Repasar
             </button>
           </div>
-          <PracticeSection quiz={quiz} showExplanation />
+          <PracticeSection
+            quiz={quiz}
+            unitId={data?.id ?? ''}
+            toolId="discovery"
+            token={token}
+            guestMode={guestMode}
+            onRegister={onRegister}
+          />
         </div>
       )}
     </div>
   );
 };
 
-export default ActiveGrammarLab;
+export default DiscoveryLab;
