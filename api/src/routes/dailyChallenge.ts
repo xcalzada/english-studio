@@ -1,9 +1,9 @@
 import { Hono } from "hono";
 import { z }    from "zod";
 import { adminDb }     from "../db/client.js";
-import { requireAuth } from "../middleware/auth.js";
+import { requireAuth, AppEnv } from "../middleware/auth.js";
 
-const dailyChallenge = new Hono();
+const dailyChallenge = new Hono<AppEnv>();
 
 dailyChallenge.use("*", requireAuth);
 

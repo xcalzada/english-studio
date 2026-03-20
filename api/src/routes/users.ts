@@ -1,9 +1,9 @@
 import { Hono } from "hono";
 import { z }    from "zod";
 import { adminDb }     from "../db/client.js";
-import { requireAuth } from "../middleware/auth.js";
+import { requireAuth, AppEnv } from "../middleware/auth.js";
 
-const users = new Hono();
+const users = new Hono<AppEnv>();
 
 users.use("*", requireAuth);
 

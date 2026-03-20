@@ -1,8 +1,8 @@
 import { Hono }        from "hono";
 import { adminDb }     from "../db/client.js";
-import { requireAuth } from "../middleware/auth.js";
+import { requireAuth, AppEnv } from "../middleware/auth.js";
 
-const errorDna = new Hono();
+const errorDna = new Hono<AppEnv>();
 errorDna.use("*", requireAuth);
 
 // ─── GET /api/error-dna ──────────────────────────────────────────────────────

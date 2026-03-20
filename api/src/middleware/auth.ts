@@ -6,10 +6,12 @@
 import { createMiddleware } from 'hono/factory';
 import { adminDb } from '../db/client.js';
 
-type AuthVars = {
+export type AuthVars = {
   userId: string;
   userJwt: string;
 };
+
+export type AppEnv = { Variables: AuthVars };
 
 export const requireAuth = createMiddleware<{ Variables: AuthVars }>(async (c, next) => {
   const authHeader = c.req.header('Authorization');

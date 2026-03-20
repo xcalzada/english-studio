@@ -1,9 +1,9 @@
 import { Hono } from "hono";
 import { z } from "zod";
 import { adminDb } from "../db/client.js";
-import { requireAuth } from "../middleware/auth.js";
+import { requireAuth, AppEnv } from "../middleware/auth.js";
 
-const progress = new Hono();
+const progress = new Hono<AppEnv>();
 
 progress.use("*", requireAuth);
 

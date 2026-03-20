@@ -1,9 +1,9 @@
 import { Hono } from "hono";
 import { z }    from "zod";
 import { adminDb }     from "../db/client.js";
-import { requireAuth } from "../middleware/auth.js";
+import { requireAuth, AppEnv } from "../middleware/auth.js";
 
-const sr = new Hono();
+const sr = new Hono<AppEnv>();
 sr.use("*", requireAuth);
 
 // GET /api/sr?unit_id=&tool_id=
