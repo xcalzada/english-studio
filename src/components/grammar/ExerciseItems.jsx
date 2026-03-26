@@ -47,7 +47,13 @@ export const ErrorItem = React.memo(({ item, onResult, savedResult }) => {
   const locked = !!status;
 
   const check = useCallback(() => {
-    const ok = normalize(input) === normalize(item.ans);
+    // 1. Dividimos la respuesta del JSON por el símbolo "|"
+    // 2. Quitamos espacios sobrantes con .trim()
+    const possibleAnswers = item.ans.split('|').map(a => normalize(a.trim()));
+    
+    // 3. Vemos si lo que escribió el usuario está en esa lista
+    const ok = possibleAnswers.includes(normalize(input.trim()));
+    
     setStatus(ok ? 'correct' : 'wrong');
     onResult(ok);
   }, [input, item.ans, onResult]);
