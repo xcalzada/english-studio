@@ -21,7 +21,7 @@
 import { comparativesUnit, comparativesReadingPatch } from './comparatives';
 import { presentSimpleUnit } from './presentSimple.js';
 import { presentContinuousUnit } from './presentContinuous.js';
-import { presentContinuousVsSimpleUnit } from './presentContinuousVSsimple.js';
+import { presentContinuousVsSimpleUnit } from './presentContinuousVsSimple.js';
 
 export const ALL_UNITS = [
   // FIX: explicit merge — only reading field from patch, avoids silent overwrites
